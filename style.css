@@ -9,3 +9,8 @@ h1 {
 .circular {
 	border-radius: 50%;
 }
+
+.outer {
+	margin-left: 10%;
+	margin-right: 10%;
+}
