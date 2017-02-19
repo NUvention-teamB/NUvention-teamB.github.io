@@ -34,6 +34,10 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* teamBTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* teamBTests.m */; };
+		2F3552661E58F2E400236EF4 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3552621E58F2E400236EF4 /* Bolts.framework */; };
+		2F3552671E58F2E400236EF4 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3552631E58F2E400236EF4 /* FBSDKCoreKit.framework */; };
+		2F3552681E58F2E400236EF4 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3552641E58F2E400236EF4 /* FBSDKLoginKit.framework */; };
+		2F3552691E58F2E400236EF4 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3552651E58F2E400236EF4 /* FBSDKShareKit.framework */; };
 		2F5F33DD1E53A95600433DC8 /* AWSCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F5F33DC1E53A95600433DC8 /* AWSCore.framework */; };
 		2F5F33DE1E53A95600433DC8 /* AWSCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2F5F33DC1E53A95600433DC8 /* AWSCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2F5F340D1E53AD8A00433DC8 /* AWSDynamoDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F5F340C1E53AD8A00433DC8 /* AWSDynamoDB.framework */; };
@@ -42,6 +46,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		CF4A40744B464368B1D2BA9F /* libDynamoDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B482E43C08043B58C247631 /* libDynamoDB.a */; };
 		D8900657FA3042E58DC6CA63 /* libCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE32CAD6C0014B719FE21B52 /* libCore.a */; };
+		E2ED60CCB3D54DD0B610B88B /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B1BC90578445FD86A0F5E2 /* libRCTFBSDK.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +119,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "teamB-tvOS";
+		};
+		2F35528C1E58F65600236EF4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 284480CF9C734E26A0C0A548 /* RCTFBSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9350E0F11CE3B0920041D815;
+			remoteInfo = RCTFBSDK;
 		};
 		2F5F33C11E53A83400433DC8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -285,12 +297,18 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = teamB/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = teamB/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		284480CF9C734E26A0C0A548 /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/ios/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
 		2B482E43C08043B58C247631 /* libDynamoDB.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libDynamoDB.a; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* teamB-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "teamB-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* teamB-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "teamB-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2F3552621E58F2E400236EF4 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = ../../Documents/FacebookSDK/Bolts.framework; sourceTree = "<group>"; };
+		2F3552631E58F2E400236EF4 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../Documents/FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		2F3552641E58F2E400236EF4 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../Documents/FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		2F3552651E58F2E400236EF4 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../Documents/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		2F5F33DC1E53A95600433DC8 /* AWSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCore.framework; path = "../node_modules/aws-sdk-react-native-core/ios/Frameworks/AWSCore.framework"; sourceTree = "<group>"; };
 		2F5F340C1E53AD8A00433DC8 /* AWSDynamoDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSDynamoDB.framework; path = "../node_modules/aws-sdk-react-native-dynamodb/ios/Frameworks/AWSDynamoDB.framework"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		68B1BC90578445FD86A0F5E2 /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		89604360C91F45269F4B5EAE /* DynamoDB.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = DynamoDB.xcodeproj; path = "../node_modules/aws-sdk-react-native-dynamodb/ios/DynamoDB.xcodeproj"; sourceTree = "<group>"; };
@@ -318,14 +336,19 @@
 				2F5F340D1E53AD8A00433DC8 /* AWSDynamoDB.framework in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
+				2F3552671E58F2E400236EF4 /* FBSDKCoreKit.framework in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				2F5F33DD1E53A95600433DC8 /* AWSCore.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
+				2F3552691E58F2E400236EF4 /* FBSDKShareKit.framework in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
+				2F3552681E58F2E400236EF4 /* FBSDKLoginKit.framework in Frameworks */,
+				2F3552661E58F2E400236EF4 /* Bolts.framework in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				D8900657FA3042E58DC6CA63 /* libCore.a in Frameworks */,
 				CF4A40744B464368B1D2BA9F /* libDynamoDB.a in Frameworks */,
+				E2ED60CCB3D54DD0B610B88B /* libRCTFBSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -460,6 +483,25 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2F3552611E58F25300236EF4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2F3552621E58F2E400236EF4 /* Bolts.framework */,
+				2F3552631E58F2E400236EF4 /* FBSDKCoreKit.framework */,
+				2F3552641E58F2E400236EF4 /* FBSDKLoginKit.framework */,
+				2F3552651E58F2E400236EF4 /* FBSDKShareKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2F3552841E58F65500236EF4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2F35528D1E58F65600236EF4 /* libRCTFBSDK.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		2F5F33BE1E53A83400433DC8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -510,6 +552,7 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				E7F201DB1F4F4FD4B619A8D2 /* Core.xcodeproj */,
 				89604360C91F45269F4B5EAE /* DynamoDB.xcodeproj */,
+				284480CF9C734E26A0C0A548 /* RCTFBSDK.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -526,6 +569,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				2F3552611E58F25300236EF4 /* Frameworks */,
 				2F5F340C1E53AD8A00433DC8 /* AWSDynamoDB.framework */,
 				2F5F33DC1E53A95600433DC8 /* AWSCore.framework */,
 				13B07FAE1A68108700A75B9A /* teamB */,
@@ -678,6 +722,10 @@
 					ProjectRef = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
 				},
 				{
+					ProductGroup = 2F3552841E58F65500236EF4 /* Products */;
+					ProjectRef = 284480CF9C734E26A0C0A548 /* RCTFBSDK.xcodeproj */;
+				},
+				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
 					ProjectRef = 00C302B51ABCB90400DB3ED1 /* RCTGeolocation.xcodeproj */;
 				},
@@ -779,6 +827,13 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2F35528D1E58F65600236EF4 /* libRCTFBSDK.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTFBSDK.a;
+			remoteRef = 2F35528C1E58F65600236EF4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		2F5F33C21E53A83400433DC8 /* libCore.a */ = {
@@ -1111,6 +1166,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../node_modules/aws-sdk-react-native-core/ios/Frameworks",
 					"$(SRCROOT)/../node_modules/aws-sdk-react-native-dynamodb/ios/Frameworks",
+					"~/Documents/FacebookSDK",
 				);
 				INFOPLIST_FILE = teamB/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1132,6 +1188,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../node_modules/aws-sdk-react-native-core/ios/Frameworks",
 					"$(SRCROOT)/../node_modules/aws-sdk-react-native-dynamodb/ios/Frameworks",
+					"~/Documents/FacebookSDK",
 				);
 				INFOPLIST_FILE = teamB/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

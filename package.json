@@ -1,24 +1,26 @@
 {
-	"name": "teamB",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"start": "node node_modules/react-native/local-cli/cli.js start",
-		"test": "jest"
-	},
-	"dependencies": {
-		"aws-sdk-react-native-core": "../aws-sdk-react-native-master-2/Core/aws-sdk-react-native-core-0.0.2.tgz",
-		"aws-sdk-react-native-dynamodb": "../aws-sdk-react-native-master-2/DynamoDB/aws-sdk-react-native-dynamodb-0.0.1.tgz",
-		"react": "~15.4.0",
-		"react-native": "0.41.2"
-	},
-	"devDependencies": {
-		"babel-jest": "18.0.0",
-		"babel-preset-react-native": "1.9.1",
-		"jest": "18.1.0",
-		"react-test-renderer": "~15.4.0"
-	},
-	"jest": {
-		"preset": "react-native"
-	}
+  "name": "teamB",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "aws-sdk-react-native-core": "../aws-sdk-react-native-master-2/Core/aws-sdk-react-native-core-0.0.2.tgz",
+    "aws-sdk-react-native-dynamodb": "../aws-sdk-react-native-master-2/DynamoDB/aws-sdk-react-native-dynamodb-0.0.1.tgz",
+    "react": "~15.4.0",
+    "react-native": "0.41.2",
+    "react-native-fbsdk": "^0.5.0"
+  },
+  "devDependencies": {
+    "babel-jest": "18.0.0",
+    "babel-preset-react-native": "1.9.1",
+    "invariant": "^2.2.2",
+    "jest": "18.1.0",
+    "react-test-renderer": "~15.4.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
 }

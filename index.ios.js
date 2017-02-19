@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -15,25 +9,40 @@ import {
   TouchableOpacity,
   TextInput
 } from 'react-native';
-
+import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
 
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
+var logins;
+
 
 async function getCredAndID() {
-  AWSCognitoCredentials.initWithOptions({"region": region, "identity_pool_id": identity_pool_id});
-  var credentialsObj = await AWSCognitoCredentials.getCredentialsAsync();
-  var identityIdObj = await AWSCognitoCredentials.getIdentityIDAsync();
-  console.log(identityIdObj.identityId);
-  this.setState({
-    identityId: identityIdObj.identityId
-  });
+  if (logins==null) {
+    console.log('Unable to retrieve credentials since no logins data is provided...');
+    AWSCognitoCredentials.clearCredentials();
+    this.setState({
+      identityId: null
+    });
+    return;
+  }
+
+  try {
+    var credentialsObj = await AWSCognitoCredentials.getCredentialsAsync();
+    var identityIdObj = await AWSCognitoCredentials.getIdentityIDAsync();
+    console.log('IDENTITY ID:', identityIdObj.identityId);
+    this.setState({
+      identityId: identityIdObj.identityId
+    });
+  }
+  catch(err) {
+    console.log("ERROR while getting credentials:", err);
+  }
 }
 
 async function submitPost() {
-
+  console.log('Submitting post');
   var fakeItem = {
     id: { S: Date.now().toString() },
     text: { S: this.state.text }
@@ -42,11 +51,9 @@ async function submitPost() {
     TableName: 'testy',
     Item: fakeItem
   };
-  AWSDynamoDB.initWithOptions({"region": region});
-
   AWSDynamoDB.PutItem(params, function(err, data) {
-    if (err) throw err;
-    console.log(data);
+    if (err) console.log("Error:", err);
+    else console.log(data);
   });
 }
 
@@ -55,10 +62,48 @@ export default class teamB extends Component {
   constructor(props) {
     super(props);
     this.state = {}
+    this.onLoginInvoked.bind(this);
 
-    getCredAndID.call(this);
+    AWSCognitoCredentials.initWithOptions({"region": region, "identity_pool_id": identity_pool_id});
+    AWSCognitoCredentials.clearCredentials();
+
+    AWSDynamoDB.initWithOptions({"region": region});
+
+    AWSCognitoCredentials.getLogins = function(){
+      if (logins==null) return "";
+      console.log('Logins', logins);
+      return logins;
+    };
+
+    var that = this;
+    AccessToken.getCurrentAccessToken()
+    .then(function(fbTokenData) {
+      if (fbTokenData==null) return;
+      console.log('fbTokenData:', fbTokenData);
+      logins = {};
+      logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = fbTokenData.accessToken;
+      // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
+      getCredAndID.call(that);
+    }, function(err) {
+      console.log('Error getting token:', err);
+    });
   }
 
+  onLoginInvoked(isLoggingIn, fbToken){
+    console.log('isLoggingIn:', isLoggingIn);
+    console.log('Accesstoken:', fbToken);
+
+    if (isLoggingIn) {
+      logins = {};
+      logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = fbToken;
+      // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
+      getCredAndID.call(this);
+    }
+    else {
+      logins = null;
+      getCredAndID.call(this);
+    }
+  }
 
   render() {
     let pic = {
@@ -67,7 +112,7 @@ export default class teamB extends Component {
 
 
     return(
-      <View style={{flex: 1}}>
+      <View style={containerStyles}>
         <View style={testStyles.header}>
           <Text style={testStyles.headerText}>
             Posting
@@ -79,7 +124,7 @@ export default class teamB extends Component {
           </View>
           <TextInput
             style={testStyles.postInput}
-            placeholder="Type here to translate!"
+            placeholder={this.state.identityId}
             multiline={true}
             onChangeText={(text) => this.setState({text})}/>
         </View>
@@ -88,6 +133,28 @@ export default class teamB extends Component {
             Social Media Channels
           </Text>
         </View>
+        <LoginButton
+          onLoginFinished={
+            (error, result) => {
+              if (error) {
+                alert("login has error: " + result.error);
+              } else if (result.isCancelled) {
+                alert("login is cancelled.");
+              } else {
+                AccessToken.getCurrentAccessToken().then(
+                  (data) => {
+                    this.onLoginInvoked(true, data.accessToken.toString());
+                  }
+                )
+              }
+            }
+          }
+          onLogoutFinished={() => this.onLoginInvoked(false, "")}
+        />
+        <Button
+          onPress={getCredAndID.bind(this)}
+          title="Get Creds"
+        />
         <TouchableOpacity
           style={testStyles.submitTouchable}
           onPress={submitPost.bind(this)}>
@@ -101,6 +168,10 @@ export default class teamB extends Component {
     );
   }
 }
+
+const containerStyles = StyleSheet.create({
+  flex: 1
+})
 
 const testStyles = StyleSheet.create({
   header: {
