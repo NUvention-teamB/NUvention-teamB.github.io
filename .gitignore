@@ -56,4 +56,4 @@ node_modules
 *.js.meta
 
 # iOS
-/ios/build/*
+# /ios/build/*
