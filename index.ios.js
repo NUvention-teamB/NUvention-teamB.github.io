@@ -80,13 +80,17 @@ export default class teamB extends Component {
     .then(function(fbTokenData) {
       if (fbTokenData==null) return;
       console.log('fbTokenData:', fbTokenData);
-      logins = {};
-      logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = fbTokenData.accessToken;
-      // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
-      getCredAndID.call(that);
+      this.setAWSCognitoCredential(fbTokenData.accessToken);
     }, function(err) {
       console.log('Error getting token:', err);
     });
+  }
+
+  setAWSCognitoCredential(token){
+    logins = {};
+    logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = token;
+    // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
+    getCredAndID.call(this);
   }
 
   onLoginInvoked(isLoggingIn, fbToken){
@@ -94,10 +98,8 @@ export default class teamB extends Component {
     console.log('Accesstoken:', fbToken);
 
     if (isLoggingIn) {
-      logins = {};
-      logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = fbToken;
-      // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
-      getCredAndID.call(this);
+      // Why can't i run "setAWSCognitoCredential(fbToken)" here?
+      this.setAWSCognitoCredential(fbToken);
     }
     else {
       logins = null;
@@ -134,6 +136,7 @@ export default class teamB extends Component {
           </Text>
         </View>
         <LoginButton
+          publishPermissions={['manage_pages','publish_pages']}
           onLoginFinished={
             (error, result) => {
               if (error) {

@@ -56,5 +56,4 @@ node_modules
 *.js.meta
 
 # iOS
-/ios/build/Build
-/ios/build/ModuleCache
+/ios/build/*
