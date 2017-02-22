@@ -41,22 +41,6 @@ async function getCredAndID() {
   }
 }
 
-async function submitPost() {
-  console.log('Submitting post');
-  var fakeItem = {
-    id: { S: Date.now().toString() },
-    text: { S: this.state.text }
-  };
-  var params = {
-    TableName: 'testy',
-    Item: fakeItem
-  };
-  AWSDynamoDB.PutItem(params, function(err, data) {
-    if (err) console.log("Error:", err);
-    else console.log(data);
-  });
-}
-
 export default class teamB extends Component {
 
   constructor(props) {
@@ -80,7 +64,11 @@ export default class teamB extends Component {
     .then(function(fbTokenData) {
       if (fbTokenData==null) return;
       console.log('fbTokenData:', fbTokenData);
-      this.setAWSCognitoCredential(fbTokenData.accessToken);
+      logins = {};
+      logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = fbTokenData.accessToken;
+      console.log('here' +  logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]);
+      // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
+      getCredAndID.call(this);
     }, function(err) {
       console.log('Error getting token:', err);
     });
@@ -105,6 +93,85 @@ export default class teamB extends Component {
       logins = null;
       getCredAndID.call(this);
     }
+  }
+  
+  async submitPost() {
+    console.log('Submitting post');
+    console.log(logins);
+    console.log(logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]);
+    if (logins && logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]) {
+      fetch('https://graph.facebook.com/me/accounts?access_token=' + 
+          logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER])
+      .then(response => response.json())
+      .then(json => {
+        console.log('json' + JSON.stringify(json));
+        var pageId = json['data'][0]['id'];
+        console.log('pageId' + pageId);
+        fetch('https://graph.facebook.com/' +
+            pageId + 
+            '?fields=access_token' +
+            '&access_token=' +
+            logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER])
+        .then(response => response.json())
+        .then(json => {
+          var pageAccess = json['access_token'];
+          console.log('pageaccess' + pageAccess);
+          fetch('https://graph.facebook.com/' + 
+              pageId + 
+              '/feed?access_token=' + 
+              pageAccess, {
+            method: 'Post',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              message: 'page access'
+            })
+          })
+          .then(response => response.json())
+          .then(json => {
+            console.log('success');
+            console.log(json);
+          })
+          .catch(error => {
+            console.log('broke inside');
+            this.setState({
+              isLoading: false,
+              message: 'Something bad happened ' + error
+            });
+          })
+        .catch(error => {
+          console.log('broken outside' + error);
+          this.setState({
+          isLoading: false,
+          message: 'Something bad happened ' + error
+        })});
+        })
+      .catch(error => {
+        console.log('broke inside');
+        this.setState({
+          isLoading: false,
+          message: 'Something bad happened ' + error
+        });
+      })
+    })
+    } else {
+      console.log('error');
+      return null;
+    }
+    var fakeItem = {
+      id: { S: Date.now().toString() },
+      text: { S: this.state.text }
+    };
+    var params = {
+      TableName: 'testy',
+      Item: fakeItem
+    };
+    // AWSDynamoDB.PutItem(params, function(err, data) {
+    //   if (err) console.log("Error:", err);
+    //   else console.log(data);
+    // });
   }
 
   render() {
@@ -136,7 +203,7 @@ export default class teamB extends Component {
           </Text>
         </View>
         <LoginButton
-          publishPermissions={['manage_pages','publish_pages']}
+          publishPermissions={['manage_pages','publish_pages', 'publish_actions']}
           onLoginFinished={
             (error, result) => {
               if (error) {
@@ -160,7 +227,7 @@ export default class teamB extends Component {
         />
         <TouchableOpacity
           style={testStyles.submitTouchable}
-          onPress={submitPost.bind(this)}>
+          onPress={this.submitPost.bind(this)}>
           <View>
             <Text style={testStyles.submitButton}>
               Post Now
