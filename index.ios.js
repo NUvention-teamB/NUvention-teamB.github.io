@@ -13,6 +13,7 @@ import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
 
+
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
 var logins;
@@ -47,6 +48,7 @@ export default class teamB extends Component {
     super(props);
     this.state = {}
     this.onLoginInvoked.bind(this);
+    this.submitPost.bind(this);
 
     AWSCognitoCredentials.initWithOptions({"region": region, "identity_pool_id": identity_pool_id});
     AWSCognitoCredentials.clearCredentials();
@@ -94,84 +96,68 @@ export default class teamB extends Component {
       getCredAndID.call(this);
     }
   }
-  
+
   async submitPost() {
+    if (logins==null || logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]==null) {
+      console.log('Logins not present');
+      return;
+    }
+
+    var pageId, pageAccessToken;
+
+    var that = this;
     console.log('Submitting post');
     console.log(logins);
     console.log(logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]);
-    if (logins && logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]) {
-      fetch('https://graph.facebook.com/me/accounts?access_token=' + 
+    var fbLoginToken = logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER];
+    fetch('https://graph.facebook.com/me/accounts?access_token=' + fbLoginToken)
+    .then(response => response.json())
+    .then(function(json) {
+      // var json = JSON.parse(response);
+      console.log('Response:\n', json);
+      pageId = json['data'][0]['id'];
+      console.log('pageId' + pageId);
+      return fetch('https://graph.facebook.com/' +
+          pageId +
+          '?fields=access_token' +
+          '&access_token=' +
           logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER])
-      .then(response => response.json())
-      .then(json => {
-        console.log('json' + JSON.stringify(json));
-        var pageId = json['data'][0]['id'];
-        console.log('pageId' + pageId);
-        fetch('https://graph.facebook.com/' +
-            pageId + 
-            '?fields=access_token' +
-            '&access_token=' +
-            logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER])
-        .then(response => response.json())
-        .then(json => {
-          var pageAccess = json['access_token'];
-          console.log('pageaccess' + pageAccess);
-          fetch('https://graph.facebook.com/' + 
-              pageId + 
-              '/feed?access_token=' + 
-              pageAccess, {
-            method: 'Post',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              message: 'page access'
-            })
-          })
-          .then(response => response.json())
-          .then(json => {
-            console.log('success');
-            console.log(json);
-          })
-          .catch(error => {
-            console.log('broke inside');
-            this.setState({
-              isLoading: false,
-              message: 'Something bad happened ' + error
-            });
-          })
-        .catch(error => {
-          console.log('broken outside' + error);
-          this.setState({
-          isLoading: false,
-          message: 'Something bad happened ' + error
-        })});
-        })
-      .catch(error => {
-        console.log('broke inside');
-        this.setState({
-          isLoading: false,
-          message: 'Something bad happened ' + error
-        });
-      })
     })
-    } else {
-      console.log('error');
-      return null;
-    }
-    var fakeItem = {
-      id: { S: Date.now().toString() },
-      text: { S: this.state.text }
-    };
-    var params = {
-      TableName: 'testy',
-      Item: fakeItem
-    };
-    // AWSDynamoDB.PutItem(params, function(err, data) {
-    //   if (err) console.log("Error:", err);
-    //   else console.log(data);
-    // });
+    .then(response => response.json())
+    .then(function(json) {
+      // var json = JSON.parse(response);
+      pageAccessToken = json['access_token'];
+      console.log('pageAccessToken:',pageAccessToken);
+
+      var postText = (that.state.text!='') ? that.state.text : 'test_post';
+      return fetch('https://graph.facebook.com/' +
+          pageId +
+          '/feed?access_token=' +
+          pageAccessToken, {
+        method: 'Post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: postText
+        })
+      });
+    })
+    .then(response => response.json())
+    .then(function(json) {
+      // var json = JSON.parse(response);
+      console.log('SUCCESSS');
+      console.log(json);
+    })
+    .catch(function(err) {
+      console.log('Error posting');
+      console.log(err);
+      that.setState({
+        isLoading: false,
+        message: 'Something bad happened ' + err
+      });
+    });
   }
 
   render() {
@@ -292,3 +278,17 @@ const testStyles = StyleSheet.create({
 });
 
 AppRegistry.registerComponent('teamB', () => teamB);
+
+
+// var fakeItem = {
+//   id: { S: Date.now().toString() },
+//   text: { S: this.state.text }
+// };
+// var params = {
+//   TableName: 'testy',
+//   Item: fakeItem
+// };
+// AWSDynamoDB.PutItem(params, function(err, data) {
+//   if (err) console.log("Error:", err);
+//   else console.log(data);
+// });
