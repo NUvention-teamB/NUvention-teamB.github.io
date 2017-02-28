@@ -18,6 +18,50 @@ var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
 var logins;
 
+async function getPageID(fbLoginToken) {
+  fetch('https://graph.facebook.com/me/accounts?access_token=' + fbLoginToken)
+  .then(response => response.json())
+  .then(function(json) {
+    pageId = json['data'][0]['id'];
+    console.log('pageId' + pageId);
+    return pageId;
+  });
+}
+
+async function getPageAccessToken(pageId, fbLoginToken) {
+  fetch('https://graph.facebook.com/' +
+      pageId +
+      '?fields=access_token' +
+      '&access_token=' +
+      logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER])
+  .then(response => response.json())
+  .then(function(json) {
+    // var json = JSON.parse(response);
+    pageAccessToken = json['access_token'];
+    return pageAccessToken;
+  })
+}
+
+async function pagePost(pageId, pageAccessToken, postText) {
+  fetch('https://graph.facebook.com/' +
+      pageId +
+      '/feed?access_token=' +
+      pageAccessToken, {
+    method: 'Post',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: postText
+    })
+  })
+  .then(response => response.json())
+  .then(function(json) {
+    console.log(json);
+    return json;
+  });
+}
 
 async function getCredAndID() {
   if (logins==null) {
@@ -107,51 +151,19 @@ export default class teamB extends Component {
 
     var that = this;
     console.log('Submitting post');
-    console.log(logins);
-    console.log(logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]);
     var fbLoginToken = logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER];
-    fetch('https://graph.facebook.com/me/accounts?access_token=' + fbLoginToken)
-    .then(response => response.json())
-    .then(function(json) {
-      // var json = JSON.parse(response);
-      console.log('Response:\n', json);
-      pageId = json['data'][0]['id'];
-      console.log('pageId' + pageId);
-      return fetch('https://graph.facebook.com/' +
-          pageId +
-          '?fields=access_token' +
-          '&access_token=' +
-          logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER])
+    getPageID(fbLoginToken).then(function(mPageid) {
+      pageId = mPageid;
+      return getPageAccessToken(pageId, fbLoginToken);
     })
-    .then(response => response.json())
-    .then(function(json) {
+    .then(function(mPageAccessToken) {
       // var json = JSON.parse(response);
-      pageAccessToken = json['access_token'];
+      pageAccessToken = mPageAccessToken;
       console.log('pageAccessToken:',pageAccessToken);
-
       var postText = (that.state.text!='') ? that.state.text : 'test_post';
-      return fetch('https://graph.facebook.com/' +
-          pageId +
-          '/feed?access_token=' +
-          pageAccessToken, {
-        method: 'Post',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: postText
-        })
-      });
-    })
-    .then(response => response.json())
-    .then(function(json) {
-      // var json = JSON.parse(response);
-      console.log('SUCCESSS');
-      console.log(json);
+      return pagePost(pageId, pageAccessToken, postText);
     })
     .catch(function(err) {
-      console.log('Error posting');
       console.log(err);
       that.setState({
         isLoading: false,
