@@ -12,56 +12,11 @@ import {
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
-
+import { getPageID, getPageAccessToken, pagePost } from './lib/facebookAPI'
 
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
 var logins;
-
-async function getPageID(fbLoginToken) {
-  fetch('https://graph.facebook.com/me/accounts?access_token=' + fbLoginToken)
-  .then(response => response.json())
-  .then(function(json) {
-    pageId = json['data'][0]['id'];
-    console.log('pageId' + pageId);
-    return pageId;
-  });
-}
-
-async function getPageAccessToken(pageId, fbLoginToken) {
-  fetch('https://graph.facebook.com/' +
-      pageId +
-      '?fields=access_token' +
-      '&access_token=' +
-      logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER])
-  .then(response => response.json())
-  .then(function(json) {
-    // var json = JSON.parse(response);
-    pageAccessToken = json['access_token'];
-    return pageAccessToken;
-  })
-}
-
-async function pagePost(pageId, pageAccessToken, postText) {
-  fetch('https://graph.facebook.com/' +
-      pageId +
-      '/feed?access_token=' +
-      pageAccessToken, {
-    method: 'Post',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      message: postText
-    })
-  })
-  .then(response => response.json())
-  .then(function(json) {
-    console.log(json);
-    return json;
-  });
-}
 
 async function getCredAndID() {
   if (logins==null) {
@@ -152,8 +107,10 @@ export default class teamB extends Component {
     var that = this;
     console.log('Submitting post');
     var fbLoginToken = logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER];
-    getPageID(fbLoginToken).then(function(mPageid) {
+    getPageID(fbLoginToken)
+    .then(function(mPageid) {
       pageId = mPageid;
+      console.log('2pageId' + pageId);
       return getPageAccessToken(pageId, fbLoginToken);
     })
     .then(function(mPageAccessToken) {
@@ -180,6 +137,8 @@ export default class teamB extends Component {
 
     return(
       <View style={containerStyles}>
+        <View style={testStyles.statusBar}>
+        </View>
         <View style={testStyles.header}>
           <Text style={testStyles.headerText}>
             Posting
@@ -242,15 +201,19 @@ const containerStyles = StyleSheet.create({
 })
 
 const testStyles = StyleSheet.create({
+  statusBar: {
+    height:20,
+  },
   header: {
     height: 60,
-    backgroundColor: '#EDEDED',
+    backgroundColor: '#97e1d0',
     alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'center',
-    borderBottomColor: '#A6A6A6',
+    borderColor: '#A6A6A6',
     borderStyle: 'solid',
     borderBottomWidth: 1,
+    borderTopWidth: 1,
     padding: 5,
   },
   headerText: {
@@ -265,6 +228,8 @@ const testStyles = StyleSheet.create({
     width: 70,
     margin: 20,
     borderRadius: 35,
+    borderWidth: 4,
+    borderColor: '#97e1d0',
   },
   postInput: {
     flex: 1,
