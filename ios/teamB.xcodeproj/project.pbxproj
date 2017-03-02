@@ -46,6 +46,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		CF4A40744B464368B1D2BA9F /* libDynamoDB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B482E43C08043B58C247631 /* libDynamoDB.a */; };
 		D8900657FA3042E58DC6CA63 /* libCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE32CAD6C0014B719FE21B52 /* libCore.a */; };
+		DE158452CCF14B74A6728B40 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEBFDA9ECA14A509BC4E2C4 /* libRNImagePicker.a */; };
 		E2ED60CCB3D54DD0B610B88B /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B1BC90578445FD86A0F5E2 /* libRCTFBSDK.a */; };
 /* End PBXBuildFile section */
 
@@ -119,6 +120,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "teamB-tvOS";
+		};
+		2F142A0E1E688BC500184E03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B1D6B8D05B674AB080CA3217 /* RNImagePicker.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
+			remoteInfo = RNImagePicker;
 		};
 		2F35528C1E58F65600236EF4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -307,11 +315,13 @@
 		2F3552651E58F2E400236EF4 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../Documents/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		2F5F33DC1E53A95600433DC8 /* AWSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCore.framework; path = "../node_modules/aws-sdk-react-native-core/ios/Frameworks/AWSCore.framework"; sourceTree = "<group>"; };
 		2F5F340C1E53AD8A00433DC8 /* AWSDynamoDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSDynamoDB.framework; path = "../node_modules/aws-sdk-react-native-dynamodb/ios/Frameworks/AWSDynamoDB.framework"; sourceTree = "<group>"; };
+		3CEBFDA9ECA14A509BC4E2C4 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		68B1BC90578445FD86A0F5E2 /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		89604360C91F45269F4B5EAE /* DynamoDB.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = DynamoDB.xcodeproj; path = "../node_modules/aws-sdk-react-native-dynamodb/ios/DynamoDB.xcodeproj"; sourceTree = "<group>"; };
+		B1D6B8D05B674AB080CA3217 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		CE32CAD6C0014B719FE21B52 /* libCore.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libCore.a; sourceTree = "<group>"; };
 		E7F201DB1F4F4FD4B619A8D2 /* Core.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Core.xcodeproj; path = "../node_modules/aws-sdk-react-native-core/ios/Core.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -349,6 +359,7 @@
 				D8900657FA3042E58DC6CA63 /* libCore.a in Frameworks */,
 				CF4A40744B464368B1D2BA9F /* libDynamoDB.a in Frameworks */,
 				E2ED60CCB3D54DD0B610B88B /* libRCTFBSDK.a in Frameworks */,
+				DE158452CCF14B74A6728B40 /* libRNImagePicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +494,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2F1429EF1E688BC500184E03 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2F142A0F1E688BC500184E03 /* libRNImagePicker.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		2F3552611E58F25300236EF4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -553,6 +572,7 @@
 				E7F201DB1F4F4FD4B619A8D2 /* Core.xcodeproj */,
 				89604360C91F45269F4B5EAE /* DynamoDB.xcodeproj */,
 				284480CF9C734E26A0C0A548 /* RCTFBSDK.xcodeproj */,
+				B1D6B8D05B674AB080CA3217 /* RNImagePicker.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -761,6 +781,10 @@
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
+				{
+					ProductGroup = 2F1429EF1E688BC500184E03 /* Products */;
+					ProjectRef = B1D6B8D05B674AB080CA3217 /* RNImagePicker.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -827,6 +851,13 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2F142A0F1E688BC500184E03 /* libRNImagePicker.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNImagePicker.a;
+			remoteRef = 2F142A0E1E688BC500184E03 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		2F35528D1E58F65600236EF4 /* libRCTFBSDK.a */ = {
@@ -1126,6 +1157,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1146,6 +1178,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1219,6 +1252,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1249,6 +1283,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1278,6 +1313,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.teamB-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1302,6 +1338,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.teamB-tvOSTests";

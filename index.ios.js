@@ -13,6 +13,8 @@ import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
 import { getPageID, getPageAccessToken, pagePost } from './lib/facebookAPI'
+import ImagePicker from 'react-native-image-picker'
+import { RNS3 } from 'react-native-aws3';
 
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
@@ -30,15 +32,51 @@ async function getCredAndID() {
 
   try {
     var credentialsObj = await AWSCognitoCredentials.getCredentialsAsync();
+    console.log(credentialsObj);
     var identityIdObj = await AWSCognitoCredentials.getIdentityIDAsync();
     console.log('IDENTITY ID:', identityIdObj.identityId);
     this.setState({
+      AccessKey: credentialsObj.AccessKey,
+      SecretKey: credentialsObj.SecretKey,
       identityId: identityIdObj.identityId
     });
   }
   catch(err) {
     console.log("ERROR while getting credentials:", err);
   }
+}
+
+async function uploadPhoto() {
+  // if (this.state.imageData==null) {
+  //   console.log('Empty image');
+  //   return;
+  // }
+  // console.log('data:image/jpeg;base64,' + this.state.imageData.uri);
+
+  console.log(this.state.postImage.uri);
+  console.log(this.state.AccessKey);
+  console.log(this.state.SecretKey);
+
+  let file = {
+    // `uri` can also be a file system path (i.e. file://)
+    uri: this.state.postImage.uri,
+    name: "image.jpeg",
+    type: "image/jpeg"
+  }
+
+  let options = {
+    bucket: "teamb-photos",
+    region: "us-east-1",
+    accessKey: "AKIAJQIOU7GJXFIBMVXQ",
+    secretKey: "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",
+    successActionStatus: 201
+  }
+
+  RNS3.put(file, options).then(response => {
+    console.log(response);
+    if (response.status !== 201) throw new Error("Failed to upload image to S3");
+  });
+
 }
 
 export default class teamB extends Component {
@@ -69,7 +107,7 @@ export default class teamB extends Component {
       logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = fbTokenData.accessToken;
       console.log('here' +  logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]);
       // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
-      getCredAndID.call(this);
+      getCredAndID.call(that);
     }, function(err) {
       console.log('Error getting token:', err);
     });
@@ -129,10 +167,56 @@ export default class teamB extends Component {
     });
   }
 
+  addImage() {
+
+    var options = {
+      title: 'Add a photo for your post',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      // console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        // console.log('IMAGE DATA:')
+        // console.log(response.data);
+        let source = { uri: response.uri };
+
+        // You can also display the image using data:
+        let imageData = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.setState({
+          postImage: source,
+          imageData: imageData
+        });
+      }
+    });
+  }
+
   render() {
-    let pic = {
-      uri: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRidbGxa6qg4mC_9xTZLv1CH50UXIrIXo3thtcetYB4AyyfYSWr'
-    }
+
+    var postImage = (() => {
+      if (this.state.postImage==null) return (
+        <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
+      )
+      else return (
+        <View style={testStyles.row}>
+          <Image source={this.state.postImage} style={testStyles.postImage}/>
+        </View>
+      )
+    })();
 
 
     return(
@@ -145,9 +229,7 @@ export default class teamB extends Component {
           </Text>
         </View>
         <View style={testStyles.postView}>
-          <View style={testStyles.row}>
-            <Image source={pic} style={testStyles.profilePicture}/>
-          </View>
+          {postImage}
           <TextInput
             style={testStyles.postInput}
             placeholder={this.state.identityId}
@@ -179,8 +261,8 @@ export default class teamB extends Component {
           onLogoutFinished={() => this.onLoginInvoked(false, "")}
         />
         <Button
-          onPress={getCredAndID.bind(this)}
-          title="Get Creds"
+          onPress={uploadPhoto.bind(this)}
+          title="Upload photo"
         />
         <TouchableOpacity
           style={testStyles.submitTouchable}
@@ -223,13 +305,11 @@ const testStyles = StyleSheet.create({
     backgroundColor: '#FDFDFD',
     flex: 3,
   },
-  profilePicture: {
-    height: 70,
-    width: 70,
-    margin: 20,
-    borderRadius: 35,
-    borderWidth: 4,
-    borderColor: '#97e1d0',
+  postImage: {
+    height: 180,
+    width: 370,
+    margin: 3,
+    borderRadius: 15
   },
   postInput: {
     flex: 1,
