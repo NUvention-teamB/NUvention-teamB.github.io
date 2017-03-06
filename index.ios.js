@@ -86,7 +86,7 @@ export default class teamB extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showCalendar: false
+      showCalendar: false,
       facebookToggle: true,
       instagramToggle: true,
       twitterToggle: false,
@@ -260,6 +260,7 @@ export default class teamB extends Component {
       uri: 'https://scontent.ford1-1.fna.fbcdn.net/v/t34.0-12/17141621_10203157166048001_1715642970_n.png?oh=c4e43cdcc948d5786c499f37780af7ef&oe=58BEBABB'
     }
 
+    
 
     return(
       <View style={testStyles.container}>
