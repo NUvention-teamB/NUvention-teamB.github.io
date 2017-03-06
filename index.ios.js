@@ -15,6 +15,7 @@ import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
 import { getPageID, getPageAccessToken, pagePost } from './lib/facebookAPI'
 import ImagePicker from 'react-native-image-picker'
 import { RNS3 } from 'react-native-aws3';
+import Calendar from 'react-native-calendar';
 
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
@@ -83,7 +84,9 @@ export default class teamB extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      showCalendar: false
+    }
     this.onLoginInvoked.bind(this);
     this.submitPost.bind(this);
 
@@ -205,6 +208,12 @@ export default class teamB extends Component {
     });
   }
 
+  openCalender() {
+    this.setState({
+      showCalendar: true
+    })
+  }
+
   render() {
 
     var postImage = (() => {
@@ -218,9 +227,32 @@ export default class teamB extends Component {
       )
     })();
 
+    var calendar = (() => {
+
+      if (this.state.showCalendar) return (
+        <Calendar
+          ref="calendar"
+          eventDates={['2016-07-03', '2016-07-05', '2016-07-28', '2016-07-30']}
+          events={[{date: '2016-07-04', hasEventCircle: {backgroundColor: 'powderblue'}}]}
+          scrollEnabled
+          showControls
+          titleFormat={'MMMM YYYY'}
+          prevButtonText={'Prev'}
+          nextButtonText={'Next'}
+          onDateSelect={(date) => this.setState({ selectedDate: date, showCalendar: false })}
+          onTouchPrev={(e) => console.log('onTouchPrev: ', e)}
+          onTouchNext={(e) => console.log('onTouchNext: ', e)}
+          onSwipePrev={(e) => console.log('onSwipePrev: ', e)}
+          onSwipeNext={(e) => console.log('onSwipeNext', e)}
+        />
+      )
+      else return null;
+    })();
+
 
     return(
       <View style={containerStyles}>
+        {calendar}
         <View style={testStyles.statusBar}>
         </View>
         <View style={testStyles.header}>
@@ -263,6 +295,11 @@ export default class teamB extends Component {
         <Button
           onPress={uploadPhoto.bind(this)}
           title="Upload photo"
+        />
+        <Text>Selected Date: {this.state.selectedDate}</Text>
+        <Button
+          onPress={this.openCalender.bind(this)}
+          title="Open Calendar"
         />
         <TouchableOpacity
           style={testStyles.submitTouchable}
