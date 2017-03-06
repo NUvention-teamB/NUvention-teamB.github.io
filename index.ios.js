@@ -21,6 +21,7 @@ import Calendar from 'react-native-calendar';
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
 var logins;
+var dateFormat = require('dateformat');
 
 async function getCredAndID() {
   if (logins==null) {
@@ -92,7 +93,8 @@ export default class teamB extends Component {
       twitterToggle: false,
       postTime: 'smart',
       green: '#97e1d0',
-      black: '#000000'
+      black: '#000000',
+      selectedDate: 'Today',
     }
     this.onLoginInvoked.bind(this);
     this.submitPost.bind(this);
@@ -215,9 +217,10 @@ export default class teamB extends Component {
     });
   }
 
-  openCalender() {
+  openCalendar() {
     this.setState({
-      showCalendar: true
+      showCalendar: true,
+      postTime:'later'
     })
   }
 
@@ -237,39 +240,26 @@ export default class teamB extends Component {
     var calendar = (() => {
 
       if (this.state.showCalendar) return (
-        <Calendar
-          ref="calendar"
-          eventDates={['2016-07-03', '2016-07-05', '2016-07-28', '2016-07-30']}
-          events={[{date: '2016-07-04', hasEventCircle: {backgroundColor: 'powderblue'}}]}
-          scrollEnabled
-          showControls
-          titleFormat={'MMMM YYYY'}
-          prevButtonText={'Prev'}
-          nextButtonText={'Next'}
-          onDateSelect={(date) => this.setState({ selectedDate: date, showCalendar: false })}
-          onTouchPrev={(e) => console.log('onTouchPrev: ', e)}
-          onTouchNext={(e) => console.log('onTouchNext: ', e)}
-          onSwipePrev={(e) => console.log('onSwipePrev: ', e)}
-          onSwipeNext={(e) => console.log('onSwipeNext', e)}
-        />
+        <View
+            flex={3}>
+          <Calendar
+            ref="calendar"
+            eventDates={['2016-07-03', '2016-07-05', '2016-07-28', '2016-07-30']}
+            events={[{date: '2016-07-04', hasEventCircle: {backgroundColor: 'powderblue'}}]}
+            scrollEnabled
+            showControls
+            titleFormat={'MMMM YYYY'}
+            prevButtonText={'Prev'}
+            nextButtonText={'Next'}
+            onDateSelect={(date) => this.setState({ selectedDate: dateFormat(date, 'm/d/yy'), showCalendar: false })}
+            onTouchPrev={(e) => console.log('onTouchPrev: ', e)}
+            onTouchNext={(e) => console.log('onTouchNext: ', e)}
+            onSwipePrev={(e) => console.log('onSwipePrev: ', e)}
+            onSwipeNext={(e) => console.log('onSwipeNext', e)}
+          />
+        </View>
       )
-      else return null;
-    })();
-
-    let logo = {
-      uri: 'https://scontent.ford1-1.fna.fbcdn.net/v/t34.0-12/17141621_10203157166048001_1715642970_n.png?oh=c4e43cdcc948d5786c499f37780af7ef&oe=58BEBABB'
-    }
-
-    
-
-    return(
-      <View style={testStyles.container}>
-        {calendar}
-        <View style={testStyles.statusBar}>
-        </View>
-        <View style={testStyles.header}>
-          <Image source={logo} style={testStyles.logo}/>
-        </View>
+      else return (
         <View style={testStyles.postView}>
           {postImage}
           <TextInput
@@ -277,13 +267,44 @@ export default class teamB extends Component {
             placeholder="Your Text Here"
             multiline={true}
             onChangeText={(text) => this.setState({text})}/>
-        </View>
-        <View>
+        </View>)
+    })();
 
+    let logo = {
+      uri: 'https://scontent-ord1-1.xx.fbcdn.net/v/t34.0-12/17198497_10203158694926222_604100444_n.png?oh=51e9ca9e171b2b29397803c3d238c26a&oe=58C093B2'
+    }
+
+    
+
+    return(
+      <View style={testStyles.container}>
+        <View style={testStyles.statusBar}>
+        </View>
+        <View style={testStyles.header}>
+          <View style={testStyles.setWidth}></View>
+          <Image source={logo} style={testStyles.logo}/>
+          <TouchableOpacity
+              onPress={this.submitPost.bind(this)}>
+            <View
+                style={testStyles.setWidth}>
+              <Text
+                  style={testStyles.postButton}>
+                Post
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {calendar}
+        <View
+            style={testStyles.captionSection}>
+          <Text
+              style={(this.state.postTime == 'smart' || this.state.postTime == 'later') ? testStyles.captionTextActive : testStyles.captionText}>
+            The best time to post is {this.state.selectedDate} at 6:13pm.
+          </Text>
         </View>
         <View style={testStyles.timeViewSection}>
           <TouchableOpacity
-              onPress={()=>{this.setState({postTime: 'now'}); console.log(this.state.postTime == 'now')}}>
+              onPress={()=>{this.setState({postTime: 'now', showCalendar: false}); console.log(this.state.postTime == 'now')}}>
             <View
                 style={(this.state.postTime == 'now') ? testStyles.timeViewActive : testStyles.timeView}>
               <Text
@@ -293,7 +314,7 @@ export default class teamB extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={()=>{this.setState({postTime: 'smart'}); console.log(this.state.postTime == 'now')}}>
+              onPress={()=>{this.setState({postTime: 'smart', showCalendar: false, selectedDate: 'Today'}); console.log(this.state.postTime == 'now')}}>
             <View
                 style={(this.state.postTime == 'smart') ? testStyles.timeViewActive : testStyles.timeView}>
               <Text
@@ -303,7 +324,7 @@ export default class teamB extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={()=>this.setState({postTime:'later'})}>
+              onPress={this.openCalendar.bind(this)}>
             <View
                 style={(this.state.postTime == 'later') ? testStyles.timeViewActive : testStyles.timeView}>
               <Text
@@ -348,44 +369,6 @@ export default class teamB extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <LoginButton
-          publishPermissions={['manage_pages','publish_pages', 'publish_actions']}
-          onLoginFinished={
-            (error, result) => {
-              if (error) {
-                alert("login has error: " + result.error);
-              } else if (result.isCancelled) {
-                alert("login is cancelled.");
-              } else {
-                AccessToken.getCurrentAccessToken().then(
-                  (data) => {
-                    this.onLoginInvoked(true, data.accessToken.toString());
-                  }
-                )
-              }
-            }
-          }
-          onLogoutFinished={() => this.onLoginInvoked(false, "")}
-        />
-        <Button
-          onPress={uploadPhoto.bind(this)}
-          title="Upload photo"
-        />
-        <Text>Selected Date: {this.state.selectedDate}</Text>
-        <Button
-          onPress={this.openCalender.bind(this)}
-          title="Open Calendar"
-        />
-        <TouchableOpacity
-          style={testStyles.submitTouchable}
-          onPress={this.submitPost.bind(this)}>
-          <View
-              style={testStyles.submitView}>
-            <Text style={testStyles.submitButton}>
-              Queue
-            </Text>
-          </View>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -401,9 +384,9 @@ const testStyles = StyleSheet.create({
   header: {
     height: 60,
     backgroundColor: '#97e1d0',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     borderColor: '#A6A6A6',
     borderStyle: 'solid',
     borderBottomWidth: 1,
@@ -411,9 +394,19 @@ const testStyles = StyleSheet.create({
     padding: 5,
   },
   logo: {
-    height: 50,
+    height: 60,
     width: 200,
-
+  },
+  setWidth: {
+    width: 60,
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  postButton: {
+    color: '#FFFFFF',
+    fontSize: 20,
   },
   headerText: {
     fontSize: 30,
@@ -433,6 +426,15 @@ const testStyles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     fontSize: 20,
+  },
+  captionSection: {
+    alignItems: 'center',
+  },
+  captionTextActive: {
+    color: '#ADADAD',
+  },
+  captionText: {
+    color: '#FFFFFF',
   },
   timeViewSection: {
     height: 40,
@@ -473,24 +475,6 @@ const testStyles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
   },
-  submitTouchable: {
-    height: 60,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    borderTopWidth: 1,
-    borderColor: '#A6A6A6'
-  },
-  submitView: {
-    margin: 10,
-    borderRadius: 1,
-    borderColor: '#000000'
-  },
-  submitButton: {
-    fontSize: 20,
-    color: '#97e1d0',
-    fontWeight: 'bold',
-  }
 });
 
 AppRegistry.registerComponent('teamB', () => teamB);
