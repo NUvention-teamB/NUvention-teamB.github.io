@@ -14,11 +14,12 @@ import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getPageID, getPageAccessToken, pagePost } from './lib/facebookAPI'
+import ImagePicker from 'react-native-image-picker'
+import { RNS3 } from 'react-native-aws3';
 
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
 var logins;
-var ReactDOM = require('react-dom');
 
 async function getCredAndID() {
   if (logins==null) {
@@ -32,15 +33,51 @@ async function getCredAndID() {
 
   try {
     var credentialsObj = await AWSCognitoCredentials.getCredentialsAsync();
+    console.log(credentialsObj);
     var identityIdObj = await AWSCognitoCredentials.getIdentityIDAsync();
     console.log('IDENTITY ID:', identityIdObj.identityId);
     this.setState({
+      AccessKey: credentialsObj.AccessKey,
+      SecretKey: credentialsObj.SecretKey,
       identityId: identityIdObj.identityId
     });
   }
   catch(err) {
     console.log("ERROR while getting credentials:", err);
   }
+}
+
+async function uploadPhoto() {
+  // if (this.state.imageData==null) {
+  //   console.log('Empty image');
+  //   return;
+  // }
+  // console.log('data:image/jpeg;base64,' + this.state.imageData.uri);
+
+  console.log(this.state.postImage.uri);
+  console.log(this.state.AccessKey);
+  console.log(this.state.SecretKey);
+
+  let file = {
+    // `uri` can also be a file system path (i.e. file://)
+    uri: this.state.postImage.uri,
+    name: "image.jpeg",
+    type: "image/jpeg"
+  }
+
+  let options = {
+    bucket: "teamb-photos",
+    region: "us-east-1",
+    accessKey: "AKIAJQIOU7GJXFIBMVXQ",
+    secretKey: "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",
+    successActionStatus: 201
+  }
+
+  RNS3.put(file, options).then(response => {
+    console.log(response);
+    if (response.status !== 201) throw new Error("Failed to upload image to S3");
+  });
+
 }
 
 export default class teamB extends Component {
@@ -78,7 +115,7 @@ export default class teamB extends Component {
       logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = fbTokenData.accessToken;
       console.log('here' +  logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]);
       // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
-      getCredAndID.call(this);
+      getCredAndID.call(that);
     }, function(err) {
       console.log('Error getting token:', err);
     });
@@ -138,14 +175,57 @@ export default class teamB extends Component {
     });
   }
 
-  toggle() {
+  addImage() {
 
+    var options = {
+      title: 'Add a photo for your post',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      // console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        // console.log('IMAGE DATA:')
+        // console.log(response.data);
+        let source = { uri: response.uri };
+
+        // You can also display the image using data:
+        let imageData = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.setState({
+          postImage: source,
+          imageData: imageData
+        });
+      }
+    });
   }
 
   render() {
-    let profilePicture = {
-      uri: 'https://scontent.ford1-1.fna.fbcdn.net/v/t34.0-12/17028649_10203143574948232_433377245_n.png?oh=3eeef03751e683e3ac1a81ee8ddb444d&oe=58BFAE51'
-    }
+
+    var postImage = (() => {
+      if (this.state.postImage==null) return (
+        <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
+      )
+      else return (
+        <View style={testStyles.row}>
+          <Image source={this.state.postImage} style={testStyles.postImage}/>
+        </View>
+      )
+    })();
+
     let logo = {
       uri: 'https://scontent.ford1-1.fna.fbcdn.net/v/t34.0-12/17141621_10203157166048001_1715642970_n.png?oh=c4e43cdcc948d5786c499f37780af7ef&oe=58BEBABB'
     }
@@ -159,21 +239,23 @@ export default class teamB extends Component {
           <Image source={logo} style={testStyles.logo}/>
         </View>
         <View style={testStyles.postView}>
-          <View style={testStyles.row}>
-            <Image source={profilePicture} style={testStyles.profilePicture}/>
-          </View>
+          {postImage}
           <TextInput
             style={testStyles.postInput}
-            placeholder={this.state.identityId}
+            placeholder="Your Text Here"
             multiline={true}
             onChangeText={(text) => this.setState({text})}/>
+        </View>
+        <View>
+
         </View>
         <View style={testStyles.timeViewSection}>
           <TouchableOpacity
               onPress={()=>{this.setState({postTime: 'now'}); console.log(this.state.postTime == 'now')}}>
             <View
                 style={(this.state.postTime == 'now') ? testStyles.timeViewActive : testStyles.timeView}>
-              <Text>
+              <Text
+                  style={(this.state.postTime == 'now') ? testStyles.timeTextActive : testStyles.timeText}>
                 Post Now
               </Text>
             </View>
@@ -182,7 +264,8 @@ export default class teamB extends Component {
               onPress={()=>{this.setState({postTime: 'smart'}); console.log(this.state.postTime == 'now')}}>
             <View
                 style={(this.state.postTime == 'smart') ? testStyles.timeViewActive : testStyles.timeView}>
-              <Text>
+              <Text
+                  style={(this.state.postTime == 'smart') ? testStyles.timeTextActive : testStyles.timeText}>
                 Smart Post
               </Text>
             </View>
@@ -191,7 +274,8 @@ export default class teamB extends Component {
               onPress={()=>this.setState({postTime:'later'})}>
             <View
                 style={(this.state.postTime == 'later') ? testStyles.timeViewActive : testStyles.timeView}>
-              <Text>
+              <Text
+                  style={(this.state.postTime == 'later') ? testStyles.timeTextActive : testStyles.timeText}>
                 Post Later
               </Text>
             </View>
@@ -278,20 +362,17 @@ const testStyles = StyleSheet.create({
     backgroundColor: '#FDFDFD',
     flex: 3,
   },
-  profilePicture: {
-    height: 70,
-    width: 70,
-    margin: 20,
-    borderRadius: 35,
-    borderWidth: 2,
-    borderColor: '#97e1d0',
+  postImage: {
+    height: 180,
+    width: 370,
+    margin: 3,
+    borderRadius: 15
   },
   postInput: {
     flex: 1,
     marginLeft: 20,
     marginRight: 20,
-    borderRadius: 20,
-    fontSize: 20
+    fontSize: 20,
   },
   timeViewSection: {
     height: 40,
@@ -304,15 +385,19 @@ const testStyles = StyleSheet.create({
     width: 100,
     padding: 10,
     borderRadius: 10,
-    borderColor: '#97e1d0',
-  },
+  }, 
   timeViewActive: {
     borderWidth: 1,
     width: 100,
     padding: 10,
     borderRadius: 10,
-    borderColor: '#97e1d0',
-    backgroundColor: '#CCCCCC'
+    backgroundColor: '#97e1d0'
+  },
+  timeText: {
+
+  },
+  timeTextActive: {
+    color: '#FFFFFF'
   },
   socialView: {
     height: 60,
@@ -330,14 +415,11 @@ const testStyles = StyleSheet.create({
   },
   submitTouchable: {
     height: 60,
-    backgroundColor: '#DDDDDD',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    margin: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#97e1d0'
+    borderTopWidth: 1,
+    borderColor: '#A6A6A6'
   },
   submitView: {
     margin: 10,
