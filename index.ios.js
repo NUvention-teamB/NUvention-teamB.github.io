@@ -12,11 +12,13 @@ import {
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { getPageID, getPageAccessToken, pagePost } from './lib/facebookAPI'
 
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
 var logins;
+var ReactDOM = require('react-dom');
 
 async function getCredAndID() {
   if (logins==null) {
@@ -45,7 +47,14 @@ export default class teamB extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      facebookToggle: true,
+      instagramToggle: true,
+      twitterToggle: false,
+      postTime: 'smart',
+      green: '#97e1d0',
+      black: '#000000',
+    }
     this.onLoginInvoked.bind(this);
     this.submitPost.bind(this);
 
@@ -129,24 +138,29 @@ export default class teamB extends Component {
     });
   }
 
+  toggle() {
+
+  }
+
   render() {
-    let pic = {
-      uri: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRidbGxa6qg4mC_9xTZLv1CH50UXIrIXo3thtcetYB4AyyfYSWr'
+    let profilePicture = {
+      uri: 'https://scontent.ford1-1.fna.fbcdn.net/v/t34.0-12/17028649_10203143574948232_433377245_n.png?oh=3eeef03751e683e3ac1a81ee8ddb444d&oe=58BFAE51'
+    }
+    let logo = {
+      uri: 'https://scontent.ford1-1.fna.fbcdn.net/v/t34.0-12/17141621_10203157166048001_1715642970_n.png?oh=c4e43cdcc948d5786c499f37780af7ef&oe=58BEBABB'
     }
 
 
     return(
-      <View style={containerStyles}>
+      <View style={testStyles.container}>
         <View style={testStyles.statusBar}>
         </View>
         <View style={testStyles.header}>
-          <Text style={testStyles.headerText}>
-            Posting
-          </Text>
+          <Image source={logo} style={testStyles.logo}/>
         </View>
         <View style={testStyles.postView}>
           <View style={testStyles.row}>
-            <Image source={pic} style={testStyles.profilePicture}/>
+            <Image source={profilePicture} style={testStyles.profilePicture}/>
           </View>
           <TextInput
             style={testStyles.postInput}
@@ -154,40 +168,77 @@ export default class teamB extends Component {
             multiline={true}
             onChangeText={(text) => this.setState({text})}/>
         </View>
-        <View style={testStyles.socialView}>
-          <Text>
-            Social Media Channels
-          </Text>
+        <View style={testStyles.timeViewSection}>
+          <TouchableOpacity
+              onPress={()=>{this.setState({postTime: 'now'}); console.log(this.state.postTime == 'now')}}>
+            <View
+                style={(this.state.postTime == 'now') ? testStyles.timeViewActive : testStyles.timeView}>
+              <Text>
+                Post Now
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+              onPress={()=>{this.setState({postTime: 'smart'}); console.log(this.state.postTime == 'now')}}>
+            <View
+                style={(this.state.postTime == 'smart') ? testStyles.timeViewActive : testStyles.timeView}>
+              <Text>
+                Smart Post
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+              onPress={()=>this.setState({postTime:'later'})}>
+            <View
+                style={(this.state.postTime == 'later') ? testStyles.timeViewActive : testStyles.timeView}>
+              <Text>
+                Post Later
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
-        <LoginButton
-          publishPermissions={['manage_pages','publish_pages', 'publish_actions']}
-          onLoginFinished={
-            (error, result) => {
-              if (error) {
-                alert("login has error: " + result.error);
-              } else if (result.isCancelled) {
-                alert("login is cancelled.");
-              } else {
-                AccessToken.getCurrentAccessToken().then(
-                  (data) => {
-                    this.onLoginInvoked(true, data.accessToken.toString());
-                  }
-                )
-              }
-            }
-          }
-          onLogoutFinished={() => this.onLoginInvoked(false, "")}
-        />
-        <Button
-          onPress={getCredAndID.bind(this)}
-          title="Get Creds"
-        />
+        <View style={testStyles.socialView}>
+          <TouchableOpacity
+              onPress={()=>{this.setState({facebookToggle: !this.state.facebookToggle});}}>
+            <View 
+                style={testStyles.socialMediaToggles}
+                borderColor={this.state.facebookToggle ? this.state.green : this.state.black}>
+              <Icon 
+                  color={this.state.facebookToggle ? this.state.green : this.state.black}
+                  size={ 30 }
+                  name="facebook"/>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+              onPress={()=>{this.setState({instagramToggle: !this.state.instagramToggle});}}>
+            <View 
+                style={testStyles.socialMediaToggles}
+                borderColor={this.state.instagramToggle ? this.state.green : this.state.black}>
+              <Icon 
+                  color={this.state.instagramToggle ? this.state.green : this.state.black}
+                  size={ 30 }
+                  name="instagram"/>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+              onPress={()=>{this.setState({twitterToggle: !this.state.twitterToggle});}}>
+            <View 
+                style={testStyles.socialMediaToggles}
+                borderColor={this.state.twitterToggle ? this.state.green : this.state.black}>
+              <Icon 
+                  color={this.state.twitterToggle ? this.state.green : this.state.black}
+                  size={ 30 }
+                  name="twitter"/>
+            </View>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity
           style={testStyles.submitTouchable}
           onPress={this.submitPost.bind(this)}>
-          <View>
+          <View
+              style={testStyles.submitView}>
             <Text style={testStyles.submitButton}>
-              Post Now
+              Queue
             </Text>
           </View>
         </TouchableOpacity>
@@ -196,11 +247,10 @@ export default class teamB extends Component {
   }
 }
 
-const containerStyles = StyleSheet.create({
-  flex: 1
-})
-
 const testStyles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   statusBar: {
     height:20,
   },
@@ -216,6 +266,11 @@ const testStyles = StyleSheet.create({
     borderTopWidth: 1,
     padding: 5,
   },
+  logo: {
+    height: 50,
+    width: 200,
+
+  },
   headerText: {
     fontSize: 30,
   },
@@ -228,7 +283,7 @@ const testStyles = StyleSheet.create({
     width: 70,
     margin: 20,
     borderRadius: 35,
-    borderWidth: 4,
+    borderWidth: 2,
     borderColor: '#97e1d0',
   },
   postInput: {
@@ -238,25 +293,85 @@ const testStyles = StyleSheet.create({
     borderRadius: 20,
     fontSize: 20
   },
+  timeViewSection: {
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 10,
+  },
+  timeView: {
+    borderWidth: 1,
+    width: 100,
+    padding: 10,
+    borderRadius: 10,
+    borderColor: '#97e1d0',
+  },
+  timeViewActive: {
+    borderWidth: 1,
+    width: 100,
+    padding: 10,
+    borderRadius: 10,
+    borderColor: '#97e1d0',
+    backgroundColor: '#CCCCCC'
+  },
   socialView: {
-    flex: 1,
-    backgroundColor: 'steelblue'
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  socialMediaToggles: {
+    padding: 10,
+    width: 50,
+    margin: 10,
+    borderRadius: 30,
+    borderWidth: 1,
+    alignItems: 'center',
   },
   submitTouchable: {
     height: 60,
-    backgroundColor: '#FDFDFD',
+    backgroundColor: '#DDDDDD',
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    margin: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#97e1d0'
+  },
+  submitView: {
+    margin: 10,
+    borderRadius: 1,
+    borderColor: '#000000'
   },
   submitButton: {
-    fontSize: 30,
+    fontSize: 20,
+    color: '#97e1d0',
+    fontWeight: 'bold',
   }
 });
 
 AppRegistry.registerComponent('teamB', () => teamB);
 
-
+// <LoginButton
+//   publishPermissions={['manage_pages','publish_pages', 'publish_actions']}
+//   onLoginFinished={
+//     (error, result) => {
+//       if (error) {
+//         alert("login has error: " + result.error);
+//       } else if (result.isCancelled) {
+//         alert("login is cancelled.");
+//       } else {
+//         AccessToken.getCurrentAccessToken().then(
+//           (data) => {
+//             this.onLoginInvoked(true, data.accessToken.toString());
+//           }
+//         )
+//       }
+//     }
+//   }
+//   onLogoutFinished={() => this.onLoginInvoked(false, "")}
+// />
 // var fakeItem = {
 //   id: { S: Date.now().toString() },
 //   text: { S: this.state.text }
