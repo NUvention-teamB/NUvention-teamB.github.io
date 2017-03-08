@@ -34,3 +34,8 @@ To log app output for detailed information and debugging, run:
 ```
 react-native log-ios
 ```
+
+# Contact information
+If you run into any issues, please contact one of the following developers:
+dinomujkic2017@u.northwestern.edu
+christopherli2017@u.northwestern.edu
