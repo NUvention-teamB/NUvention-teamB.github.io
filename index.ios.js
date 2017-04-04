@@ -13,10 +13,11 @@ import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { getPageID, getPageAccessToken, pagePost } from './lib/facebookAPI'
 import ImagePicker from 'react-native-image-picker'
 import { RNS3 } from 'react-native-aws3';
-import Calendar from 'react-native-calendar';
+import { getPageID, getPageAccessToken, pagePost } from './lib/FacebookAPI'
+import { EventCreationCalendar } from './lib/Calendar'
+import { PostImage } from './lib/PostImage'
 
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
@@ -225,90 +226,58 @@ export default class teamB extends Component {
   }
 
   render() {
+    let logo = {
+      uri: 'https://scontent-ord1-1.xx.fbcdn.net/v/t34.0-12/17198497_10203158694926222_604100444_n.png?oh=51e9ca9e171b2b29397803c3d238c26a&oe=58C093B2'
+    }
 
-    var postImage = (() => {
-      if (this.state.postImage==null) return (
-        <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
-      )
-      else return (
-        <View style={testStyles.row}>
-          <Image source={this.state.postImage} style={testStyles.postImage}/>
-        </View>
-      )
-    })();
-
-    var calendar = (() => {
-
+    var postPart = (() => {
       if (this.state.showCalendar) return (
-        <View
-            flex={3}>
-          <Calendar
-            ref="calendar"
-            eventDates={['2016-07-03', '2016-07-05', '2016-07-28', '2016-07-30']}
-            events={[{date: '2016-07-04', hasEventCircle: {backgroundColor: 'powderblue'}}]}
-            scrollEnabled
-            showControls
-            titleFormat={'MMMM YYYY'}
-            prevButtonText={'Prev'}
-            nextButtonText={'Next'}
-            onDateSelect={(date) => this.setState({ selectedDate: dateFormat(date, 'm/d/yy'), showCalendar: false })}
-            onTouchPrev={(e) => console.log('onTouchPrev: ', e)}
-            onTouchNext={(e) => console.log('onTouchNext: ', e)}
-            onSwipePrev={(e) => console.log('onSwipePrev: ', e)}
-            onSwipeNext={(e) => console.log('onSwipeNext', e)}
-          />
-        </View>
+        <EventCreationCalendar showCalendar={this.state.showCalendar}/>
       )
       else return (
-        <View style={testStyles.postView}>
-          {postImage}
+        <View style={styles.postView}>
+          {PostImage}
           <TextInput
-            style={testStyles.postInput}
+            style={styles.postInput}
             placeholder="Your Text Here"
             multiline={true}
             onChangeText={(text) => this.setState({text})}/>
         </View>)
     })();
 
-    let logo = {
-      uri: 'https://scontent-ord1-1.xx.fbcdn.net/v/t34.0-12/17198497_10203158694926222_604100444_n.png?oh=51e9ca9e171b2b29397803c3d238c26a&oe=58C093B2'
-    }
-
-    
-
     return(
-      <View style={testStyles.container}>
-        <View style={testStyles.statusBar}>
+      <View style={styles.container}>
+        <View style={styles.statusBar}>
         </View>
-        <View style={testStyles.header}>
-          <View style={testStyles.setWidth}></View>
-          <Image source={logo} style={testStyles.logo}/>
+        <View style={styles.header}>
+          <View style={styles.setWidth}></View>
+          <Image source={logo} style={styles.logo}/>
           <TouchableOpacity
               onPress={this.submitPost.bind(this)}>
             <View
-                style={testStyles.setWidth}>
+                style={styles.setWidth}>
               <Text
-                  style={testStyles.postButton}>
+                  style={styles.postButton}>
                 Post
               </Text>
             </View>
           </TouchableOpacity>
         </View>
-        {calendar}
+          {postPart}
         <View
-            style={testStyles.captionSection}>
+            style={styles.captionSection}>
           <Text
-              style={(this.state.postTime == 'smart' || this.state.postTime == 'later') ? testStyles.captionTextActive : testStyles.captionText}>
+              style={(this.state.postTime == 'smart' || this.state.postTime == 'later') ? styles.captionTextActive : styles.captionText}>
             The best time to post is {this.state.selectedDate} at 6:13pm.
           </Text>
         </View>
-        <View style={testStyles.timeViewSection}>
+        <View style={styles.timeViewSection}>
           <TouchableOpacity
               onPress={()=>{this.setState({postTime: 'now', showCalendar: false}); console.log(this.state.postTime == 'now')}}>
             <View
-                style={(this.state.postTime == 'now') ? testStyles.timeViewActive : testStyles.timeView}>
+                style={(this.state.postTime == 'now') ? styles.timeViewActive : styles.timeView}>
               <Text
-                  style={(this.state.postTime == 'now') ? testStyles.timeTextActive : testStyles.timeText}>
+                  style={(this.state.postTime == 'now') ? styles.timeTextActive : styles.timeText}>
                 Post Now
               </Text>
             </View>
@@ -316,9 +285,9 @@ export default class teamB extends Component {
           <TouchableOpacity
               onPress={()=>{this.setState({postTime: 'smart', showCalendar: false, selectedDate: 'Today'}); console.log(this.state.postTime == 'now')}}>
             <View
-                style={(this.state.postTime == 'smart') ? testStyles.timeViewActive : testStyles.timeView}>
+                style={(this.state.postTime == 'smart') ? styles.timeViewActive : styles.timeView}>
               <Text
-                  style={(this.state.postTime == 'smart') ? testStyles.timeTextActive : testStyles.timeText}>
+                  style={(this.state.postTime == 'smart') ? styles.timeTextActive : styles.timeText}>
                 Smart Post
               </Text>
             </View>
@@ -326,19 +295,19 @@ export default class teamB extends Component {
           <TouchableOpacity
               onPress={this.openCalendar.bind(this)}>
             <View
-                style={(this.state.postTime == 'later') ? testStyles.timeViewActive : testStyles.timeView}>
+                style={(this.state.postTime == 'later') ? styles.timeViewActive : styles.timeView}>
               <Text
-                  style={(this.state.postTime == 'later') ? testStyles.timeTextActive : testStyles.timeText}>
+                  style={(this.state.postTime == 'later') ? styles.timeTextActive : styles.timeText}>
                 Post Later
               </Text>
             </View>
           </TouchableOpacity>
         </View>
-        <View style={testStyles.socialView}>
+        <View style={styles.socialView}>
           <TouchableOpacity
               onPress={()=>{this.setState({facebookToggle: !this.state.facebookToggle});}}>
             <View
-                style={testStyles.socialMediaToggles}
+                style={styles.socialMediaToggles}
                 borderColor={this.state.facebookToggle ? this.state.green : this.state.black}>
               <Icon
                   color={this.state.facebookToggle ? this.state.green : this.state.black}
@@ -349,7 +318,7 @@ export default class teamB extends Component {
           <TouchableOpacity
               onPress={()=>{this.setState({instagramToggle: !this.state.instagramToggle});}}>
             <View
-                style={testStyles.socialMediaToggles}
+                style={styles.socialMediaToggles}
                 borderColor={this.state.instagramToggle ? this.state.green : this.state.black}>
               <Icon
                   color={this.state.instagramToggle ? this.state.green : this.state.black}
@@ -360,7 +329,7 @@ export default class teamB extends Component {
           <TouchableOpacity
               onPress={()=>{this.setState({twitterToggle: !this.state.twitterToggle});}}>
             <View
-                style={testStyles.socialMediaToggles}
+                style={styles.socialMediaToggles}
                 borderColor={this.state.twitterToggle ? this.state.green : this.state.black}>
               <Icon
                   color={this.state.twitterToggle ? this.state.green : this.state.black}
@@ -374,7 +343,7 @@ export default class teamB extends Component {
   }
 }
 
-const testStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1
   },
@@ -408,24 +377,18 @@ const testStyles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 20,
   },
-  headerText: {
-    fontSize: 30,
-  },
   postView: {
     backgroundColor: '#FDFDFD',
     flex: 3,
-  },
-  postImage: {
-    height: 180,
-    width: 370,
-    margin: 3,
-    borderRadius: 15
   },
   postInput: {
     flex: 1,
     marginLeft: 20,
     marginRight: 20,
     fontSize: 20,
+  },
+  headerText: {
+    fontSize: 30,
   },
   captionSection: {
     alignItems: 'center',
@@ -454,9 +417,6 @@ const testStyles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: '#97e1d0'
-  },
-  timeText: {
-
   },
   timeTextActive: {
     color: '#FFFFFF'
