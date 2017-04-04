@@ -510,3 +510,4 @@ AppRegistry.registerComponent('teamB', () => teamB);
 //   if (err) console.log("Error:", err);
 //   else console.log(data);
 // });
+
