@@ -7,7 +7,8 @@ import {
   Button,
   Image,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  NavigatorIOS
 } from 'react-native';
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
@@ -18,70 +19,47 @@ import { RNS3 } from 'react-native-aws3';
 import { getPageID, getPageAccessToken, pagePost } from './lib/FacebookAPI'
 import { EventCreationCalendar } from './lib/Calendar'
 import { PostImage } from './lib/PostImage'
+import Login from './src/Login'
+import {Scene, Router} from 'react-native-router-flux';
+
 
 var region = "us-east-1";
 var identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
-var logins;
+var logins = null;
 var dateFormat = require('dateformat');
 
-async function getCredAndID() {
-  if (logins==null) {
-    console.log('Unable to retrieve credentials since no logins data is provided...');
-    AWSCognitoCredentials.clearCredentials();
-    this.setState({
-      identityId: null
-    });
-    return;
-  }
-
-  try {
-    var credentialsObj = await AWSCognitoCredentials.getCredentialsAsync();
-    console.log(credentialsObj);
-    var identityIdObj = await AWSCognitoCredentials.getIdentityIDAsync();
-    console.log('IDENTITY ID:', identityIdObj.identityId);
-    this.setState({
-      AccessKey: credentialsObj.AccessKey,
-      SecretKey: credentialsObj.SecretKey,
-      identityId: identityIdObj.identityId
-    });
-  }
-  catch(err) {
-    console.log("ERROR while getting credentials:", err);
-  }
-}
-
-async function uploadPhoto() {
-  // if (this.state.imageData==null) {
-  //   console.log('Empty image');
-  //   return;
-  // }
-  // console.log('data:image/jpeg;base64,' + this.state.imageData.uri);
-
-  console.log(this.state.postImage.uri);
-  console.log(this.state.AccessKey);
-  console.log(this.state.SecretKey);
-
-  let file = {
-    // `uri` can also be a file system path (i.e. file://)
-    uri: this.state.postImage.uri,
-    name: "image.jpeg",
-    type: "image/jpeg"
-  }
-
-  let options = {
-    bucket: "teamb-photos",
-    region: "us-east-1",
-    accessKey: "AKIAJQIOU7GJXFIBMVXQ",
-    secretKey: "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",
-    successActionStatus: 201
-  }
-
-  RNS3.put(file, options).then(response => {
-    console.log(response);
-    if (response.status !== 201) throw new Error("Failed to upload image to S3");
-  });
-
-}
+// async function uploadPhoto() {
+//   // if (this.state.imageData==null) {
+//   //   console.log('Empty image');
+//   //   return;
+//   // }
+//   // console.log('data:image/jpeg;base64,' + this.state.imageData.uri);
+//
+//   console.log(this.state.postImage.uri);
+//   console.log(this.state.AccessKey);
+//   console.log(this.state.SecretKey);
+//
+//   let file = {
+//     // `uri` can also be a file system path (i.e. file://)
+//     uri: this.state.postImage.uri,
+//     name: "image.jpeg",
+//     type: "image/jpeg"
+//   }
+//
+//   let options = {
+//     bucket: "teamb-photos",
+//     region: "us-east-1",
+//     accessKey: "AKIAJQIOU7GJXFIBMVXQ",
+//     secretKey: "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",
+//     successActionStatus: 201
+//   }
+//
+//   RNS3.put(file, options).then(response => {
+//     console.log(response);
+//     if (response.status !== 201) throw new Error("Failed to upload image to S3");
+//   });
+//
+// }
 
 export default class teamB extends Component {
 
@@ -97,54 +75,13 @@ export default class teamB extends Component {
       black: '#000000',
       selectedDate: 'Today',
     }
-    this.onLoginInvoked.bind(this);
-    this.submitPost.bind(this);
+    // this.onLoginInvoked.bind(this);
+    // this.submitPost.bind(this);
 
     AWSCognitoCredentials.initWithOptions({"region": region, "identity_pool_id": identity_pool_id});
     AWSCognitoCredentials.clearCredentials();
 
     AWSDynamoDB.initWithOptions({"region": region});
-
-    AWSCognitoCredentials.getLogins = function(){
-      if (logins==null) return "";
-      console.log('Logins', logins);
-      return logins;
-    };
-
-    var that = this;
-    AccessToken.getCurrentAccessToken()
-    .then(function(fbTokenData) {
-      if (fbTokenData==null) return;
-      console.log('fbTokenData:', fbTokenData);
-      logins = {};
-      logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = fbTokenData.accessToken;
-      console.log('here' +  logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]);
-      // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
-      getCredAndID.call(that);
-    }, function(err) {
-      console.log('Error getting token:', err);
-    });
-  }
-
-  setAWSCognitoCredential(token){
-    logins = {};
-    logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = token;
-    // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
-    getCredAndID.call(this);
-  }
-
-  onLoginInvoked(isLoggingIn, fbToken){
-    console.log('isLoggingIn:', isLoggingIn);
-    console.log('Accesstoken:', fbToken);
-
-    if (isLoggingIn) {
-      // Why can't i run "setAWSCognitoCredential(fbToken)" here?
-      this.setAWSCognitoCredential(fbToken);
-    }
-    else {
-      logins = null;
-      getCredAndID.call(this);
-    }
   }
 
   async submitPost() {
@@ -226,120 +163,129 @@ export default class teamB extends Component {
   }
 
   render() {
-    let logo = {
-      uri: 'https://scontent-ord1-1.xx.fbcdn.net/v/t34.0-12/17198497_10203158694926222_604100444_n.png?oh=51e9ca9e171b2b29397803c3d238c26a&oe=58C093B2'
-    }
-
-    var postPart = (() => {
-      if (this.state.showCalendar) return (
-        <EventCreationCalendar showCalendar={this.state.showCalendar}/>
-      )
-      else return (
-        <View style={styles.postView}>
-          {PostImage}
-          <TextInput
-            style={styles.postInput}
-            placeholder="Your Text Here"
-            multiline={true}
-            onChangeText={(text) => this.setState({text})}/>
-        </View>)
-    })();
-
-    return(
-      <View style={styles.container}>
-        <View style={styles.statusBar}>
-        </View>
-        <View style={styles.header}>
-          <View style={styles.setWidth}></View>
-          <Image source={logo} style={styles.logo}/>
-          <TouchableOpacity
-              onPress={this.submitPost.bind(this)}>
-            <View
-                style={styles.setWidth}>
-              <Text
-                  style={styles.postButton}>
-                Post
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-          {postPart}
-        <View
-            style={styles.captionSection}>
-          <Text
-              style={(this.state.postTime == 'smart' || this.state.postTime == 'later') ? styles.captionTextActive : styles.captionText}>
-            The best time to post is {this.state.selectedDate} at 6:13pm.
-          </Text>
-        </View>
-        <View style={styles.timeViewSection}>
-          <TouchableOpacity
-              onPress={()=>{this.setState({postTime: 'now', showCalendar: false}); console.log(this.state.postTime == 'now')}}>
-            <View
-                style={(this.state.postTime == 'now') ? styles.timeViewActive : styles.timeView}>
-              <Text
-                  style={(this.state.postTime == 'now') ? styles.timeTextActive : styles.timeText}>
-                Post Now
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-              onPress={()=>{this.setState({postTime: 'smart', showCalendar: false, selectedDate: 'Today'}); console.log(this.state.postTime == 'now')}}>
-            <View
-                style={(this.state.postTime == 'smart') ? styles.timeViewActive : styles.timeView}>
-              <Text
-                  style={(this.state.postTime == 'smart') ? styles.timeTextActive : styles.timeText}>
-                Smart Post
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-              onPress={this.openCalendar.bind(this)}>
-            <View
-                style={(this.state.postTime == 'later') ? styles.timeViewActive : styles.timeView}>
-              <Text
-                  style={(this.state.postTime == 'later') ? styles.timeTextActive : styles.timeText}>
-                Post Later
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.socialView}>
-          <TouchableOpacity
-              onPress={()=>{this.setState({facebookToggle: !this.state.facebookToggle});}}>
-            <View
-                style={styles.socialMediaToggles}
-                borderColor={this.state.facebookToggle ? this.state.green : this.state.black}>
-              <Icon
-                  color={this.state.facebookToggle ? this.state.green : this.state.black}
-                  size={ 30 }
-                  name="facebook"/>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-              onPress={()=>{this.setState({instagramToggle: !this.state.instagramToggle});}}>
-            <View
-                style={styles.socialMediaToggles}
-                borderColor={this.state.instagramToggle ? this.state.green : this.state.black}>
-              <Icon
-                  color={this.state.instagramToggle ? this.state.green : this.state.black}
-                  size={ 30 }
-                  name="instagram"/>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-              onPress={()=>{this.setState({twitterToggle: !this.state.twitterToggle});}}>
-            <View
-                style={styles.socialMediaToggles}
-                borderColor={this.state.twitterToggle ? this.state.green : this.state.black}>
-              <Icon
-                  color={this.state.twitterToggle ? this.state.green : this.state.black}
-                  size={ 30 }
-                  name="twitter"/>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
+    return (
+      <Router>
+        <Scene key="root">
+          <Scene key="login" component={Login} title="Login"/>
+          {/* <Scene key="register" component={Register} title="Register"/>
+          <Scene key="home" component={Home}/> */}
+        </Scene>
+      </Router>
+    )
+    // let logo = {
+    //   uri: 'https://scontent-ord1-1.xx.fbcdn.net/v/t34.0-12/17198497_10203158694926222_604100444_n.png?oh=51e9ca9e171b2b29397803c3d238c26a&oe=58C093B2'
+    // }
+    //
+    // var postPart = (() => {
+    //   if (this.state.showCalendar) return (
+    //     <EventCreationCalendar showCalendar={this.state.showCalendar}/>
+    //   )
+    //   else return (
+    //     <View style={styles.postView}>
+    //       {PostImage}
+    //       <TextInput
+    //         style={styles.postInput}
+    //         placeholder="Your Text Here"
+    //         multiline={true}
+    //         onChangeText={(text) => this.setState({text})}/>
+    //     </View>)
+    // })();
+    //
+    // return(
+    //   <View style={styles.container}>
+    //     <View style={styles.statusBar}>
+    //     </View>
+    //     <View style={styles.header}>
+    //       <View style={styles.setWidth}></View>
+    //       <Image source={logo} style={styles.logo}/>
+    //       <TouchableOpacity
+    //           onPress={this.submitPost.bind(this)}>
+    //         <View
+    //             style={styles.setWidth}>
+    //           <Text
+    //               style={styles.postButton}>
+    //             Post
+    //           </Text>
+    //         </View>
+    //       </TouchableOpacity>
+    //     </View>
+    //       {postPart}
+    //     <View
+    //         style={styles.captionSection}>
+    //       <Text
+    //           style={(this.state.postTime == 'smart' || this.state.postTime == 'later') ? styles.captionTextActive : styles.captionText}>
+    //         The best time to post is {this.state.selectedDate} at 6:13pm.
+    //       </Text>
+    //     </View>
+    //     <View style={styles.timeViewSection}>
+    //       <TouchableOpacity
+    //           onPress={()=>{this.setState({postTime: 'now', showCalendar: false}); console.log(this.state.postTime == 'now')}}>
+    //         <View
+    //             style={(this.state.postTime == 'now') ? styles.timeViewActive : styles.timeView}>
+    //           <Text
+    //               style={(this.state.postTime == 'now') ? styles.timeTextActive : styles.timeText}>
+    //             Post Now
+    //           </Text>
+    //         </View>
+    //       </TouchableOpacity>
+    //       <TouchableOpacity
+    //           onPress={()=>{this.setState({postTime: 'smart', showCalendar: false, selectedDate: 'Today'}); console.log(this.state.postTime == 'now')}}>
+    //         <View
+    //             style={(this.state.postTime == 'smart') ? styles.timeViewActive : styles.timeView}>
+    //           <Text
+    //               style={(this.state.postTime == 'smart') ? styles.timeTextActive : styles.timeText}>
+    //             Smart Post
+    //           </Text>
+    //         </View>
+    //       </TouchableOpacity>
+    //       <TouchableOpacity
+    //           onPress={this.openCalendar.bind(this)}>
+    //         <View
+    //             style={(this.state.postTime == 'later') ? styles.timeViewActive : styles.timeView}>
+    //           <Text
+    //               style={(this.state.postTime == 'later') ? styles.timeTextActive : styles.timeText}>
+    //             Post Later
+    //           </Text>
+    //         </View>
+    //       </TouchableOpacity>
+    //     </View>
+    //     <View style={styles.socialView}>
+    //       <TouchableOpacity
+    //           onPress={()=>{this.setState({facebookToggle: !this.state.facebookToggle});}}>
+    //         <View
+    //             style={styles.socialMediaToggles}
+    //             borderColor={this.state.facebookToggle ? this.state.green : this.state.black}>
+    //           <Icon
+    //               color={this.state.facebookToggle ? this.state.green : this.state.black}
+    //               size={ 30 }
+    //               name="facebook"/>
+    //         </View>
+    //       </TouchableOpacity>
+    //       <TouchableOpacity
+    //           onPress={()=>{this.setState({instagramToggle: !this.state.instagramToggle});}}>
+    //         <View
+    //             style={styles.socialMediaToggles}
+    //             borderColor={this.state.instagramToggle ? this.state.green : this.state.black}>
+    //           <Icon
+    //               color={this.state.instagramToggle ? this.state.green : this.state.black}
+    //               size={ 30 }
+    //               name="instagram"/>
+    //         </View>
+    //       </TouchableOpacity>
+    //       <TouchableOpacity
+    //           onPress={()=>{this.setState({twitterToggle: !this.state.twitterToggle});}}>
+    //         <View
+    //             style={styles.socialMediaToggles}
+    //             borderColor={this.state.twitterToggle ? this.state.green : this.state.black}>
+    //           <Icon
+    //               color={this.state.twitterToggle ? this.state.green : this.state.black}
+    //               size={ 30 }
+    //               name="twitter"/>
+    //         </View>
+    //       </TouchableOpacity>
+    //     </View>
+    //   </View>
+    // );
   }
 }
 
@@ -439,25 +385,25 @@ const styles = StyleSheet.create({
 
 AppRegistry.registerComponent('teamB', () => teamB);
 
-// <LoginButton
-//   publishPermissions={['manage_pages','publish_pages', 'publish_actions']}
-//   onLoginFinished={
-//     (error, result) => {
-//       if (error) {
-//         alert("login has error: " + result.error);
-//       } else if (result.isCancelled) {
-//         alert("login is cancelled.");
-//       } else {
-//         AccessToken.getCurrentAccessToken().then(
-//           (data) => {
-//             this.onLoginInvoked(true, data.accessToken.toString());
-//           }
-//         )
-//       }
-//     }
-//   }
-//   onLogoutFinished={() => this.onLoginInvoked(false, "")}
-// />
+{/* <LoginButton
+  publishPermissions={['manage_pages','publish_pages', 'publish_actions']}
+  onLoginFinished={
+    (error, result) => {
+      if (error) {
+        alert("login has error: " + result.error);
+      } else if (result.isCancelled) {
+        alert("login is cancelled.");
+      } else {
+        AccessToken.getCurrentAccessToken().then(
+          (data) => {
+            this.onLoginInvoked(true, data.accessToken.toString());
+          }
+        )
+      }
+    }
+  }
+  onLogoutFinished={() => this.onLoginInvoked(false, "")}
+/> */}
 // var fakeItem = {
 //   id: { S: Date.now().toString() },
 //   text: { S: this.state.text }
@@ -470,4 +416,3 @@ AppRegistry.registerComponent('teamB', () => teamB);
 //   if (err) console.log("Error:", err);
 //   else console.log(data);
 // });
-
