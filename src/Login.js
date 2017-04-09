@@ -3,35 +3,17 @@ import { View, Text, StyleSheet} from 'react-native'
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 var logins = "";
+import { Scene, Router, Actions } from 'react-native-router-flux';
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
 
-    var that = this;
-    AccessToken.getCurrentAccessToken()
-    .then(function(fbTokenData) {
-      if (fbTokenData==null) return;
-      console.log('fbTokenData:', fbTokenData);
-      logins = {};
-      logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = fbTokenData.accessToken;
-      console.log('here' +  logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]);
-      // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
-      getCredAndID.call(that);
-    }, function(err) {
-      console.log('Error getting token:', err);
-    });
-  }
-
-  setAWSCognitoCredential(token) {
-    logins = {};
-    logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = token;
-    // AWSCognitoCredentials.setLogins(logins); //ignored for iOS
-    getCredAndID(token);
+    checkIfTokenExists();
   }
 
   onLoginInvoked(fbToken) {
-    console.log('Accesstoken:', fbToken);
+    console.log('fbToken:', fbToken);
 
     getCredAndID(fbToken);
   }
@@ -74,6 +56,22 @@ const styles = StyleSheet.create({
   }
 });
 
+function checkIfTokenExists() {
+  AccessToken.getCurrentAccessToken()
+  .then(function(fbTokenData) {
+    if (fbTokenData==null) return;
+    console.log('fbTokenData:', fbTokenData);
+
+    return getCredAndID(fbTokenData.accessToken)
+  })
+  .then(function() {
+    Actions.home();
+  })
+  .catch(function(err) {
+    console.log('Error getting token:', err);
+  });
+}
+
 async function getCredAndID(token) {
   if (token==null) return;
 
@@ -87,11 +85,6 @@ async function getCredAndID(token) {
     console.log(credentialsObj);
     var identityIdObj = await AWSCognitoCredentials.getIdentityIDAsync();
     console.log('IDENTITY ID:', identityIdObj.identityId);
-    this.setState({
-      AccessKey: credentialsObj.AccessKey,
-      SecretKey: credentialsObj.SecretKey,
-      identityId: identityIdObj.identityId
-    });
   }
   catch(err) {
     console.log("ERROR while getting credentials:", err);

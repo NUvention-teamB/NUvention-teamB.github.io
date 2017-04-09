@@ -20,7 +20,8 @@ import { getPageID, getPageAccessToken, pagePost } from './lib/FacebookAPI'
 import { EventCreationCalendar } from './lib/Calendar'
 import { PostImage } from './lib/PostImage'
 import Login from './src/Login'
-import {Scene, Router} from 'react-native-router-flux';
+import Home from './src/Home'
+import { Scene, Router } from 'react-native-router-flux';
 
 
 var region = "us-east-1";
@@ -167,8 +168,7 @@ export default class teamB extends Component {
       <Router>
         <Scene key="root">
           <Scene key="login" component={Login} title="Login"/>
-          {/* <Scene key="register" component={Register} title="Register"/>
-          <Scene key="home" component={Home}/> */}
+          <Scene key="home" component={Home}/>
         </Scene>
       </Router>
     )
