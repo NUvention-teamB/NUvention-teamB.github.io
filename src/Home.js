@@ -1,18 +1,103 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet} from 'react-native'
+import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput } from 'react-native'
+import { PostImage } from '../lib/PostImage'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      showCalendar: false,
+      facebookToggle: true,
+      instagramToggle: true,
+      twitterToggle: false,
+      postTime: 'smart',
+      green: '#97e1d0',
+      black: '#000000',
+      selectedDate: 'Today',
+    }
+  }
+
+  addImage() {
+
+    var options = {
+      title: 'Add a photo for your post',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      // console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        // console.log('IMAGE DATA:')
+        // console.log(response.data);
+        let source = { uri: response.uri };
+
+        // You can also display the image using data:
+        let imageData = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.setState({
+          postImage: source,
+          imageData: imageData
+        });
+      }
+    });
+  }
+
+  async submitPost() {
+    if (logins==null || logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER]==null) {
+      console.log('Logins not present');
+      return;
+    }
+
+    var pageId, pageAccessToken;
+
+    var that = this;
+    console.log('Submitting post');
+    var fbLoginToken = logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER];
+    getPageID(fbLoginToken)
+    .then(function(mPageid) {
+      pageId = mPageid;
+      console.log('2pageId' + pageId);
+      return getPageAccessToken(pageId, fbLoginToken);
+    })
+    .then(function(mPageAccessToken) {
+      // var json = JSON.parse(response);
+      pageAccessToken = mPageAccessToken;
+      console.log('pageAccessToken:',pageAccessToken);
+      var postText = (that.state.text!='') ? that.state.text : 'test_post';
+      return pagePost(pageId, pageAccessToken, postText);
+    })
+    .catch(function(err) {
+      console.log(err);
+      that.setState({
+        isLoading: false,
+        message: 'Something bad happened ' + err
+      });
+    });
+  }
+
+  openCalendar() {
+    this.setState({
+      showCalendar: true,
+      postTime:'later'
+    })
   }
 
   render() {
-    return (
-      <View>
-        
-      </View>
-    )
     let logo = {
       uri: 'https://scontent-ord1-1.xx.fbcdn.net/v/t34.0-12/17198497_10203158694926222_604100444_n.png?oh=51e9ca9e171b2b29397803c3d238c26a&oe=58C093B2'
     }
@@ -223,3 +308,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+// async function uploadPhoto() {
+//   // if (this.state.imageData==null) {
+//   //   console.log('Empty image');
+//   //   return;
+//   // }
+//   // console.log('data:image/jpeg;base64,' + this.state.imageData.uri);
+//
+//   console.log(this.state.postImage.uri);
+//   console.log(this.state.AccessKey);
+//   console.log(this.state.SecretKey);
+//
+//   let file = {
+//     // `uri` can also be a file system path (i.e. file://)
+//     uri: this.state.postImage.uri,
+//     name: "image.jpeg",
+//     type: "image/jpeg"
+//   }
+//
+//   let options = {
+//     bucket: "teamb-photos",
+//     region: "us-east-1",
+//     accessKey: "AKIAJQIOU7GJXFIBMVXQ",
+//     secretKey: "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",
+//     successActionStatus: 201
+//   }
+//
+//   RNS3.put(file, options).then(response => {
+//     console.log(response);
+//     if (response.status !== 201) throw new Error("Failed to upload image to S3");
+//   });
+//
+// }
