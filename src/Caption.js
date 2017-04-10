@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet, Button } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 
-export default class Login extends Component {
+export default class Caption extends Component {
   constructor(props) {
     super(props);
 
@@ -12,7 +12,7 @@ export default class Login extends Component {
   }
 
   goToNext() {
-    Actions.home();
+    Actions.photo();
   }
 
   render() {
@@ -24,7 +24,6 @@ export default class Login extends Component {
           placeholder="Your Text Here"
           multiline={true}
           onChangeText={(text) => this.setState({text})}/>
-        <Text>Hola</Text>
         <Button
           title="Next>"
           onPress={this.goToNext}/>

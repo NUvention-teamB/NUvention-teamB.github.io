@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet} from 'react-native'
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
-var logins = "";
 import { Actions } from 'react-native-router-flux';
 
 export default class Login extends Component {
@@ -76,11 +75,8 @@ async function getCredAndID(token) {
   if (token==null) return;
 
   try {
-    logins = {};
     logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = token;
-    AWSCognitoCredentials.getLogins = function() {
-      return logins;
-    };
+
     var credentialsObj = await AWSCognitoCredentials.getCredentialsAsync();
     console.log(credentialsObj);
     var identityIdObj = await AWSCognitoCredentials.getIdentityIDAsync();
