@@ -8,6 +8,7 @@ export default class Login extends Component {
     super(props);
 
     this.state = {
+      currentScreen: 'caption',
       showCalendar: false,
       facebookToggle: true,
       instagramToggle: true,
@@ -253,12 +254,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FDFDFD',
     flex: 3,
   },
-  postInput: {
-    flex: 1,
-    marginLeft: 20,
-    marginRight: 20,
-    fontSize: 20,
-  },
   headerText: {
     fontSize: 30,
   },
@@ -309,35 +304,35 @@ const styles = StyleSheet.create({
   },
 });
 
-// async function uploadPhoto() {
-//   // if (this.state.imageData==null) {
-//   //   console.log('Empty image');
-//   //   return;
-//   // }
-//   // console.log('data:image/jpeg;base64,' + this.state.imageData.uri);
-//
-//   console.log(this.state.postImage.uri);
-//   console.log(this.state.AccessKey);
-//   console.log(this.state.SecretKey);
-//
-//   let file = {
-//     // `uri` can also be a file system path (i.e. file://)
-//     uri: this.state.postImage.uri,
-//     name: "image.jpeg",
-//     type: "image/jpeg"
-//   }
-//
-//   let options = {
-//     bucket: "teamb-photos",
-//     region: "us-east-1",
-//     accessKey: "AKIAJQIOU7GJXFIBMVXQ",
-//     secretKey: "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",
-//     successActionStatus: 201
-//   }
-//
-//   RNS3.put(file, options).then(response => {
-//     console.log(response);
-//     if (response.status !== 201) throw new Error("Failed to upload image to S3");
-//   });
-//
-// }
+async function uploadPhoto() {
+  // if (this.state.imageData==null) {
+  //   console.log('Empty image');
+  //   return;
+  // }
+  // console.log('data:image/jpeg;base64,' + this.state.imageData.uri);
+
+  console.log(this.state.postImage.uri);
+  console.log(this.state.AccessKey);
+  console.log(this.state.SecretKey);
+
+  let file = {
+    // `uri` can also be a file system path (i.e. file://)
+    uri: this.state.postImage.uri,
+    name: "image.jpeg",
+    type: "image/jpeg"
+  }
+
+  let options = {
+    bucket: "teamb-photos",
+    region: "us-east-1",
+    accessKey: "AKIAJQIOU7GJXFIBMVXQ",
+    secretKey: "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",
+    successActionStatus: 201
+  }
+
+  RNS3.put(file, options).then(response => {
+    console.log(response);
+    if (response.status !== 201) throw new Error("Failed to upload image to S3");
+  });
+
+}

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet} from 'react-native'
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 var logins = "";
-import { Scene, Router, Actions } from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
 
 export default class Login extends Component {
   constructor(props) {
@@ -65,8 +65,7 @@ function checkIfTokenExists() {
     return getCredAndID(fbTokenData.accessToken)
   })
   .then(function() {
-    Actions.pop();
-    Actions.home();
+    Actions.caption({type:'reset'});
   })
   .catch(function(err) {
     console.log('Error getting token:', err);
