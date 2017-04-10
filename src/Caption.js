@@ -6,13 +6,21 @@ export default class Caption extends Component {
   constructor(props) {
     super(props);
 
+    this.onChangeText = this.onChangeText.bind(this);
+    this.goToNext = this.goToNext.bind(this);
+    
     this.state = {
 
     }
   }
 
   goToNext() {
-    Actions.photo();
+    this.props.post.caption = this.state.text;
+    Actions.photo({post:this.props.post});
+  }
+
+  onChangeText(text) {
+    this.setState({text})
   }
 
   render() {
@@ -23,7 +31,7 @@ export default class Caption extends Component {
           style={styles.postInput}
           placeholder="Your Text Here"
           multiline={true}
-          onChangeText={(text) => this.setState({text})}/>
+          onChangeText={this.onChangeText}/>
         <Button
           title="Next>"
           onPress={this.goToNext}/>

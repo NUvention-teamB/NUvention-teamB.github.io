@@ -7,6 +7,9 @@ export default class Photo extends Component {
   constructor(props) {
     super(props);
 
+    this.goToNext = this.goToNext.bind(this);
+
+    console.log('POST in Photo:', this.props.post);
     this.state = {
 
     }
@@ -51,7 +54,8 @@ export default class Photo extends Component {
   }
 
   goToNext() {
-    Actions.post();
+    this.props.post.image=this.state.postImage;
+    Actions.post({post: this.props.post});
   }
 
   render() {

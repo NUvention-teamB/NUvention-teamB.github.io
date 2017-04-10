@@ -8,6 +8,7 @@ import { getPageID, getPageAccessToken, pagePost } from '../lib/FacebookAPI'
 export default class Post extends Component {
   constructor(props) {
     super(props);
+    console.log('POST in Post:', this.props.post);
 
     this.submitPost.bind(this);
 
@@ -44,7 +45,8 @@ export default class Post extends Component {
       // var json = JSON.parse(response);
       pageAccessToken = mPageAccessToken;
       console.log('pageAccessToken:',pageAccessToken);
-      var postText = (that.state.text!='') ? that.state.text : 'test_post';
+      var postText = (that.props.post.caption!=null) ? that.props.post.caption : 'test_post';
+      console.log('POST TEXT:', postText);
       return pagePost(pageId, pageAccessToken, postText);
     })
     .then(function() {

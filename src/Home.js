@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput } fr
 import { PostImage } from '../lib/PostImage'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
+import PostClass from '../lib/PostClass';
 
 export default class Home extends Component {
   constructor(props) {
@@ -14,7 +15,8 @@ export default class Home extends Component {
   }
 
   newPost() {
-    Actions.caption();
+    var post = new PostClass();
+    Actions.caption({post: post});
   }
 
   render() {
