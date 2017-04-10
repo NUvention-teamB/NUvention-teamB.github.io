@@ -33,7 +33,7 @@ export default class teamB extends Component {
         <Scene key="root">
           <Scene key="login" component={Login} title="Login" />
           <Scene key="home" component={Home} title="Home" />
-          <Scene key="caption" hideNavBar component={Caption} title="Caption" />
+          <Scene key="caption" component={Caption} title="Caption" />
         </Scene>
       </Router>
     )
