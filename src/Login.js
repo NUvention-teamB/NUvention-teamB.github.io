@@ -64,7 +64,7 @@ function checkIfTokenExists() {
     return getCredAndID(fbTokenData.accessToken)
   })
   .then(function() {
-    Actions.caption({type:'reset'});
+    Actions.home({type:'reset'});
   })
   .catch(function(err) {
     console.log('Error getting token:', err);

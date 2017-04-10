@@ -47,6 +47,9 @@ export default class Post extends Component {
       var postText = (that.state.text!='') ? that.state.text : 'test_post';
       return pagePost(pageId, pageAccessToken, postText);
     })
+    .then(function() {
+      Actions.home({type:'reset'});
+    })
     .catch(function(err) {
       console.log(err);
       that.setState({
