@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { getPageID, getPageAccessToken, pagePost } from '../lib/FacebookAPI'
+import { EventCreationCalendar } from '../lib/Calendar'
 
 export default class Post extends Component {
   constructor(props) {
@@ -47,7 +48,11 @@ export default class Post extends Component {
       console.log('pageAccessToken:',pageAccessToken);
       var postText = (that.props.post.caption!=null) ? that.props.post.caption : 'test_post';
       console.log('POST TEXT:', postText);
-      return pagePost(pageId, pageAccessToken, postText);
+      if (that.props.postTime == 'now') {
+        return pagePost(pageId, pageAccessToken, postText);
+      } else {
+        return pagePost(pageId, pageAccessToken, postText, that.props.dateTime);
+      }
     })
     .then(function() {
       Actions.home({type:'reset'});
@@ -61,6 +66,21 @@ export default class Post extends Component {
     });
   }
 
+  postNow() {
+    this.setState({
+      postTime: 'now', 
+      showCalendar: false,
+    });
+  }
+
+  smartPost() {
+    this.setState({
+      postTime: 'smart', 
+      showCalendar: false, 
+      selectedDate: 'Today'
+    });
+  }
+
   openCalendar() {
     this.setState({
       showCalendar: true,
@@ -71,6 +91,7 @@ export default class Post extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <EventCreationCalendar />
         <View
             style={styles.captionSection}>
           <Text
@@ -80,7 +101,7 @@ export default class Post extends Component {
         </View>
         <View style={styles.timeViewSection}>
           <TouchableOpacity
-              onPress={()=>{this.setState({postTime: 'now', showCalendar: false}); console.log(this.state.postTime == 'now')}}>
+              onPress={this.postNow.bind(this)}>
             <View
                 style={(this.state.postTime == 'now') ? styles.timeViewActive : styles.timeView}>
               <Text
@@ -90,7 +111,7 @@ export default class Post extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={()=>{this.setState({postTime: 'smart', showCalendar: false, selectedDate: 'Today'}); console.log(this.state.postTime == 'now')}}>
+              onPress={this.smartPost.bind(this)}>
             <View
                 style={(this.state.postTime == 'smart') ? styles.timeViewActive : styles.timeView}>
               <Text

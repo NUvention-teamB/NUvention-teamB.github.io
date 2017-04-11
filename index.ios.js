@@ -6,7 +6,6 @@ import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RNS3 } from 'react-native-aws3';
 import { getPageID, getPageAccessToken, pagePost } from './lib/FacebookAPI'
-import { EventCreationCalendar } from './lib/Calendar'
 import { PostImage } from './lib/PostImage'
 import Login from './src/Login'
 import Home from './src/Home'
