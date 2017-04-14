@@ -28,7 +28,7 @@ export default class Caption extends Component {
 
   goToNext() {
     this.props.post.caption = this.state.text;
-    Actions.photo({post:this.props.post});
+    Actions.post({post:this.props.post});
   }
 
   onChangeText(text) {
