@@ -13,8 +13,8 @@ export default class Photo extends Component {
     const fetchParams: Object = {
       first: 10,
     };
-    const data = await CameraRoll.getPhotos(fetchParams);
-    console.log('data' + data);
+    // const data = await CameraRoll.getPhotos(fetchParams);
+    // console.log('data' + data);
     this.state = {
 
     }
@@ -60,7 +60,7 @@ export default class Photo extends Component {
 
   goToNext() {
     this.props.post.image=this.state.postImage;
-    Actions.caption({post: this.props.post});
+    Actions.suggestions({post: this.props.post});
   }
 
   render() {

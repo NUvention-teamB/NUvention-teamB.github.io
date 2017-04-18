@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet, Button } from 'react-native'
 import { Actions } from 'react-native-router-flux';
-import ImmutableListView from 'react-native-immutable-list-view';
-import Immutable from 'immutable';
-import listData from '../data/SuggestionsText'
 
 
 export default class Caption extends Component {
@@ -16,14 +13,6 @@ export default class Caption extends Component {
     this.state = {
 
     }
-  }
-
-  renderRow(rowData) {
-    return (
-      <View marginBottom={20}>
-        <Text>{rowData}</Text>
-      </View>
-    );
   }
 
   goToNext() {
@@ -41,17 +30,9 @@ export default class Caption extends Component {
 
         <TextInput
           style={styles.postInput}
-          placeholder="Your Text Here"
+          defaultValue={this.props.caption}
           multiline={true}
           onChangeText={this.onChangeText}/>
-        <View>
-          <Text>Suggestions</Text>
-          <ImmutableListView
-            height={250}
-            immutableData={listData}
-            renderRow={this.renderRow}
-          />
-        </View>
         <Button
           title="Next>"
           onPress={this.goToNext}/>
