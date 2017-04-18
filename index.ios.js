@@ -18,6 +18,9 @@ import { Scene, Router } from 'react-native-router-flux';
 region = "us-east-1";
 identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
 logins = {};
+globalFbAccessToken = null;
+globalPageId = null;
+globalPageAccessToken = null;
 
 export default class teamB extends Component {
   constructor(props) {

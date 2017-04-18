@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import PostClass from '../lib/PostClass';
 import ImmutableListView from 'react-native-immutable-list-view';
+import { getPageID, getPageAccessToken } from '../lib/FacebookAPI'
+import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 
 export default class Home extends Component {
   constructor(props) {
@@ -13,6 +15,7 @@ export default class Home extends Component {
     this.state = {
 
     }
+
   }
 
   newPost() {
