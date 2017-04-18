@@ -6,7 +6,7 @@ import { Actions } from 'react-native-router-flux';
 import PostClass from '../lib/PostClass';
 import ImmutableListView from 'react-native-immutable-list-view';
 import { getPageID, getPageAccessToken } from '../lib/FacebookAPI'
-import { getListOfPosts } from '../lib/FbPostsAPI'
+import { getListOfPosts, getPostLikeCount, getTotalLikesCount } from '../lib/FbPostsAPI'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 
 
@@ -21,11 +21,15 @@ export default class Home extends Component {
 
   componentDidMount() {
     getListOfPosts(globalPageId, globalPageAccessToken)
-    .then(function(json) {
-      console.log(json);
+    .then(function(list) {
+      // console.log(list);
+      return getTotalLikesCount(list, globalPageAccessToken);
+    })
+    .then(function(count) {
+      console.log(count);
     })
     .catch(function(err) {
-      console.error(err);
+      console.log(err);
     })
   }
 
