@@ -6,7 +6,9 @@ import { Actions } from 'react-native-router-flux';
 import PostClass from '../lib/PostClass';
 import ImmutableListView from 'react-native-immutable-list-view';
 import { getPageID, getPageAccessToken } from '../lib/FacebookAPI'
+import { getListOfPosts } from '../lib/FbPostsAPI'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
+
 
 export default class Home extends Component {
   constructor(props) {
@@ -15,7 +17,16 @@ export default class Home extends Component {
     this.state = {
 
     }
+  }
 
+  componentDidMount() {
+    getListOfPosts(globalPageId, globalPageAccessToken)
+    .then(function(json) {
+      console.log(json);
+    })
+    .catch(function(err) {
+      console.error(err);
+    })
   }
 
   newPost() {
