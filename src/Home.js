@@ -21,12 +21,9 @@ export default class Home extends Component {
 
   componentDidMount() {
     getListOfPosts(globalPageId, globalPageAccessToken)
-    .then(function(list) {
-      // console.log(list);
-      return getTotalLikesCount(list, globalPageAccessToken);
-    })
-    .then(function(count) {
-      console.log(count);
+    .then(function(statistics) {
+      console.log(statistics);
+
     })
     .catch(function(err) {
       console.log(err);
