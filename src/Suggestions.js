@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ListView } from 'react-native'
 import { Actions } from 'react-native-router-flux';
-import ImmutableListView from 'react-native-immutable-list-view';
 import listData from '../data/SuggestionsText'
 
 
@@ -13,23 +12,24 @@ export default class Caption extends Component {
     this.goToNext = this.goToNext.bind(this);
     this.renderRow = this.renderRow.bind(this);
     
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    
     this.state = {
-
+      dataSource: ds.cloneWithRows(listData),
     }
   }
 
   goToNext(data) {
     this.props.post.caption = this.state.text;
-    Actions.caption({post:this.props.post, caption: data});
+    Actions.caption({post:this.props.post, data: data});
   }
 
   renderRow(rowData) {
-    console.log(rowData._root);
     return (
       <View marginBottom={20}>
         <TouchableOpacity
             onPress={() => {this.goToNext(rowData)}}>
-          <Text>{rowData}</Text>
+          <Text>{rowData.captionWithTags}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -43,8 +43,8 @@ export default class Caption extends Component {
     return (
       <View style={styles.container}>
         <Text>Suggestions</Text>
-        <ImmutableListView
-          immutableData={listData}
+        <ListView
+          dataSource={this.state.dataSource}
           renderRow={this.renderRow}
         />
         <View marginBottom={20}>
