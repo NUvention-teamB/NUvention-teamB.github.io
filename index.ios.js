@@ -13,6 +13,8 @@ import Caption from './src/Caption'
 import Photo from './src/Photo'
 import Post from './src/Post'
 import Suggestions from './src/Suggestions'
+import TagEditor from './src/TagEditor'
+import CreatePost from './src/CreatePost'
 import { Scene, Router } from 'react-native-router-flux';
 
 region = "us-east-1";
@@ -42,6 +44,8 @@ export default class teamB extends Component {
           <Scene key="photo" component={Photo} title="Photo" />
           <Scene key="post" component={Post} title="Post" />
           <Scene key="suggestions" component={Suggestions} title="Suggestions" />
+          <Scene key="tagEditor" component={TagEditor} title="TagEditor" />
+          <Scene key="createPost" component={CreatePost} title="CreatePost" />
         </Scene>
       </Router>
     )

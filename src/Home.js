@@ -4,7 +4,6 @@ import { PostImage } from '../lib/PostImage'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import PostClass from '../lib/PostClass';
-import ImmutableListView from 'react-native-immutable-list-view';
 
 export default class Home extends Component {
   constructor(props) {
@@ -17,7 +16,7 @@ export default class Home extends Component {
 
   newPost() {
     var post = new PostClass();
-    Actions.photo({post: post});
+    Actions.createPost({post: post});
   }
 
   render() {

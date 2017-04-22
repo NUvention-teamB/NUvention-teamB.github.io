@@ -8,27 +8,22 @@ export default class Caption extends Component {
     super(props);
 
     this.onChangeText = this.onChangeText.bind(this);
-    this.goToPost = this.goToPost.bind(this);
-    this.goToTagEditor = this.goToTagEditor.bind(this);
+    this.goToNext = this.goToNext.bind(this);
     this.renderRow = this.renderRow.bind(this);
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    console.log(this.props.data);
-    this.state = {
-      data: this.props.data ? this.props.data : {caption:'',captionWithTags:'',tags:[]}
-    };
+
     if (this.props.data != null) {
-      this.setState({tags: ds.cloneWithRows(this.props.data.tags)});
+      this.state = {
+        tag: this.props.tag,
+        options: ds.cloneWithRows(this.props.tag),
+      }
     }
   }
 
-  goToPost() {
-    this.state.data.caption = this.state.text;
+  goToNext() {
+    this.props.post.caption = this.state.text;
     Actions.post({post:this.props.post});
-  }
-
-  goToTagEditor(tag) {
-    Actions.tagEditor({post:this.props.post, tag:tag})
   }
 
   onChangeText(text) {
@@ -38,39 +33,21 @@ export default class Caption extends Component {
   renderRow(rowData) {
     return (
       <View marginBottom={20}>
-        <TouchableOpacity
-            onPress={() => {this.goToTagEditor(rowData.name)}}>
+        <TouchableOpacity>
           <Text>{rowData.name}</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-  conditional() {
-    if (this.state.tags.length != 0) {
-      return (
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>test</Text>
         <ListView
           dataSource={this.state.tags}
           renderRow={this.renderRow}
         />
-      )
-    }
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-
-        <TextInput
-          style={styles.postInput}
-          defaultValue={this.state.data.caption}
-          multiline={true}
-          onChangeText={this.onChangeText}/>
-        <Text>{this.state.data.caption}</Text>
-        {this.conditional}
-        <Button
-          title="Next>"
-          onPress={this.goToPost}/>
       </View>
     )
   }

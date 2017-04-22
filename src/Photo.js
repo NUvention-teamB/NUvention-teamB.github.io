@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet, Button, Image, CameraRoll } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import ImagePicker from 'react-native-image-picker'
+import Suggestions from './Suggestions'
+import Swiper from 'react-native-swiper'
 
 export default class Photo extends Component {
   constructor(props) {
@@ -59,8 +61,8 @@ export default class Photo extends Component {
   }
 
   goToNext() {
-    this.props.post.image=this.state.postImage;
-    Actions.suggestions({post: this.props.post});
+    this.props.nextScreen(1);
+    console.log('goToNext');
   }
 
   render() {
@@ -82,7 +84,7 @@ export default class Photo extends Component {
         <Button
           title="Next>"
           onPress={this.goToNext}/>
-      </View>
+      </View> 
     )
   }
 }
