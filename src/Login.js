@@ -20,6 +20,8 @@ export default class Login extends Component {
 
   onLogout() {
     AWSCognitoCredentials.clearCredentials();
+    logins = {};
+    Actions.login({type:'reset'});
   }
 
   render() {
@@ -64,7 +66,7 @@ function checkIfTokenExists() {
     return getCredAndID(fbTokenData.accessToken)
   })
   .then(function() {
-    Actions.home({type:'reset'});
+    Actions.pages({type:'reset'});
   })
   .catch(function(err) {
     console.log('Error getting token:', err);
@@ -82,9 +84,6 @@ async function getCredAndID(token) {
     var identityIdObj = await AWSCognitoCredentials.getIdentityIDAsync();
     // console.log('IDENTITY ID:', identityIdObj.identityId);
     globalFbAccessToken = token;
-    globalPageId = await getPageID(globalFbAccessToken);
-    globalPageAccessToken = await getPageAccessToken(globalPageId, globalFbAccessToken);
-
   }
   catch(err) {
     console.log("ERROR while getting credentials:", err);

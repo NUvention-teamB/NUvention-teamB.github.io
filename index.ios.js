@@ -14,6 +14,7 @@ import Photo from './src/Photo'
 import Post from './src/Post'
 import Suggestions from './src/Suggestions'
 import { Scene, Router } from 'react-native-router-flux';
+import Pages from './src/Pages'
 
 region = "us-east-1";
 identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
@@ -40,6 +41,7 @@ export default class teamB extends Component {
       <Router>
         <Scene key="root">
           <Scene key="login" component={Login} title="Login" />
+          <Scene key="pages" component={Pages} title="Pages" />
           <Scene key="home" component={Home} title="Home" />
           <Scene key="caption" component={Caption} title="Caption" />
           <Scene key="photo" component={Photo} title="Photo" />
