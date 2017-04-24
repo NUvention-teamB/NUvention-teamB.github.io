@@ -13,8 +13,10 @@ export default class CreatePost extends Component {
 
     this.updateSuggestion = this.updateSuggestion.bind(this);
     this.nextScreen = this.nextScreen.bind(this);
+    this.uploadPhoto = this.uploadPhoto.bind(this);
     this.state = {
-      index:0
+      index: 0,
+      postImage: null
     }
   }
 
@@ -26,11 +28,17 @@ export default class CreatePost extends Component {
     this.refs.swiper.scrollBy(1);
   }
 
+  uploadPhoto(postImage) {
+    this.setState({postImage: postImage});
+    console.log('postImage');
+    console.log(postImage);
+  }
+
   render() {
     return (
       <Swiper ref='swiper' loop={false} yourNewPageIndex={this.state.index}>
-        <Photo nextScreen={()=>{this.nextScreen()}}></Photo>
-        <Suggestions></Suggestions>
+        <Photo nextScreen={()=>{this.nextScreen()}} uploadPhoto={(postImage)=>this.uploadPhoto(postImage)}></Photo>
+        <Suggestions postImage={this.state.postImage}></Suggestions>
         <Caption data={this.state.suggestionData}></Caption>
       </Swiper>
     )

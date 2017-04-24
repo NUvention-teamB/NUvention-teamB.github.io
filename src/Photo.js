@@ -10,6 +10,7 @@ export default class Photo extends Component {
     super(props);
 
     this.goToNext = this.goToNext.bind(this);
+    this.test = this.test.bind(this);
 
     console.log('POST in Photo:', this.props.post);
     const fetchParams: Object = {
@@ -23,7 +24,7 @@ export default class Photo extends Component {
   }
 
   addImage() {
-
+    console.log('AddImage');
     var options = {
       title: 'Add a photo for your post',
       storageOptions: {
@@ -56,13 +57,18 @@ export default class Photo extends Component {
           postImage: source,
           imageData: imageData
         });
+        this.props.uploadPhoto(source);
       }
     });
   }
 
   goToNext() {
-    this.props.nextScreen(1);
+    this.props.nextScreen();
     console.log('goToNext');
+  }
+
+  test() {
+    console.log(this.state.postImage);
   }
 
   render() {
@@ -73,6 +79,7 @@ export default class Photo extends Component {
       else return (
         <View>
           <Image source={this.state.postImage} style={styles.postImage}/>
+          <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
         </View>
       )
     })();
@@ -84,6 +91,9 @@ export default class Photo extends Component {
         <Button
           title="Next>"
           onPress={this.goToNext}/>
+        <Button
+          title="Test"
+          onPress={this.test}/>
       </View> 
     )
   }

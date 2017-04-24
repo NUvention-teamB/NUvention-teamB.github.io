@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ListView } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ListView, Image } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import listData from '../data/SuggestionsText'
 
@@ -11,27 +11,29 @@ export default class Caption extends Component {
     this.onChangeText = this.onChangeText.bind(this);
     this.goToNext = this.goToNext.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.test = this.test.bind(this);
     
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    
+
     this.state = {
       dataSource: ds.cloneWithRows(listData),
     }
   }
 
   goToNext(data) {
-    this.props.post.caption = this.state.text;
     Actions.caption({post:this.props.post, data: data});
   }
 
   renderRow(rowData) {
     return (
-      <View marginBottom={20}>
-        <TouchableOpacity
-            onPress={() => {this.goToNext(rowData)}}>
-          <Text>{rowData.captionWithTags}</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => {this.goToNext(rowData)}}
+        style={styles.listElement}>
+        <Text
+          style={styles.listText}>
+          {rowData.captionWithTags}
+        </Text>
+      </TouchableOpacity>    
     );
   }
 
@@ -39,19 +41,49 @@ export default class Caption extends Component {
     this.setState({text})
   }
 
+  test() {
+    console.log(this.props.postImage);
+  }
+
   render() {
+    var header = (() => {
+      if (this.props.postImage != null) return (
+        <View style={styles.headerRow}>
+          <Image source={this.props.postImage} style={styles.postImage}/>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerText}>What do you want to post?</Text>
+          </View>
+        </View>
+      )
+      else return (
+        <View style={styles.headerRow}>
+          <Text style={styles.headerText}>What do you want to post?</Text>
+        </View>
+      )
+    })();
+
     return (
       <View style={styles.container}>
-        <Text>Suggestions</Text>
+        {header}
+        <Text
+          style={styles.title}>
+          Suggestions:
+        </Text>
         <ListView
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
         />
-        <View marginBottom={20}>
-          <TouchableOpacity onPress={() => {this.goToNext('')}}>
-            <Text>Custom</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => {this.goToNext('')}}
+          style={styles.listElement}>
+          <Text
+            style={styles.listText}>
+            Custom Text
+          </Text>
+        </TouchableOpacity> 
+        <Button
+          title="Test"
+          onPress={this.test}/>
       </View>
     )
   }
@@ -59,12 +91,35 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100
+    paddingTop: 80,
   },
-  postInput: {
-    height: 100,
-    marginLeft: 20,
-    marginRight: 20,
+  headerRow: {
+    height: 60,
+    flexDirection: 'row',
+    margin: 10,
+  },
+  postImage: {
+    height: 60,
+    width: 60,
+    marginRight: 10,
+  },
+  headerTextContainer: {
+    flexDirection: "column",
+    flex: 1,
+  },
+  headerText: {
     fontSize: 20,
+    color: 'black',
+  },
+  title: {
+    marginLeft: 10,
+  },
+  listElement: {
+    backgroundColor: '#d5dddb',
+    margin: 10,
+    borderRadius: 10,
+  },
+  listText: {
+    margin: 10
   },
 });

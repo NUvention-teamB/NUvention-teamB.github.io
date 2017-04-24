@@ -17,6 +17,9 @@ export default class Caption extends Component {
       this.state = {
         tag: this.props.tag,
         options: ds.cloneWithRows(this.props.tag),
+        data: {
+          
+        }
       }
     }
   }
@@ -45,7 +48,7 @@ export default class Caption extends Component {
       <View style={styles.container}>
         <Text>test</Text>
         <ListView
-          dataSource={this.state.tags}
+          dataSource={this.state.tag}
           renderRow={this.renderRow}
         />
       </View>
