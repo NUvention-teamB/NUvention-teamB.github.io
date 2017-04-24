@@ -3,6 +3,7 @@ import { View, Text, StyleSheet} from 'react-native'
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { Actions } from 'react-native-router-flux';
+import { getPageID, getPageAccessToken } from '../lib/FacebookAPI'
 
 export default class Login extends Component {
   constructor(props) {
@@ -12,13 +13,15 @@ export default class Login extends Component {
   }
 
   onLoginInvoked(fbToken) {
-    console.log('fbToken:', fbToken);
+    // console.log('fbToken:', fbToken);
 
     getCredAndID(fbToken);
   }
 
   onLogout() {
     AWSCognitoCredentials.clearCredentials();
+    logins = {};
+    Actions.login({type:'reset'});
   }
 
   render() {
@@ -58,13 +61,12 @@ const styles = StyleSheet.create({
 function checkIfTokenExists() {
   AccessToken.getCurrentAccessToken()
   .then(function(fbTokenData) {
-    if (fbTokenData==null) return;
-    console.log('fbTokenData:', fbTokenData);
-
+    if (fbTokenData==null) return Promise.reject();
+    // console.log('fbTokenData:', fbTokenData);
     return getCredAndID(fbTokenData.accessToken)
   })
   .then(function() {
-    Actions.home({type:'reset'});
+    Actions.pages({type:'reset'});
   })
   .catch(function(err) {
     console.log('Error getting token:', err);
@@ -78,9 +80,10 @@ async function getCredAndID(token) {
     logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER] = token;
 
     var credentialsObj = await AWSCognitoCredentials.getCredentialsAsync();
-    console.log(credentialsObj);
+    // console.log(credentialsObj);
     var identityIdObj = await AWSCognitoCredentials.getIdentityIDAsync();
-    console.log('IDENTITY ID:', identityIdObj.identityId);
+    // console.log('IDENTITY ID:', identityIdObj.identityId);
+    globalFbAccessToken = token;
   }
   catch(err) {
     console.log("ERROR while getting credentials:", err);
