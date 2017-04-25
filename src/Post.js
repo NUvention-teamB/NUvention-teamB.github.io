@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
@@ -103,8 +103,29 @@ export default class Post extends Component {
   }
 
   render() {
+    var header = (() => {
+      if (this.props.postImage != null) return (
+        <View style={styles.headerRow}>
+          <Image source={this.props.postImage} style={styles.postImage}/>
+          <View style={styles.headerTextContainer}>
+            <TextInput 
+              style={styles.headerText}
+              defaultValue={this.props.text}/>
+          </View>
+        </View>
+      )
+      else return (
+        <View style={styles.headerRow}>
+          <TextInput 
+            style={styles.headerText}
+            defaultValue={this.props.text}/>
+        </View>
+      )
+    })();
+
     return (
       <View style={styles.container}>
+        {header}
         <EventCreationCalendar 
           showCalendar={this.state.showCalendar}
           updatedSelectedDate={(date) => {this.updateSelectedDate(date)}} />
@@ -193,7 +214,25 @@ export default class Post extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100
+    paddingTop: 60
+  },
+  headerRow: {
+    height: 60,
+    flexDirection: 'row',
+    margin: 10,
+  },
+  postImage: {
+    height: 60,
+    width: 60,
+    marginRight: 10,
+  },
+  headerTextContainer: {
+    flexDirection: "column",
+    flex: 1,
+  },
+  headerText: {
+    fontSize: 10,
+    color: 'black',
   },
   captionTextActive: {
     color: '#ADADAD',

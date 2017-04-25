@@ -10,7 +10,6 @@ export default class Photo extends Component {
     super(props);
 
     this.goToNext = this.goToNext.bind(this);
-    this.test = this.test.bind(this);
 
     console.log('POST in Photo:', this.props.post);
     const fetchParams: Object = {
@@ -58,17 +57,13 @@ export default class Photo extends Component {
           imageData: imageData
         });
         this.props.uploadPhoto(source);
+        this.goToNext();
       }
     });
   }
 
   goToNext() {
     this.props.nextScreen();
-    console.log('goToNext');
-  }
-
-  test() {
-    console.log(this.state.postImage);
   }
 
   render() {
@@ -89,11 +84,8 @@ export default class Photo extends Component {
 
         {postImage}
         <Button
-          title="Next>"
+          title="No Photo"
           onPress={this.goToNext}/>
-        <Button
-          title="Test"
-          onPress={this.test}/>
       </View> 
     )
   }
@@ -101,7 +93,7 @@ export default class Photo extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100
+    paddingTop: 60
   },
   postImage: {
     height: 180,

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, Image } from 'react-native'
 import { Actions } from 'react-native-router-flux';
+import Colors from '../data/Colors';
+import Hr from 'react-native-hr';
 
 
 export default class Caption extends Component {
@@ -12,6 +14,7 @@ export default class Caption extends Component {
     this.goToTagEditor = this.goToTagEditor.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.generateText = this.generateText.bind(this);
+    this.getTags = this.getTags.bind(this);
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     
@@ -19,36 +22,42 @@ export default class Caption extends Component {
       data: this.props.data ? this.props.data : {caption:'',captionWithTags:'',tags:[]},
       tags: tags = this.props.data != null ? ds.cloneWithRows(this.props.data.tags) : null,
     };
-    
-    
   }
 
   generateText() {
-    output = this.state.data.caption;
-    for (i = this.state.data.tags.length - 1 ; i >= 0 ; i--) {
-      position = this.state.data.tags[i].position;
-      console.log(i + this.state.data.tags[i].replacement);
-      if (this.state.data.tags[i].replacement != undefined) {
-        output = [output.slice(0, position), this.state.data.tags[i].replacement, output.slice(position)].join('');
+    data = this.props.data ? this.props.data : {caption:'',captionWithTags:'',tags:[]};
+    output = data.caption;
+    console.log('output' + output);
+    for (i = data.tags.length - 1 ; i >= 0 ; i--) {
+      position = data.tags[i].position;
+      console.log(i + data.tags[i].replacement);
+      if (data.tags[i].replacement != undefined) {
+        output = [output.slice(0, position), data.tags[i].replacement, output.slice(position)].join('');
       } else {
-        output = [output.slice(0, position), '[' + this.state.data.tags[i].name + ']', output.slice(position)].join('');
+        output = [output.slice(0, position), '[' + data.tags[i].name + ']', output.slice(position)].join('');
       }
     }
-    console.log(output);
+    // this.props.updateText(output);
     return output;
   }
 
   goToPost() {
     this.state.data.caption = this.state.text;
-    Actions.post({post:this.props.post});
+    // Actions.post({post:this.props.post});
+    this.props.nextScreen();
   }
 
   goToTagEditor(tag) {
-    Actions.tagEditor({post:this.props.post, tag:tag})
+    Actions.tagEditor({tag:tag})
   }
 
   onChangeText(text) {
     this.setState({text})
+  }
+
+  getTags(data) {
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    return data != null && data.tags != null ? ds.cloneWithRows(data.tags) : null;
   }
 
   renderRow(rowData) {
@@ -67,10 +76,10 @@ export default class Caption extends Component {
   }
 
   conditional() {
-    if (this.state.data.tags.length != 0) {
+    if (this.getTags(this.props.data) != null) {
       return (
         <ListView
-          dataSource={this.state.tags}
+          dataSource={this.getTags(this.props.data)}
           renderRow={this.renderRow}
         />
       )
@@ -83,13 +92,13 @@ export default class Caption extends Component {
         <View style={styles.headerRow}>
           <Image source={this.props.postImage} style={styles.postImage}/>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.headerText}>What do you want to post?</Text>
+            <Text style={styles.headerText}>Edit the tags below.</Text>
           </View>
         </View>
       )
       else return (
         <View style={styles.headerRow}>
-          <Text style={styles.headerText}>What do you want to post?</Text>
+          <Text style={styles.headerText}>Edit the tags below.</Text>
         </View>
       )
     })();
@@ -99,6 +108,7 @@ export default class Caption extends Component {
     return (
       <View style={styles.container}>
         {header}
+        <Hr lineColor={Colors.gray} />
         <Text
           style={styles.postInput}>
           {text}
@@ -114,7 +124,7 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100
+    paddingTop: 60
   },
   headerRow: {
     height: 60,

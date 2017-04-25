@@ -1,7 +1,9 @@
-import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ListView, Image } from 'react-native'
+import React, { Component } from 'react';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ListView, Image } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import listData from '../data/SuggestionsText'
+import listData from '../data/SuggestionsText';
+import Colors from '../data/Colors';
+import Hr from 'react-native-hr';
 
 
 export default class Caption extends Component {
@@ -11,7 +13,6 @@ export default class Caption extends Component {
     this.onChangeText = this.onChangeText.bind(this);
     this.goToNext = this.goToNext.bind(this);
     this.renderRow = this.renderRow.bind(this);
-    this.test = this.test.bind(this);
     
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -21,7 +22,9 @@ export default class Caption extends Component {
   }
 
   goToNext(data) {
-    Actions.caption({post:this.props.post, data: data});
+    this.props.updateSuggestion(data);
+    // Actions.caption({post:this.props.post, data: data});
+    this.props.nextScreen();
   }
 
   renderRow(rowData) {
@@ -39,10 +42,6 @@ export default class Caption extends Component {
 
   onChangeText(text) {
     this.setState({text})
-  }
-
-  test() {
-    console.log(this.props.postImage);
   }
 
   render() {
@@ -65,6 +64,7 @@ export default class Caption extends Component {
     return (
       <View style={styles.container}>
         {header}
+        <Hr lineColor={Colors.gray} />
         <Text
           style={styles.title}>
           Suggestions:
@@ -80,10 +80,7 @@ export default class Caption extends Component {
             style={styles.listText}>
             Custom Text
           </Text>
-        </TouchableOpacity> 
-        <Button
-          title="Test"
-          onPress={this.test}/>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -91,7 +88,7 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 80,
+    paddingTop: 60,
   },
   headerRow: {
     height: 60,
@@ -112,7 +109,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   title: {
-    marginLeft: 10,
+    margin: 10,
   },
   listElement: {
     backgroundColor: '#d5dddb',

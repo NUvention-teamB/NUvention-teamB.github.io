@@ -5,6 +5,7 @@ import ImagePicker from 'react-native-image-picker'
 import Photo from './Photo'
 import Suggestions from './Suggestions'
 import Caption from './Caption'
+import Post from './Post'
 import Swiper from 'react-native-swiper'
 
 export default class CreatePost extends Component {
@@ -14,14 +15,23 @@ export default class CreatePost extends Component {
     this.updateSuggestion = this.updateSuggestion.bind(this);
     this.nextScreen = this.nextScreen.bind(this);
     this.uploadPhoto = this.uploadPhoto.bind(this);
+    this.updateText = this.updateText.bind(this);
     this.state = {
       index: 0,
-      postImage: null
+      postImage: null,
+      suggestionData: null,
+      text: '',
     }
   }
 
   updateSuggestion(data) {
     this.setState({suggestionData: data});
+  }
+
+  updateText(text) {
+    if (text != this.state.text) {
+      this.setState({text: text});
+    }
   }
 
   nextScreen() {
@@ -30,16 +40,30 @@ export default class CreatePost extends Component {
 
   uploadPhoto(postImage) {
     this.setState({postImage: postImage});
-    console.log('postImage');
-    console.log(postImage);
   }
 
   render() {
     return (
       <Swiper ref='swiper' loop={false} yourNewPageIndex={this.state.index}>
-        <Photo nextScreen={()=>{this.nextScreen()}} uploadPhoto={(postImage)=>this.uploadPhoto(postImage)}></Photo>
-        <Suggestions postImage={this.state.postImage}></Suggestions>
-        <Caption data={this.state.suggestionData}></Caption>
+        <Photo 
+          nextScreen={()=>{this.nextScreen()}} 
+          uploadPhoto={(postImage)=>this.uploadPhoto(postImage)}>
+        </Photo>
+        <Suggestions 
+          nextScreen={()=>{this.nextScreen()}} 
+          postImage={this.state.postImage} 
+          updateSuggestion={(data)=>this.updateSuggestion(data)}>
+        </Suggestions>
+        <Caption 
+          nextScreen={()=>{this.nextScreen()}} 
+          postImage={this.state.postImage} 
+          data={this.state.suggestionData} 
+          updateText={(text)=>{this.updateText(text)}}>
+        </Caption>
+        <Post 
+          postImage={this.state.postImage}
+          text={this.state.text}>
+        </Post>
       </Swiper>
     )
   }

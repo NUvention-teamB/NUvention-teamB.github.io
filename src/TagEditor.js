@@ -13,15 +13,20 @@ export default class Caption extends Component {
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-    if (this.props.data != null) {
-      this.state = {
-        tag: this.props.tag,
-        options: ds.cloneWithRows(this.props.tag),
-        data: {
-          
+    this.state = {
+      tag: this.props.data,
+      ds: ds,
+      data: {
+        'location': {
+          question: 'What location would you like?',
+          options: [
+            '555 Clark St.',
+            '555 Clark St. Evanston, IL'
+          ]
         }
       }
-    }
+    };
+    console.log(this.state.data.location.options);
   }
 
   goToNext() {
@@ -36,8 +41,9 @@ export default class Caption extends Component {
   renderRow(rowData) {
     return (
       <View marginBottom={20}>
-        <TouchableOpacity>
-          <Text>{rowData.name}</Text>
+        <TouchableOpacity
+          onPress={Actions.pop}>
+          <Text>{rowData}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -46,9 +52,8 @@ export default class Caption extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>test</Text>
         <ListView
-          dataSource={this.state.tag}
+          dataSource={this.state.ds.cloneWithRows(this.state.data.location.options)}
           renderRow={this.renderRow}
         />
       </View>
