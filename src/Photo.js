@@ -2,12 +2,15 @@ import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet, Button, Image, CameraRoll } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import ImagePicker from 'react-native-image-picker'
+import Suggestions from './Suggestions'
+import Swiper from 'react-native-swiper'
 
 export default class Photo extends Component {
   constructor(props) {
     super(props);
 
     this.goToNext = this.goToNext.bind(this);
+    this.test = this.test.bind(this);
 
     console.log('POST in Photo:', this.props.post);
     const fetchParams: Object = {
@@ -21,7 +24,7 @@ export default class Photo extends Component {
   }
 
   addImage() {
-
+    console.log('AddImage');
     var options = {
       title: 'Add a photo for your post',
       storageOptions: {
@@ -54,13 +57,18 @@ export default class Photo extends Component {
           postImage: source,
           imageData: imageData
         });
+        this.props.uploadPhoto(source);
       }
     });
   }
 
   goToNext() {
-    this.props.post.image=this.state.postImage;
-    Actions.suggestions({post: this.props.post});
+    this.props.nextScreen();
+    console.log('goToNext');
+  }
+
+  test() {
+    console.log(this.state.postImage);
   }
 
   render() {
@@ -71,6 +79,7 @@ export default class Photo extends Component {
       else return (
         <View>
           <Image source={this.state.postImage} style={styles.postImage}/>
+          <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
         </View>
       )
     })();
@@ -82,7 +91,10 @@ export default class Photo extends Component {
         <Button
           title="Next>"
           onPress={this.goToNext}/>
-      </View>
+        <Button
+          title="Test"
+          onPress={this.test}/>
+      </View> 
     )
   }
 }
