@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput, Animated } from 'react-native'
+import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput, Animated, TouchableHighlight, ActivityIndicator } from 'react-native'
 import { PostImage } from '../lib/PostImage'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
@@ -17,17 +17,16 @@ class HorizontalBar extends Component {
   render() {
     if (this.props.max==0) return (<Text>No {this.props.label} found...</Text>);
 
-    var maxValue = 300;
+    var maxValue = 500;
     var offset = maxValue/(this.props.max*2);
     var count = this.props.count._value*offset;
 
 
     return (
       <View style={styles.bar}>
-        <Text>{this.props.label+': '}
-        <Animated.View style={[styles.barAnimated, styles[this.props.label], {width: count}]} />
-        {this.props.count._value}
-        </Text>
+        <Text style={styles.barLabel}>{this.props.label}</Text>
+        <Text style={styles.barText}><Animated.View style={[styles.barAnimated, styles[this.props.label], {width: count}]} />{this.props.count._value}</Text>
+
       </View>
     )
   }
@@ -39,9 +38,9 @@ class WeekStatistics extends Component {
     super(props);
 
     var statistics = this.props.statitics;
-
+    // console.log(this.props);
     this.state = {
-      week: 'thisWeekSummary'
+      week: this.props.week || 'thisWeekSummary'
     }
   }
 
@@ -58,9 +57,16 @@ class WeekStatistics extends Component {
 
 
   render () {
-    if (!this.props.loaded) return (<Text>Loading...</Text>);
+    if (!this.props.loaded) return (
+      <ActivityIndicator
+        animating={this.state.pages==null}
+        style={[styles.centering, {height: 80}]}
+        size="large"
+        color="green"
+      />
+    );
 
-    console.log(this.props.statistics);
+    // console.log(this.props.statistics);
 
     var statistics = {
       likes: new Animated.Value(this.props.statistics[this.state.week].likes),
@@ -68,24 +74,26 @@ class WeekStatistics extends Component {
       comments: new Animated.Value(this.props.statistics[this.state.week].comments)
     }
 
-    console.log(statistics);
+    // console.log(statistics);
 
-    var max = (() => {
-      var maxValue = 0;
-      for (var type in statistics) {
-        if (statistics[type]._value>maxValue) maxValue = statistics[type]._value;
-      }
-      return maxValue
-    })();
-
-    console.log(max);
 
     return (
       <View>
-        <HorizontalBar max={max} label={'Likes'} count={statistics.likes} />
-        <HorizontalBar max={max} label={'Reactions'} count={statistics.reactions} />
-        <HorizontalBar max={max} label={'Comments'} count={statistics.comments} />
-        <Text onPress={this.switchWeek.bind(this)}>Switch Week</Text>
+        <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
+        <HorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
+        <HorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
+        {/* <View>
+          <TouchableOpacity onPress={this.switchWeek.bind(this)} style={(() => {this.state.week=='pastWeekSummary' ? styles.weekButtonActive : styles.weekButtonInactive})() }>
+            <View style={(() => {this.state.week=='pastWeekSummary' ? styles.weekButtonActive : styles.weekButtonInactive})() }>
+              <Text>Past Week</Text>
+            </View>
+          </TouchableOpacity>
+          <Text>{'|'}</Text>
+          <TouchableOpacity onPress={this.switchWeek.bind(this)} style={(() => {this.state.week=='thisWeekSummary' ? styles.weekButtonActive : styles.weekButtonInactive})() }>
+            <Text>This Week</Text>
+          </TouchableOpacity>
+        </View> */}
+
       </View>
     )
   }
@@ -113,7 +121,22 @@ export default class Home extends Component {
     var _this = this;
     getListOfPosts(globalPageId, globalPageAccessToken)
     .then(function(statistics) {
-      console.log(statistics);
+      // console.log(statistics);
+      // NOTE: DATA FOR DEMO
+
+      statistics = {
+        thisWeekSummary: {
+          likes: 120,
+          reactions: 43,
+          comments: 38
+        },
+        pastWeekSummary: {
+          likes: 170,
+          reactions: 67,
+          comments: 30
+        }
+      }
+
       _this.setState({
         statistics: statistics,
         loaded: true
@@ -131,13 +154,35 @@ export default class Home extends Component {
 
   render() {
 
+    var statistics = this.state.statistics;
+
+    var max = (() => {
+      var maxValue = 0;
+      for (var type in statistics) {
+        for (var label in statistics[type]) {
+          if (statistics[type][label]>maxValue) maxValue = statistics[type][label];
+        }
+      }
+      return maxValue
+    })();
+
+    console.log(max);
+
     return (
       <View style={styles.container}>
-        <WeekStatistics statistics={this.state.statistics} loaded={this.state.loaded}/>
-        <Text>This is a placeholder</Text>
-        <Button
-          title="Create a new post>"
-          onPress={this.newPost}/>
+        <Text style={styles.pageName}>Your Stats For {globalPage.name}</Text>
+        <Text style={styles.weekLabel}>This Week</Text>
+        <WeekStatistics statistics={this.state.statistics} max={max} loaded={this.state.loaded} week="thisWeekSummary"/>
+        <Text style={styles.weekLabel}>Past Week</Text>
+        <WeekStatistics statistics={this.state.statistics} max={max} loaded={this.state.loaded} week="pastWeekSummary"/>
+
+        <TouchableHighlight
+
+          onPress={this.newPost}>
+          <View style={styles.newPost}>
+            <Text style={styles.newPostText}>Create a new post</Text>
+          </View>
+        </TouchableHighlight>
       </View>
     )
   }
@@ -145,11 +190,32 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100
+    paddingTop: 70
+  },
+  centering: {
+    // marginTop: '30%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+  },
+  pageName: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'darkgreen',
+    marginBottom: 30,
+  },
+  weekLabel: {
+    marginTop: 10,
+    marginBottom: 10,
+    paddingLeft: 10,
+    fontSize: 18,
+    fontWeight: 'bold'
   },
   bar: {
     marginTop: 5,
     marginBottom: 5,
+    paddingLeft: 20,
   },
   barAnimated: {
     height: 15,
@@ -164,5 +230,34 @@ const styles = StyleSheet.create({
   },
   Comments: {
     backgroundColor: 'green',
+  },
+  weekButtonActive: {
+    width: '40',
+  },
+  weekButtonInactive: {
+    width: '40',
+  },
+  barLabel: {
+    fontWeight: 'bold',
+    color: 'darkgrey',
+  },
+  barText: {
+    fontWeight: 'bold',
+    color: 'grey',
+    fontSize: 15
+  },
+  newPost: {
+    backgroundColor: '#3B5998',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 50,
+    width: '60%',
+    padding: 15,
+    borderRadius: 20
+  },
+  newPostText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 20,
   }
 });

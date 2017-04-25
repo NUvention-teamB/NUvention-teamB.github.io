@@ -39,6 +39,7 @@ export default class Pages extends Component {
     // console.log(page);
     globalPageId = page.id;
     globalPageAccessToken = page.access_token;
+    globalPage = page;
     Actions.home({type:'reset'});
   }
 
