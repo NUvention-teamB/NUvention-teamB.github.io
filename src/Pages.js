@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Button } from 'react-native'
+import { View, Text, StyleSheet, Button, Image, TouchableHighlight, ActivityIndicator } from 'react-native'
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { Actions } from 'react-native-router-flux';
@@ -36,26 +36,42 @@ export default class Pages extends Component {
   }
 
   selectPage(page) {
-    console.log(page);
+    // console.log(page);
     globalPageId = page.id;
     globalPageAccessToken = page.access_token;
     Actions.home({type:'reset'});
   }
 
   render() {
+    if (this.state.pages==null) return (
+      <View style={styles.container}>
+        <Image
+          source={require('../img/logo.png')}
+          style={styles.logo}>
+        </Image>
+        <ActivityIndicator
+          animating={this.state.pages==null}
+          style={[styles.centering, {height: 80}]}
+          size="large"
+          color="green"
+        />
+      </View>
+    )
 
     var pages = (() => {
-      if (this.state.pages==null) {
-        return <Text>Loading...</Text>;
-      }
-
       if (this.state.pages.length==0) {
-        return <Text>No pages found...</Text>;
+        return <Text>It appears that you do not manage any Facebook pages...</Text>;
       }
 
       return this.state.pages.map((page) => {
+        // console.log(page);
         return (
-          <Button key={page.id} onPress={()=>this.selectPage(page)} title={page.name} />
+          <TouchableHighlight key={page.id} onPress={()=>this.selectPage(page)} underlayColor="lightgreen">
+            <View style={styles.page}>
+              <Text style={styles.pageName}>{page.name}</Text>
+              <Text style={styles.pageCategory}>{page.category}</Text>
+            </View>
+          </TouchableHighlight>
         )
       });
     })();
@@ -64,9 +80,14 @@ export default class Pages extends Component {
 
     return (
       <View style={styles.container}>
-        <Text>Please select which page you would like to manage</Text>
+        <Image
+          source={require('../img/logo.png')}
+          style={styles.logo}>
+        </Image>
+        <Text style={styles.instructions}>Select your page...</Text>
         {pages}
         <LoginButton
+          style={styles.fbButton}
           publishPermissions={['public_profile', 'manage_pages','publish_pages', 'publish_actions']}
           onLoginFinished={
             (error, result) => {
@@ -92,7 +113,53 @@ export default class Pages extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100
+    paddingTop: 20
+  },
+  logo: {
+    width: 335,
+    height: 120,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '3%',
+  },
+  centering: {
+    marginTop: '30%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+  },
+  instructions: {
+    fontSize: 20,
+    fontWeight: 'normal',
+    textAlign: 'center',
+    marginTop: 40,
+    marginBottom: 30
+  },
+  page: {
+    padding: 15,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'green',
+    // borderColor: '#81d186',
+  },
+  pageName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+
+  },
+  pageCategory: {
+    fontSize: 13,
+    color: 'grey',
+    paddingLeft: 5
+  },
+  fbButton: {
+    backgroundColor: 'blue',
+    width: '40%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 20,
+    height: 30,
+    borderRadius: 15
   }
 });
 

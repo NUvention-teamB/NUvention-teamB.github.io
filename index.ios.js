@@ -42,8 +42,8 @@ export default class teamB extends Component {
     return (
       <Router>
         <Scene key="root">
-          <Scene key="login" component={Login} title="Login" />
-          <Scene key="pages" component={Pages} title="Pages" />
+          <Scene key="login" component={Login} title="Login" initial={true} hideNavBar={true} />
+          <Scene key="pages" component={Pages} title="Pages" hideNavBar={true} />
           <Scene key="home" component={Home} title="Home" />
           <Scene key="caption" component={Caption} title="Caption" />
           <Scene key="photo" component={Photo} title="Photo" />
