@@ -12,11 +12,15 @@ import Home from './src/Home'
 import Caption from './src/Caption'
 import Photo from './src/Photo'
 import Post from './src/Post'
+import Suggestions from './src/Suggestions'
 import { Scene, Router } from 'react-native-router-flux';
 
 region = "us-east-1";
 identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
 logins = {};
+globalFbAccessToken = null;
+globalPageId = null;
+globalPageAccessToken = null;
 
 export default class teamB extends Component {
   constructor(props) {
@@ -40,6 +44,7 @@ export default class teamB extends Component {
           <Scene key="caption" component={Caption} title="Caption" />
           <Scene key="photo" component={Photo} title="Photo" />
           <Scene key="post" component={Post} title="Post" />
+          <Scene key="suggestions" component={Suggestions} title="Suggestions" />
         </Scene>
       </Router>
     )

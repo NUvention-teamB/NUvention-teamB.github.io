@@ -4,6 +4,11 @@ import { PostImage } from '../lib/PostImage'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import PostClass from '../lib/PostClass';
+import ImmutableListView from 'react-native-immutable-list-view';
+import { getPageID, getPageAccessToken } from '../lib/FacebookAPI'
+import { getListOfPosts, getPostLikeCount, getTotalLikesCount } from '../lib/FbPostsAPI'
+import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
+
 
 export default class Home extends Component {
   constructor(props) {
@@ -14,9 +19,20 @@ export default class Home extends Component {
     }
   }
 
+  componentDidMount() {
+    getListOfPosts(globalPageId, globalPageAccessToken)
+    .then(function(statistics) {
+      console.log(statistics);
+
+    })
+    .catch(function(err) {
+      console.log(err);
+    })
+  }
+
   newPost() {
     var post = new PostClass();
-    Actions.caption({post: post});
+    Actions.photo({post: post});
   }
 
   render() {

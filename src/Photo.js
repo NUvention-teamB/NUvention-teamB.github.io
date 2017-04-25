@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, Image } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, Image, CameraRoll } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import ImagePicker from 'react-native-image-picker'
 
@@ -10,6 +10,11 @@ export default class Photo extends Component {
     this.goToNext = this.goToNext.bind(this);
 
     console.log('POST in Photo:', this.props.post);
+    const fetchParams: Object = {
+      first: 10,
+    };
+    // const data = await CameraRoll.getPhotos(fetchParams);
+    // console.log('data' + data);
     this.state = {
 
     }
@@ -55,7 +60,7 @@ export default class Photo extends Component {
 
   goToNext() {
     this.props.post.image=this.state.postImage;
-    Actions.post({post: this.props.post});
+    Actions.suggestions({post: this.props.post});
   }
 
   render() {

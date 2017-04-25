@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet, Button } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 
+
 export default class Caption extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +17,7 @@ export default class Caption extends Component {
 
   goToNext() {
     this.props.post.caption = this.state.text;
-    Actions.photo({post:this.props.post});
+    Actions.post({post:this.props.post});
   }
 
   onChangeText(text) {
@@ -29,7 +30,7 @@ export default class Caption extends Component {
 
         <TextInput
           style={styles.postInput}
-          placeholder="Your Text Here"
+          defaultValue={this.props.caption}
           multiline={true}
           onChangeText={this.onChangeText}/>
         <Button
