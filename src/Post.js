@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import React, { Component } from 'react'
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
-import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
-import { getPageID, getPageAccessToken, pagePost } from '../lib/FacebookAPI';
-import { EventCreationCalendar } from '../lib/Calendar';
-import Calendar from 'react-native-calendar';
-
+import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
+import { getPageID, getPageAccessToken, pagePost } from '../lib/FacebookAPI'
+import { EventCreationCalendar } from '../lib/Calendar'
 
 export default class Post extends Component {
   constructor(props) {
@@ -25,10 +23,6 @@ export default class Post extends Component {
       black: '#000000',
       selectedDate: 'Today',
     }
-    this.postNow = this.postNow.bind(this);
-    this.smartPost = this.smartPost.bind(this);
-    this.openCalendar = this.openCalendar.bind(this);
-    this.updateSelectedDate = this.updateSelectedDate.bind(this);
   }
 
   goToNext() {
@@ -94,20 +88,10 @@ export default class Post extends Component {
     })
   }
 
-  updateSelectedDate(date) {
-    this.setState({
-      selectedDate: date,
-      showCalendar: false,
-    });
-    console.log('date' + date);
-  }
-
   render() {
     return (
       <View style={styles.container}>
-        <EventCreationCalendar 
-          showCalendar={this.state.showCalendar}
-          updatedSelectedDate={(date) => {this.updateSelectedDate(date)}} />
+        <EventCreationCalendar />
         <View
             style={styles.captionSection}>
           <Text
@@ -117,7 +101,7 @@ export default class Post extends Component {
         </View>
         <View style={styles.timeViewSection}>
           <TouchableOpacity
-              onPress={this.postNow}>
+              onPress={this.postNow.bind(this)}>
             <View
                 style={(this.state.postTime == 'now') ? styles.timeViewActive : styles.timeView}>
               <Text
@@ -127,7 +111,7 @@ export default class Post extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={this.smartPost}>
+              onPress={this.smartPost.bind(this)}>
             <View
                 style={(this.state.postTime == 'smart') ? styles.timeViewActive : styles.timeView}>
               <Text
@@ -137,7 +121,7 @@ export default class Post extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={this.openCalendar}>
+              onPress={this.openCalendar.bind(this)}>
             <View
                 style={(this.state.postTime == 'later') ? styles.timeViewActive : styles.timeView}>
               <Text
@@ -194,12 +178,6 @@ export default class Post extends Component {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 100
-  },
-  captionTextActive: {
-    color: '#ADADAD',
-  },
-  captionText: {
-    color: '#FFFFFF',
   },
   timeViewSection: {
     height: 40,
