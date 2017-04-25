@@ -25,7 +25,7 @@ class HorizontalBar extends Component {
     return (
       <View style={styles.bar}>
         <Text style={styles.barLabel}>{this.props.label}</Text>
-        <Text style={styles.barText}><Animated.View style={[styles.barAnimated, styles[this.props.label], {width: count}]} />{this.props.count._value}</Text>
+        <Text style={styles.barText}><Animated.View style={[styles.barAnimated, styles[this.props.label], {width: count}]} />{' ' + this.props.count._value}</Text>
 
       </View>
     )
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   weekLabel: {
-    marginTop: 10,
+    marginTop: 25,
     marginBottom: 10,
     paddingLeft: 10,
     fontSize: 18,
