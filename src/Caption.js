@@ -87,19 +87,9 @@ export default class Caption extends Component {
   }
 
   render() {
-    var header = (() => {
+    var image = (() => {
       if (this.props.postImage != null) return (
-        <View style={styles.headerRow}>
-          <Image source={this.props.postImage} style={styles.postImage}/>
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerText}>Edit the tags below.</Text>
-          </View>
-        </View>
-      )
-      else return (
-        <View style={styles.headerRow}>
-          <Text style={styles.headerText}>Edit the tags below.</Text>
-        </View>
+        <Image source={this.props.postImage} style={styles.postImage}/>
       )
     })();
     var text = this.generateText();
@@ -107,7 +97,10 @@ export default class Caption extends Component {
   
     return (
       <View style={styles.container}>
-        {header}
+        <View style={styles.headerRow}>
+          {image}
+          <Text style={styles.headerText}>Edit the tags below.</Text>
+        </View>
         <Hr lineColor={Colors.gray} />
         <Text
           style={styles.postInput}>
@@ -124,7 +117,7 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60
+    paddingTop: 60,
   },
   headerRow: {
     height: 60,
@@ -142,7 +135,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    color: 'black',
+    color: Colors.darkGreen,
   },
   postInput: {
     height: 100,
@@ -151,7 +144,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   listElement: {
-    backgroundColor: '#d5dddb',
+    backgroundColor: Colors.lightGreen,
     margin: 10,
     borderRadius: 10,
   },

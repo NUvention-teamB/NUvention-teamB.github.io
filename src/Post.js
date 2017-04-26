@@ -70,6 +70,7 @@ export default class Post extends Component {
         message: 'Something bad happened ' + err
       });
     });
+    Actions.pop();
   }
 
   postNow() {

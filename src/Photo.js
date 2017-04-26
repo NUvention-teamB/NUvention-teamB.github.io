@@ -10,6 +10,7 @@ export default class Photo extends Component {
     super(props);
 
     this.goToNext = this.goToNext.bind(this);
+    this.noPhoto = this.noPhoto.bind(this);
 
     console.log('POST in Photo:', this.props.post);
     const fetchParams: Object = {
@@ -66,6 +67,11 @@ export default class Photo extends Component {
     this.props.nextScreen();
   }
 
+  noPhoto() {
+    this.props.uploadPhoto(null);
+    this.goToNext();
+  }
+
   render() {
     var postImage = (() => {
       if (this.state.postImage==null) return (
@@ -85,7 +91,7 @@ export default class Photo extends Component {
         {postImage}
         <Button
           title="No Photo"
-          onPress={this.goToNext}/>
+          onPress={this.noPhoto}/>
       </View> 
     )
   }

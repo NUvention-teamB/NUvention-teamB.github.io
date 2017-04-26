@@ -45,25 +45,28 @@ export default class Caption extends Component {
   }
 
   render() {
-    var header = (() => {
+    var image = (() => {
       if (this.props.postImage != null) return (
-        <View style={styles.headerRow}>
-          <Image source={this.props.postImage} style={styles.postImage}/>
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerText}>What do you want to post?</Text>
-          </View>
-        </View>
-      )
-      else return (
-        <View style={styles.headerRow}>
-          <Text style={styles.headerText}>What do you want to post?</Text>
-        </View>
+        <Image source={this.props.postImage} style={styles.postImage}/>
       )
     })();
 
     return (
       <View style={styles.container}>
-        {header}
+        <View style={styles.headerRow}>
+          {image}
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerText}>What do you want to post?</Text>
+            <View style={styles.subheaderTextContainer}>
+              <Text style={styles.subheaderText}>Select one below or</Text>
+              <TouchableOpacity
+                style={styles.writeYourOwnTouch}
+                onPress={()=>{this.goToNext('')}}>
+                <Text style={styles.writeYourOwn}>write your own</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
         <Hr lineColor={Colors.gray} />
         <Text
           style={styles.title}>
@@ -106,13 +109,33 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    color: 'black',
+    color: Colors.darkGreen,
+  },
+  subheaderTextContainer: {
+    flexDirection: 'row',
+    marginTop: 5,
+  },
+  subheaderText: {
+    fontSize: 15,
+    color: Colors.darkerGreen,
+    margin: 5,
+    marginLeft: 0,
+  },
+  writeYourOwnTouch: {
+    backgroundColor: Colors.lightGreen,
+    borderRadius: 10,
+  },
+  writeYourOwn: {
+    fontSize: 15,
+    color: Colors.darkerGreen,
+    margin: 5
   },
   title: {
     margin: 10,
+    color: Colors.darkGreen,
   },
   listElement: {
-    backgroundColor: '#d5dddb',
+    backgroundColor: Colors.lightGreen,
     margin: 10,
     borderRadius: 10,
   },
