@@ -54,7 +54,6 @@ export default class Photo extends Component {
         let imageData = { uri: 'data:image/jpeg;base64,' + response.data };
 
         this.setState({
-          postImage: source,
           imageData: imageData
         });
         this.props.uploadPhoto(source);
@@ -74,12 +73,12 @@ export default class Photo extends Component {
 
   render() {
     var postImage = (() => {
-      if (this.state.postImage==null) return (
+      if (this.props.postImage==null) return (
         <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
       )
       else return (
         <View>
-          <Image source={this.state.postImage} style={styles.postImage}/>
+          <Image source={this.props.postImage} style={styles.postImage}/>
           <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
         </View>
       )
@@ -87,7 +86,6 @@ export default class Photo extends Component {
 
     return (
       <View style={styles.container}>
-
         {postImage}
         <Button
           title="No Photo"
@@ -103,9 +101,7 @@ const styles = StyleSheet.create({
   },
   postImage: {
     height: 180,
-    width: 370,
-    margin: 3,
-    borderRadius: 15
+    width: '100%',
   }
 });
 

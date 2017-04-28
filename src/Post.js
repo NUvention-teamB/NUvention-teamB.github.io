@@ -105,9 +105,9 @@ export default class Post extends Component {
 
   render() {
     var header = (() => {
-      if (this.props.postImage != null) return (
+      if (this.props.profilePicture != null) return (
         <View style={styles.headerRow}>
-          <Image source={this.props.postImage} style={styles.postImage}/>
+          <Image source={this.props.profilePicture} style={styles.profilePicture}/>
           <View style={styles.headerTextContainer}>
             <TextInput 
               style={styles.headerText}
@@ -124,9 +124,16 @@ export default class Post extends Component {
       )
     })();
 
+    var postImage = (() => {
+      if (this.props.postImage!=null) return (
+        <Image source={this.props.postImage} style={styles.postImage}/>
+      )
+    })();
+
     return (
       <View style={styles.container}>
         {header}
+        {postImage}
         <EventCreationCalendar 
           showCalendar={this.state.showCalendar}
           updatedSelectedDate={(date) => {this.updateSelectedDate(date)}} />
@@ -206,7 +213,7 @@ export default class Post extends Component {
         </View>
 
         <Button
-          title="Post>"
+          title="Queue"
           onPress={this.submitPost.bind(this)}/>
       </View>
     )
@@ -222,7 +229,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     margin: 10,
   },
-  postImage: {
+  profilePicture: {
     height: 60,
     width: 60,
     marginRight: 10,
@@ -234,6 +241,10 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 10,
     color: 'black',
+  },
+  postImage: {
+    height: 180,
+    width: '100%',
   },
   captionTextActive: {
     color: '#ADADAD',
