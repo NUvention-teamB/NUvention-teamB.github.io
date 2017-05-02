@@ -76,7 +76,7 @@ class WeekStatistics extends Component {
 
     return (
       <View>
-        <Text style={styles.weekLabel}>{weekLabel}</Text>
+        {/* <Text style={styles.weekLabel}>{weekLabel}</Text> */}
         <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
         <HorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
         <HorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
@@ -86,8 +86,6 @@ class WeekStatistics extends Component {
             <Text style={styles.weekOptionsSeperator}>{'    |    '}</Text>
             <Text onPress={() => this.switchWeek('pastWeekSummary')} style={pastWeekStyle}>Past Week</Text>
           </Text>
-
-
         </View>
 
       </View>
@@ -117,20 +115,18 @@ export default class Home extends Component {
     var _this = this;
     getListOfPosts(globalPageId, globalPageAccessToken)
     .then(function(statistics) {
-      // console.log(statistics);
+      console.log(statistics);
       // NOTE: DATA FOR DEMO
 
-      statistics = {
-        thisWeekSummary: {
-          likes: 120,
-          reactions: 43,
-          comments: 38
-        },
-        pastWeekSummary: {
-          likes: 170,
-          reactions: 67,
-          comments: 30
-        }
+      statistics.thisWeekSummary = {
+        likes: 120,
+        reactions: 43,
+        comments: 38
+      }
+      statistics.pastWeekSummary = {
+        likes: 170,
+        reactions: 67,
+        comments: 30
       }
 
       _this.setState({
@@ -198,6 +194,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'darkgreen',
     marginBottom: 30,
+    marginTop: 10
   },
   weekLabel: {
     marginTop: 25,
