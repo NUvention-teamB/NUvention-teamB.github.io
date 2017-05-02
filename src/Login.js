@@ -59,7 +59,7 @@ export default class Login extends Component {
     return (
       <View style={styles.container}>
         <Image
-          source={require('../img/logo.png')}
+          source={require('../img/logo_white.png')}
           style={styles.logo}>
         </Image>
         <LoginButton
@@ -95,11 +95,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#3B5998'
   },
   logo: {
-    width: 335,
-    height: 120,
+    width: 310,
+    height: 85,
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: '5%',
+    marginTop: 40,
   },
   fbButton: {
     backgroundColor: 'blue',
