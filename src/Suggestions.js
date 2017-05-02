@@ -1,7 +1,9 @@
-import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ListView, Image } from 'react-native'
+import React, { Component } from 'react';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ListView, Image } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import listData from '../data/SuggestionsText'
+import listData from '../data/SuggestionsText';
+import Colors from '../data/Colors';
+import Hr from 'react-native-hr';
 
 
 export default class Caption extends Component {
@@ -11,7 +13,6 @@ export default class Caption extends Component {
     this.onChangeText = this.onChangeText.bind(this);
     this.goToNext = this.goToNext.bind(this);
     this.renderRow = this.renderRow.bind(this);
-    this.test = this.test.bind(this);
     
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -21,7 +22,13 @@ export default class Caption extends Component {
   }
 
   goToNext(data) {
-    Actions.caption({post:this.props.post, data: data});
+    this.props.updateSuggestion(data);
+    this.props.nextScreen();
+  }
+
+  customCaption() {
+    this.props.updateSuggestion();
+    this.props.skipTwo();
   }
 
   renderRow(rowData) {
@@ -41,30 +48,30 @@ export default class Caption extends Component {
     this.setState({text})
   }
 
-  test() {
-    console.log(this.props.postImage);
-  }
-
   render() {
-    var header = (() => {
+    var image = (() => {
       if (this.props.postImage != null) return (
-        <View style={styles.headerRow}>
-          <Image source={this.props.postImage} style={styles.postImage}/>
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerText}>What do you want to post?</Text>
-          </View>
-        </View>
-      )
-      else return (
-        <View style={styles.headerRow}>
-          <Text style={styles.headerText}>What do you want to post?</Text>
-        </View>
+        <Image source={this.props.postImage} style={styles.postImage}/>
       )
     })();
 
     return (
       <View style={styles.container}>
-        {header}
+        <View style={styles.headerRow}>
+          {image}
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerText}>What do you want to post?</Text>
+            <View style={styles.subheaderTextContainer}>
+              <Text style={styles.subheaderText}>Select one below or</Text>
+              <TouchableOpacity
+                style={styles.writeYourOwnTouch}
+                onPress={()=>{this.customCaption()}}>
+                <Text style={styles.writeYourOwn}>write your own</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+        <Hr lineColor={Colors.gray} />
         <Text
           style={styles.title}>
           Suggestions:
@@ -73,17 +80,6 @@ export default class Caption extends Component {
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
         />
-        <TouchableOpacity
-          onPress={() => {this.goToNext('')}}
-          style={styles.listElement}>
-          <Text
-            style={styles.listText}>
-            Custom Text
-          </Text>
-        </TouchableOpacity> 
-        <Button
-          title="Test"
-          onPress={this.test}/>
       </View>
     )
   }
@@ -91,7 +87,7 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 80,
+    paddingTop: 60,
   },
   headerRow: {
     height: 60,
@@ -109,13 +105,33 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    color: 'black',
+    color: Colors.darkGreen,
+  },
+  subheaderTextContainer: {
+    flexDirection: 'row',
+    marginTop: 5,
+  },
+  subheaderText: {
+    fontSize: 15,
+    color: Colors.darkerGreen,
+    margin: 5,
+    marginLeft: 0,
+  },
+  writeYourOwnTouch: {
+    backgroundColor: Colors.lightGreen,
+    borderRadius: 10,
+  },
+  writeYourOwn: {
+    fontSize: 15,
+    color: Colors.darkerGreen,
+    margin: 5
   },
   title: {
-    marginLeft: 10,
+    margin: 10,
+    color: Colors.darkGreen,
   },
   listElement: {
-    backgroundColor: '#d5dddb',
+    backgroundColor: Colors.lightGreen,
     margin: 10,
     borderRadius: 10,
   },

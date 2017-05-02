@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
 import { getPageID, getPageAccessToken, pagePost } from '../lib/FacebookAPI';
 import { EventCreationCalendar } from '../lib/Calendar';
 import Calendar from 'react-native-calendar';
+import Colors from '../data/Colors';
+import Hr from 'react-native-hr';
 
 
 export default class Post extends Component {
@@ -24,6 +26,7 @@ export default class Post extends Component {
       green: '#97e1d0',
       black: '#000000',
       selectedDate: 'Today',
+      height: 0,
     }
     this.postNow = this.postNow.bind(this);
     this.smartPost = this.smartPost.bind(this);
@@ -70,6 +73,7 @@ export default class Post extends Component {
         message: 'Something bad happened ' + err
       });
     });
+    Actions.pop();
   }
 
   postNow() {
@@ -103,11 +107,43 @@ export default class Post extends Component {
   }
 
   render() {
+    var text = (() => {
+      if (this.props.data != null) return (
+        this.props.data.captionWithTags)
+    })();
+
+    var postImage = (() => {
+      if (this.props.postImage!=null) return (
+        <Image source={this.props.postImage} style={styles.postImage}/>
+      )
+    })();
+
     return (
       <View style={styles.container}>
-        <EventCreationCalendar 
-          showCalendar={this.state.showCalendar}
-          updatedSelectedDate={(date) => {this.updateSelectedDate(date)}} />
+        <View style={styles.headerRow}>
+          <Text style={styles.headerText}>Finalize your message</Text>
+        </View>
+        <Hr lineColor={Colors.gray} />
+        <View style={styles.scrollView}>
+          <ScrollView>
+            <TextInput
+              multiline={true}
+              onChange={(event) => {
+                this.setState({
+                  text: event.nativeEvent.text,
+                  height: event.nativeEvent.contentSize.height,
+                });
+              }}
+              style={[styles.textInput, {height: Math.max(105, this.state.height)}]}
+              defaultValue={text}
+              value={this.state.text}
+            />
+            {postImage}
+            <EventCreationCalendar 
+              showCalendar={this.state.showCalendar}
+              updatedSelectedDate={(date) => {this.updateSelectedDate(date)}} />
+          </ScrollView>
+        </View>
         <View
             style={styles.captionSection}>
           <Text
@@ -184,7 +220,7 @@ export default class Post extends Component {
         </View>
 
         <Button
-          title="Post>"
+          title="Queue  "
           onPress={this.submitPost.bind(this)}/>
       </View>
     )
@@ -193,7 +229,27 @@ export default class Post extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100
+    marginTop: 60,
+    flex: 1,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    margin: 10,
+  },
+  headerText: {
+    fontSize: 20,
+    color: Colors.darkGreen,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  textInput: {
+    fontSize: 15,
+    backgroundColor: '#EEEEEE'
+  },
+  postImage: {
+    height: 180,
+    width: '100%',
   },
   captionTextActive: {
     color: '#ADADAD',

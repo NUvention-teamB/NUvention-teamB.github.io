@@ -10,7 +10,7 @@ export default class Photo extends Component {
     super(props);
 
     this.goToNext = this.goToNext.bind(this);
-    this.test = this.test.bind(this);
+    this.noPhoto = this.noPhoto.bind(this);
 
     console.log('POST in Photo:', this.props.post);
     const fetchParams: Object = {
@@ -54,31 +54,31 @@ export default class Photo extends Component {
         let imageData = { uri: 'data:image/jpeg;base64,' + response.data };
 
         this.setState({
-          postImage: source,
           imageData: imageData
         });
         this.props.uploadPhoto(source);
+        this.goToNext();
       }
     });
   }
 
   goToNext() {
     this.props.nextScreen();
-    console.log('goToNext');
   }
 
-  test() {
-    console.log(this.state.postImage);
+  noPhoto() {
+    this.props.uploadPhoto(null);
+    this.goToNext();
   }
 
   render() {
     var postImage = (() => {
-      if (this.state.postImage==null) return (
+      if (this.props.postImage==null) return (
         <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
       )
       else return (
         <View>
-          <Image source={this.state.postImage} style={styles.postImage}/>
+          <Image source={this.props.postImage} style={styles.postImage}/>
           <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
         </View>
       )
@@ -86,14 +86,10 @@ export default class Photo extends Component {
 
     return (
       <View style={styles.container}>
-
         {postImage}
         <Button
-          title="Next>"
-          onPress={this.goToNext}/>
-        <Button
-          title="Test"
-          onPress={this.test}/>
+          title="No Photo"
+          onPress={this.noPhoto}/>
       </View> 
     )
   }
@@ -101,13 +97,11 @@ export default class Photo extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100
+    paddingTop: 60
   },
   postImage: {
     height: 180,
-    width: 370,
-    margin: 3,
-    borderRadius: 15
+    width: '100%',
   }
 });
 
