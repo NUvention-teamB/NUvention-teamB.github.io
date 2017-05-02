@@ -254,7 +254,8 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 70,
-    flex: 1
+    flex: 1,
+    backgroundColor: '#f7f7f7',
   },
   centering: {
     // marginTop: '30%',
@@ -330,7 +331,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '60%',
     padding: 15,
-    borderRadius: 20
+    borderRadius: 20,
+    shadowRadius: 2,
+    shadowOpacity: 0.5,
+    shadowColor: 'darkblue',
+    shadowOffset: {
+      top: 1
+    },
   },
   newPostText: {
     textAlign: 'center',
@@ -356,6 +363,15 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   individualPost: {
-    marginTop: 20,
+    backgroundColor: 'white',
+    padding: 10,
+    paddingTop: 20,
+    borderRadius: 5,
+    marginTop: 10,
+    shadowRadius: 5,
+    shadowOpacity: 0.1,
+    shadowOffset: {
+      top: 1
+    }
   },
 });
