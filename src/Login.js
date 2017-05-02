@@ -103,6 +103,8 @@ const styles = StyleSheet.create({
   },
   fbButton: {
     backgroundColor: 'blue',
+    marginLeft: 'auto',
+    marginRight: 'auto',
     width: '60%',
     marginTop: '30%',
     height: 40,

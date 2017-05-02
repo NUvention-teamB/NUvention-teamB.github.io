@@ -32,6 +32,74 @@ class HorizontalBar extends Component {
   }
 }
 
+class LastPostsStatistics extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    if (this.props.statistics=null || this.props.statistics.posts==null || this.props.statistics.posts.length==0) return null;
+    var statistics = this.props.statistics;
+
+    var max = 0;
+
+    for (var post of statistics.posts) {
+      for (var type in post.statistics) {
+        var value = post.statistics[type];
+        if (value>max) max=value;
+      }
+    }
+
+    var posts = statistics.posts.map((post) => {
+      return (
+        <IndividualPostStatistics max={max} key={post.id} post={post} />
+      )
+    });
+
+
+    return (
+      <View>
+        <Text style={styles.recentHistoryLabel}>Your Recent History</Text>
+        {posts}
+      </View>
+    )
+  }
+}
+
+class IndividualPostStatistics extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    if (this.props.post=null) return null;
+    var post = this.props.post;
+    // console.log(post);
+    var statistics = post.statistics;
+
+
+    var message = this.props.post.message || '';
+    var date = new Date(post.created_time*1000);
+
+    var statistics = {
+      likes: new Animated.Value(post.statistics.likes),
+      reactions: new Animated.Value(post.statistics.reactions),
+      comments: new Animated.Value(post.statistics.comments)
+    }
+
+
+    return (
+      <View>
+        <Text style={styles.postDate}>{date.toISOString().slice(0,10).replace(/-/g,"/")}</Text>
+        <Text style={styles.postMessage}>{message}</Text>
+        <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
+        <HorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
+        <HorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
+      </View>
+    )
+  }
+}
+
 
 class WeekStatistics extends Component {
   constructor(props) {
@@ -42,17 +110,12 @@ class WeekStatistics extends Component {
     this.state = {
       week: this.props.week || 'thisWeekSummary'
     }
+
+    this.switchWeek = this.switchWeek.bind(this);
   }
 
-  switchWeek () {
-    if (this.state.week=='thisWeekSummary') this.setState({week:'pastWeekSummary'});
-    else if (this.state.week=='pastWeekSummary') this.setState({week:'thisWeekSummary'});
-    else {
-      console.log('ERROR, week not defined properly')
-    }
-    // Animated.parallel(indicators.map(item => {
-    //   return Animated.timing(this.state[item], {toValue: width[item]})
-    // })).start()
+  switchWeek (newWeek) {
+    if (this.state.week!=newWeek) this.setState({week:newWeek});
   }
 
 
@@ -75,24 +138,23 @@ class WeekStatistics extends Component {
     }
 
     // console.log(statistics);
-
+    var weekLabel = (this.state.week=='thisWeekSummary') ? "This Week" : "Past Week";
+    var thisWeekStyle = (this.state.week=='thisWeekSummary') ? styles.weekButtonActive : styles.weekButtonInactive;
+    var pastWeekStyle = (this.state.week=='pastWeekSummary') ? styles.weekButtonActive : styles.weekButtonInactive;
 
     return (
       <View>
+        {/* <Text style={styles.weekLabel}>{weekLabel}</Text> */}
         <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
         <HorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
         <HorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
-        {/* <View>
-          <TouchableOpacity onPress={this.switchWeek.bind(this)} style={(() => {this.state.week=='pastWeekSummary' ? styles.weekButtonActive : styles.weekButtonInactive})() }>
-            <View style={(() => {this.state.week=='pastWeekSummary' ? styles.weekButtonActive : styles.weekButtonInactive})() }>
-              <Text>Past Week</Text>
-            </View>
-          </TouchableOpacity>
-          <Text>{'|'}</Text>
-          <TouchableOpacity onPress={this.switchWeek.bind(this)} style={(() => {this.state.week=='thisWeekSummary' ? styles.weekButtonActive : styles.weekButtonInactive})() }>
-            <Text>This Week</Text>
-          </TouchableOpacity>
-        </View> */}
+        <View>
+          <Text style={styles.weekOptions}>
+            <Text onPress={() => this.switchWeek('thisWeekSummary')} style={thisWeekStyle}>This Week</Text>
+            <Text style={styles.weekOptionsSeperator}>{'    |    '}</Text>
+            <Text onPress={() => this.switchWeek('pastWeekSummary')} style={pastWeekStyle}>Past Week</Text>
+          </Text>
+        </View>
 
       </View>
     )
@@ -121,20 +183,18 @@ export default class Home extends Component {
     var _this = this;
     getListOfPosts(globalPageId, globalPageAccessToken)
     .then(function(statistics) {
-      // console.log(statistics);
+      console.log(statistics);
       // NOTE: DATA FOR DEMO
 
-      statistics = {
-        thisWeekSummary: {
-          likes: 120,
-          reactions: 43,
-          comments: 38
-        },
-        pastWeekSummary: {
-          likes: 170,
-          reactions: 67,
-          comments: 30
-        }
+      statistics.thisWeekSummary = {
+        likes: 120,
+        reactions: 43,
+        comments: 38
+      }
+      statistics.pastWeekSummary = {
+        likes: 170,
+        reactions: 67,
+        comments: 30
       }
 
       _this.setState({
@@ -166,16 +226,14 @@ export default class Home extends Component {
       return maxValue
     })();
 
-    console.log(max);
+    // console.log(max);
+
+    var weekLabel = (this.state.week)
 
     return (
       <View style={styles.container}>
         <Text style={styles.pageName}>Your Stats For {globalPage.name}</Text>
-        <Text style={styles.weekLabel}>This Week</Text>
         <WeekStatistics statistics={this.state.statistics} max={max} loaded={this.state.loaded} week="thisWeekSummary"/>
-        <Text style={styles.weekLabel}>Past Week</Text>
-        <WeekStatistics statistics={this.state.statistics} max={max} loaded={this.state.loaded} week="pastWeekSummary"/>
-
         <TouchableHighlight
 
           onPress={this.newPost}>
@@ -183,6 +241,9 @@ export default class Home extends Component {
             <Text style={styles.newPostText}>Create a new post</Text>
           </View>
         </TouchableHighlight>
+
+        <LastPostsStatistics statistics={this.state.statistics} loaded={this.state.loaded} />
+
       </View>
     )
   }
@@ -204,6 +265,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'darkgreen',
     marginBottom: 30,
+    marginTop: 10
   },
   weekLabel: {
     marginTop: 25,
@@ -232,10 +294,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
   },
   weekButtonActive: {
-    width: '40',
+    width: 100,
   },
   weekButtonInactive: {
-    width: '40',
+    width: 100,
+    color: 'grey',
+  },
+  weekOptions: {
+    marginTop: 20,
+    marginBottom: 10,
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'darkblue'
+  },
+  weekOptionsSeperator: {
+    fontWeight: '500',
+    color: 'black'
   },
   barLabel: {
     fontWeight: 'bold',
@@ -250,7 +324,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3B5998',
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: 50,
+    marginTop: 20,
     width: '60%',
     padding: 15,
     borderRadius: 20
@@ -259,5 +333,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 20,
+  },
+  recentHistoryLabel: {
+    textAlign: 'center',
+    fontSize: 20,
+    marginTop: 20,
+    marginBottom: 10,
+    color: 'darkblue',
+    fontWeight: '700'
+  },
+  postDate: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  postMessage: {
+    marginLeft: 20,
+    fontSize: 11,
   }
 });
