@@ -42,17 +42,12 @@ class WeekStatistics extends Component {
     this.state = {
       week: this.props.week || 'thisWeekSummary'
     }
+
+    this.switchWeek = this.switchWeek.bind(this);
   }
 
-  switchWeek () {
-    if (this.state.week=='thisWeekSummary') this.setState({week:'pastWeekSummary'});
-    else if (this.state.week=='pastWeekSummary') this.setState({week:'thisWeekSummary'});
-    else {
-      console.log('ERROR, week not defined properly')
-    }
-    // Animated.parallel(indicators.map(item => {
-    //   return Animated.timing(this.state[item], {toValue: width[item]})
-    // })).start()
+  switchWeek (newWeek) {
+    if (this.state.week!=newWeek) this.setState({week:newWeek});
   }
 
 
@@ -75,24 +70,25 @@ class WeekStatistics extends Component {
     }
 
     // console.log(statistics);
-
+    var weekLabel = (this.state.week=='thisWeekSummary') ? "This Week" : "Past Week";
+    var thisWeekStyle = (this.state.week=='thisWeekSummary') ? styles.weekButtonActive : styles.weekButtonInactive;
+    var pastWeekStyle = (this.state.week=='pastWeekSummary') ? styles.weekButtonActive : styles.weekButtonInactive;
 
     return (
       <View>
+        <Text style={styles.weekLabel}>{weekLabel}</Text>
         <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
         <HorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
         <HorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
-        {/* <View>
-          <TouchableOpacity onPress={this.switchWeek.bind(this)} style={(() => {this.state.week=='pastWeekSummary' ? styles.weekButtonActive : styles.weekButtonInactive})() }>
-            <View style={(() => {this.state.week=='pastWeekSummary' ? styles.weekButtonActive : styles.weekButtonInactive})() }>
-              <Text>Past Week</Text>
-            </View>
-          </TouchableOpacity>
-          <Text>{'|'}</Text>
-          <TouchableOpacity onPress={this.switchWeek.bind(this)} style={(() => {this.state.week=='thisWeekSummary' ? styles.weekButtonActive : styles.weekButtonInactive})() }>
-            <Text>This Week</Text>
-          </TouchableOpacity>
-        </View> */}
+        <View>
+          <Text style={styles.weekOptions}>
+            <Text onPress={() => this.switchWeek('thisWeekSummary')} style={thisWeekStyle}>This Week</Text>
+            <Text style={styles.weekOptionsSeperator}>{'    |    '}</Text>
+            <Text onPress={() => this.switchWeek('pastWeekSummary')} style={pastWeekStyle}>Past Week</Text>
+          </Text>
+
+
+        </View>
 
       </View>
     )
@@ -166,16 +162,14 @@ export default class Home extends Component {
       return maxValue
     })();
 
-    console.log(max);
+    // console.log(max);
+
+    var weekLabel = (this.state.week)
 
     return (
       <View style={styles.container}>
         <Text style={styles.pageName}>Your Stats For {globalPage.name}</Text>
-        <Text style={styles.weekLabel}>This Week</Text>
         <WeekStatistics statistics={this.state.statistics} max={max} loaded={this.state.loaded} week="thisWeekSummary"/>
-        <Text style={styles.weekLabel}>Past Week</Text>
-        <WeekStatistics statistics={this.state.statistics} max={max} loaded={this.state.loaded} week="pastWeekSummary"/>
-
         <TouchableHighlight
 
           onPress={this.newPost}>
@@ -232,10 +226,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
   },
   weekButtonActive: {
-    width: '40',
+    width: 100,
   },
   weekButtonInactive: {
-    width: '40',
+    width: 100,
+    color: 'grey',
+  },
+  weekOptions: {
+    marginTop: 20,
+    marginBottom: 10,
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'darkblue'
+  },
+  weekOptionsSeperator: {
+    fontWeight: '500',
+    color: 'black'
   },
   barLabel: {
     fontWeight: 'bold',
