@@ -143,7 +143,7 @@ class WeekStatistics extends Component {
     var pastWeekStyle = (this.state.week=='pastWeekSummary') ? styles.weekButtonActive : styles.weekButtonInactive;
 
     return (
-      <View>
+      <View style={styles.weekStatistics}>
         {/* <Text style={styles.weekLabel}>{weekLabel}</Text> */}
         <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
         <HorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
@@ -347,10 +347,12 @@ const styles = StyleSheet.create({
   recentHistoryLabel: {
     textAlign: 'center',
     fontSize: 20,
-    marginTop: 40,
-    marginBottom: 10,
+    marginTop: 20,
+    paddingTop: 30,
+    paddingBottom: 10,
     color: 'darkblue',
-    fontWeight: '700'
+    fontWeight: '700',
+    backgroundColor: 'white'
   },
   postDate: {
     fontSize: 15,
@@ -373,5 +375,8 @@ const styles = StyleSheet.create({
     shadowOffset: {
       top: 1
     }
+  },
+  weekStatistics: {
+    backgroundColor: 'white',
   },
 });
