@@ -32,6 +32,74 @@ class HorizontalBar extends Component {
   }
 }
 
+class LastPostsStatistics extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    if (this.props.statistics=null || this.props.statistics.posts==null || this.props.statistics.posts.length==0) return null;
+    var statistics = this.props.statistics;
+
+    var max = 0;
+
+    for (var post of statistics.posts) {
+      for (var type in post.statistics) {
+        var value = post.statistics[type];
+        if (value>max) max=value;
+      }
+    }
+
+    var posts = statistics.posts.map((post) => {
+      return (
+        <IndividualPostStatistics max={max} key={post.id} post={post} />
+      )
+    });
+
+
+    return (
+      <View>
+        <Text style={styles.recentHistoryLabel}>Your Recent History</Text>
+        {posts}
+      </View>
+    )
+  }
+}
+
+class IndividualPostStatistics extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    if (this.props.post=null) return null;
+    var post = this.props.post;
+    // console.log(post);
+    var statistics = post.statistics;
+
+
+    var message = this.props.post.message || '';
+    var date = new Date(post.created_time*1000);
+
+    var statistics = {
+      likes: new Animated.Value(post.statistics.likes),
+      reactions: new Animated.Value(post.statistics.reactions),
+      comments: new Animated.Value(post.statistics.comments)
+    }
+
+
+    return (
+      <View>
+        <Text style={styles.postDate}>{date.toISOString().slice(0,10).replace(/-/g,"/")}</Text>
+        <Text style={styles.postMessage}>{message}</Text>
+        <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
+        <HorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
+        <HorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
+      </View>
+    )
+  }
+}
+
 
 class WeekStatistics extends Component {
   constructor(props) {
@@ -173,6 +241,9 @@ export default class Home extends Component {
             <Text style={styles.newPostText}>Create a new post</Text>
           </View>
         </TouchableHighlight>
+
+        <LastPostsStatistics statistics={this.state.statistics} loaded={this.state.loaded} />
+
       </View>
     )
   }
@@ -253,7 +324,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3B5998',
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: 50,
+    marginTop: 20,
     width: '60%',
     padding: 15,
     borderRadius: 20
@@ -262,5 +333,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 20,
+  },
+  recentHistoryLabel: {
+    textAlign: 'center',
+    fontSize: 20,
+    marginTop: 20,
+    marginBottom: 10,
+    color: 'darkblue',
+    fontWeight: '700'
+  },
+  postDate: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  postMessage: {
+    marginLeft: 20,
+    fontSize: 11,
   }
 });
