@@ -25,9 +25,9 @@ export default class Caption extends Component {
   }
 
   generateText() {
-    data = this.props.data ? this.props.data : {caption:'',captionWithTags:'',tags:[]};
+    data = this.props.data ? this.props.data : {id:null,caption:'',captionWithTags:'',tags:[]};
     output = data.caption;
-    console.log('output' + output);
+
     for (i = data.tags.length - 1 ; i >= 0 ; i--) {
       position = data.tags[i].position;
       console.log(i + data.tags[i].replacement);
@@ -37,18 +37,15 @@ export default class Caption extends Component {
         output = [output.slice(0, position), '[' + data.tags[i].name + ']', output.slice(position)].join('');
       }
     }
-    // this.props.updateText(output);
     return output;
   }
 
   goToPost() {
-    this.state.data.caption = this.state.text;
-    // Actions.post({post:this.props.post});
     this.props.nextScreen();
   }
 
-  goToTagEditor(tag) {
-    Actions.tagEditor({tag:tag})
+  goToTagEditor(tag, tagIndex) {
+    Actions.tagEditor({tag: tag, tagIndex: tagIndex, id: this.props.data.id})
   }
 
   onChangeText(text) {
@@ -57,33 +54,29 @@ export default class Caption extends Component {
 
   getTags(data) {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    return data != null && data.tags != null ? ds.cloneWithRows(data.tags) : null;
+    return ds.cloneWithRows(data.tags);
   }
 
-  renderRow(rowData) {
+  renderRow(rowData, sectionId, rowId) {
     return (
       <View marginBottom={20}>
         <TouchableOpacity
-            onPress={() => {this.goToTagEditor(rowData.name)}}
+            onPress={() => {this.goToTagEditor(rowData.name, parseInt(rowId))}}
             style={styles.listElement}>
           <Text
             style={styles.listText}>
-            {rowData.name}
+            {rowData.name}: {rowData.suggestion || 'None'}
           </Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-  conditional() {
-    if (this.getTags(this.props.data) != null) {
-      return (
-        <ListView
-          dataSource={this.getTags(this.props.data)}
-          renderRow={this.renderRow}
-        />
-      )
-    }
+  componentWillReceiveProps(newProps) {
+    console.log('newProps');
+    console.log(newProps);
+    console.log('this.props');
+    console.log(this.props);
   }
 
   render() {
@@ -92,8 +85,21 @@ export default class Caption extends Component {
         <Image source={this.props.postImage} style={styles.postImage}/>
       )
     })();
-    var text = this.generateText();
-    var conditional = this.conditional();
+    var text = (() => {
+      if (this.props.data != null) return (
+        this.props.data.captionWithTags)
+    })();
+
+    var conditional = (()=> {
+      if (this.props.data != null && this.props.data.tags != null) {
+        return (
+          <ListView
+            dataSource={this.getTags(this.props.data)}
+            renderRow={this.renderRow}
+          />
+        )
+      }
+    })();
   
     return (
       <View style={styles.container}>
@@ -120,7 +126,6 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   headerRow: {
-    height: 60,
     flexDirection: 'row',
     margin: 10,
   },
@@ -129,15 +134,12 @@ const styles = StyleSheet.create({
     width: 60,
     marginRight: 10,
   },
-  headerTextContainer: {
-    flexDirection: "column",
-    flex: 1,
-  },
   headerText: {
     fontSize: 20,
     color: Colors.darkGreen,
   },
   postInput: {
+    marginTop: 10,
     height: 100,
     marginLeft: 20,
     marginRight: 20,

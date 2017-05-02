@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
 import { getPageID, getPageAccessToken, pagePost } from '../lib/FacebookAPI';
 import { EventCreationCalendar } from '../lib/Calendar';
 import Calendar from 'react-native-calendar';
+import Colors from '../data/Colors';
+import Hr from 'react-native-hr';
 
 
 export default class Post extends Component {
@@ -24,6 +26,7 @@ export default class Post extends Component {
       green: '#97e1d0',
       black: '#000000',
       selectedDate: 'Today',
+      height: 0,
     }
     this.postNow = this.postNow.bind(this);
     this.smartPost = this.smartPost.bind(this);
@@ -104,24 +107,9 @@ export default class Post extends Component {
   }
 
   render() {
-    var header = (() => {
-      if (this.props.profilePicture != null) return (
-        <View style={styles.headerRow}>
-          <Image source={this.props.profilePicture} style={styles.profilePicture}/>
-          <View style={styles.headerTextContainer}>
-            <TextInput 
-              style={styles.headerText}
-              defaultValue={this.props.text}/>
-          </View>
-        </View>
-      )
-      else return (
-        <View style={styles.headerRow}>
-          <TextInput 
-            style={styles.headerText}
-            defaultValue={this.props.text}/>
-        </View>
-      )
+    var text = (() => {
+      if (this.props.data != null) return (
+        this.props.data.captionWithTags)
     })();
 
     var postImage = (() => {
@@ -132,11 +120,30 @@ export default class Post extends Component {
 
     return (
       <View style={styles.container}>
-        {header}
-        {postImage}
-        <EventCreationCalendar 
-          showCalendar={this.state.showCalendar}
-          updatedSelectedDate={(date) => {this.updateSelectedDate(date)}} />
+        <View style={styles.headerRow}>
+          <Text style={styles.headerText}>Finalize your message</Text>
+        </View>
+        <Hr lineColor={Colors.gray} />
+        <View style={styles.scrollView}>
+          <ScrollView>
+            <TextInput
+              multiline={true}
+              onChange={(event) => {
+                this.setState({
+                  text: event.nativeEvent.text,
+                  height: event.nativeEvent.contentSize.height,
+                });
+              }}
+              style={[styles.textInput, {height: Math.max(105, this.state.height)}]}
+              defaultValue={text}
+              value={this.state.text}
+            />
+            {postImage}
+            <EventCreationCalendar 
+              showCalendar={this.state.showCalendar}
+              updatedSelectedDate={(date) => {this.updateSelectedDate(date)}} />
+          </ScrollView>
+        </View>
         <View
             style={styles.captionSection}>
           <Text
@@ -213,7 +220,7 @@ export default class Post extends Component {
         </View>
 
         <Button
-          title="Queue"
+          title="Queue  "
           onPress={this.submitPost.bind(this)}/>
       </View>
     )
@@ -222,25 +229,23 @@ export default class Post extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60
+    marginTop: 60,
+    flex: 1,
   },
   headerRow: {
-    height: 60,
     flexDirection: 'row',
     margin: 10,
   },
-  profilePicture: {
-    height: 60,
-    width: 60,
-    marginRight: 10,
+  headerText: {
+    fontSize: 20,
+    color: Colors.darkGreen,
   },
-  headerTextContainer: {
-    flexDirection: "column",
+  scrollView: {
     flex: 1,
   },
-  headerText: {
-    fontSize: 10,
-    color: 'black',
+  textInput: {
+    fontSize: 15,
+    backgroundColor: '#EEEEEE'
   },
   postImage: {
     height: 180,

@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity } from 'react-native'
 import { Actions } from 'react-native-router-flux';
-
+import Colors from '../data/Colors';
+import Hr from 'react-native-hr';
 
 export default class Caption extends Component {
   constructor(props) {
     super(props);
 
     this.onChangeText = this.onChangeText.bind(this);
-    this.goToNext = this.goToNext.bind(this);
+    this.returnToCaption = this.returnToCaption.bind(this);
     this.renderRow = this.renderRow.bind(this);
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -20,18 +21,17 @@ export default class Caption extends Component {
         'location': {
           question: 'What location would you like?',
           options: [
-            '555 Clark St.',
+            '555 Clark St',
             '555 Clark St. Evanston, IL'
           ]
         }
       }
     };
-    console.log(this.state.data.location.options);
+
   }
 
-  goToNext() {
-    this.props.post.caption = this.state.text;
-    Actions.post({post:this.props.post});
+  returnToCaption(option) {
+    Actions.pop({refresh: {option:option, tagIndex: this.props.tagIndex, id: this.props.id}})
   }
 
   onChangeText(text) {
@@ -42,8 +42,12 @@ export default class Caption extends Component {
     return (
       <View marginBottom={20}>
         <TouchableOpacity
-          onPress={Actions.pop}>
-          <Text>{rowData}</Text>
+          onPress={()=>{this.returnToCaption(rowData)}}
+          style={styles.listElement}>
+          <Text
+            style={styles.listText}>
+            {rowData}
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -52,6 +56,10 @@ export default class Caption extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.headerRow}>
+          <Text style={styles.headerText}>Choose a location</Text>
+        </View>
+        <Hr lineColor={Colors.gray} />
         <ListView
           dataSource={this.state.ds.cloneWithRows(this.state.data.location.options)}
           renderRow={this.renderRow}
@@ -63,7 +71,23 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100
+    paddingTop: 65,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    margin: 10,
+  },
+  headerText: {
+    fontSize: 20,
+    color: Colors.darkGreen,
+  },
+  listElement: {
+    backgroundColor: Colors.lightGreen,
+    margin: 10,
+    borderRadius: 10,
+  },
+  listText: {
+    margin: 10
   },
   postInput: {
     height: 100,

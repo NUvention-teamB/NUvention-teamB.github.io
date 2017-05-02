@@ -23,8 +23,12 @@ export default class Caption extends Component {
 
   goToNext(data) {
     this.props.updateSuggestion(data);
-    // Actions.caption({post:this.props.post, data: data});
     this.props.nextScreen();
+  }
+
+  customCaption() {
+    this.props.updateSuggestion();
+    this.props.skipTwo();
   }
 
   renderRow(rowData) {
@@ -61,7 +65,7 @@ export default class Caption extends Component {
               <Text style={styles.subheaderText}>Select one below or</Text>
               <TouchableOpacity
                 style={styles.writeYourOwnTouch}
-                onPress={()=>{this.goToNext('')}}>
+                onPress={()=>{this.customCaption()}}>
                 <Text style={styles.writeYourOwn}>write your own</Text>
               </TouchableOpacity>
             </View>
@@ -76,14 +80,6 @@ export default class Caption extends Component {
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
         />
-        <TouchableOpacity
-          onPress={() => {this.goToNext('')}}
-          style={styles.listElement}>
-          <Text
-            style={styles.listText}>
-            Custom Text
-          </Text>
-        </TouchableOpacity>
       </View>
     )
   }
