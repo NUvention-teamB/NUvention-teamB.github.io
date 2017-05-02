@@ -22,7 +22,7 @@ export default class Post extends Component {
       facebookToggle: true,
       instagramToggle: true,
       twitterToggle: false,
-      postTime: 'smart',
+      postTime: 'now',
       green: '#97e1d0',
       black: '#000000',
       selectedDate: 'Today',
@@ -153,7 +153,8 @@ export default class Post extends Component {
         </View>
         <View style={styles.timeViewSection}>
           <TouchableOpacity
-              onPress={this.postNow}>
+              onPress={this.postNow}
+              style={styles.postTimeTouch}>
             <View
                 style={(this.state.postTime == 'now') ? styles.timeViewActive : styles.timeView}>
               <Text
@@ -163,17 +164,8 @@ export default class Post extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={this.smartPost}>
-            <View
-                style={(this.state.postTime == 'smart') ? styles.timeViewActive : styles.timeView}>
-              <Text
-                  style={(this.state.postTime == 'smart') ? styles.timeTextActive : styles.timeText}>
-                Smart Post
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-              onPress={this.openCalendar}>
+              onPress={this.openCalendar}
+              style={styles.postTimeTouch}>
             <View
                 style={(this.state.postTime == 'later') ? styles.timeViewActive : styles.timeView}>
               <Text
@@ -258,26 +250,24 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   timeViewSection: {
-    height: 40,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    margin: 10,
+    borderWidth: 1,
+    borderColor: Colors.gray,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  postTimeTouch: {
+    width: '50%'
   },
   timeView: {
-    borderWidth: 1,
-    width: 100,
-    padding: 10,
-    borderRadius: 10,
+    padding: 10
   },
   timeViewActive: {
-    borderWidth: 1,
-    width: 100,
     padding: 10,
-    borderRadius: 10,
     backgroundColor: '#97e1d0'
   },
   timeTextActive: {
-    color: '#FFFFFF'
+    color: '#FFFFFF',
   },
   socialView: {
     height: 60,
