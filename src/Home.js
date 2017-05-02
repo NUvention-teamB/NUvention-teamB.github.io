@@ -235,9 +235,7 @@ export default class Home extends Component {
       <View style={styles.container}>
         <Text style={styles.pageName}>Your Stats For {globalPage.name}</Text>
         <WeekStatistics statistics={this.state.statistics} max={max} loaded={this.state.loaded} week="thisWeekSummary"/>
-        <TouchableHighlight
-
-          onPress={this.newPost}>
+        <TouchableHighlight onPress={this.newPost}>
           <View style={styles.newPost}>
             <Text style={styles.newPostText}>Create a new post</Text>
           </View>
