@@ -72,13 +72,6 @@ export default class Caption extends Component {
     );
   }
 
-  componentWillReceiveProps(newProps) {
-    console.log('newProps');
-    console.log(newProps);
-    console.log('this.props');
-    console.log(this.props);
-  }
-
   render() {
     var image = (() => {
       if (this.props.postImage != null) return (

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, Image, CameraRoll } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, Image, CameraRoll, TouchableHighlight } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import ImagePicker from 'react-native-image-picker'
 import Suggestions from './Suggestions'
@@ -54,7 +54,8 @@ export default class Photo extends Component {
         let imageData = { uri: 'data:image/jpeg;base64,' + response.data };
 
         this.setState({
-          imageData: imageData
+          imageData: imageData,
+          postImage: source
         });
         this.props.uploadPhoto(source);
         this.goToNext();
@@ -72,14 +73,27 @@ export default class Photo extends Component {
   }
 
   render() {
+
+    var addPhotoBtn = (() => {
+      return (
+        <TouchableHighlight onPress={this.addImage.bind(this)} underlayColor="#00b0ff">
+          <View style={styles.addPhotoBtn}>
+            <Text style={styles.addPhotoBtnText}>Add a photo</Text>
+          </View>
+        </TouchableHighlight>
+      )
+    })();
+
     var postImage = (() => {
       if (this.props.postImage==null) return (
-        <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
+        <View>
+          {addPhotoBtn}
+        </View>
       )
       else return (
         <View>
           <Image source={this.props.postImage} style={styles.postImage}/>
-          <Button title="Add a photo" onPress={this.addImage.bind(this)}/>
+          {addPhotoBtn}
         </View>
       )
     })();
@@ -88,9 +102,9 @@ export default class Photo extends Component {
       <View style={styles.container}>
         {postImage}
         <Button
-          title="No Photo"
+          title="Or continue without a photo... >"
           onPress={this.noPhoto}/>
-      </View> 
+      </View>
     )
   }
 }
@@ -102,38 +116,27 @@ const styles = StyleSheet.create({
   postImage: {
     height: 180,
     width: '100%',
-  }
+  },
+  addPhotoBtn: {
+    backgroundColor: '#00b0ff',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 30,
+    marginBottom: 20,
+    width: '60%',
+    padding: 15,
+    borderRadius: 20,
+    shadowRadius: 2,
+    shadowOpacity: 0.5,
+    shadowColor: 'darkblue',
+    shadowOffset: {
+      top: 1
+    },
+  },
+  addPhotoBtnText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 18,
+
+  },
 });
-
-async function uploadPhoto() {
-  // if (this.state.imageData==null) {
-  //   console.log('Empty image');
-  //   return;
-  // }
-  // console.log('data:image/jpeg;base64,' + this.state.imageData.uri);
-
-  console.log(this.state.postImage.uri);
-  console.log(this.state.AccessKey);
-  console.log(this.state.SecretKey);
-
-  let file = {
-    // `uri` can also be a file system path (i.e. file://)
-    uri: this.state.postImage.uri,
-    name: "image.jpeg",
-    type: "image/jpeg"
-  }
-
-  let options = {
-    bucket: "teamb-photos",
-    region: "us-east-1",
-    accessKey: "AKIAJQIOU7GJXFIBMVXQ",
-    secretKey: "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",
-    successActionStatus: 201
-  }
-
-  RNS3.put(file, options).then(response => {
-    console.log(response);
-    if (response.status !== 201) throw new Error("Failed to upload image to S3");
-  });
-
-}

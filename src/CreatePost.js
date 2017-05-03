@@ -76,10 +76,6 @@ export default class CreatePost extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    console.log('newProps');
-    console.log(newProps);
-    console.log('this.props');
-    console.log(this.props);
     if (newProps.id != null) {
       this.updateTagSuggestion(newProps.id, newProps.tagIndex, newProps.option);
       newProps.id = null;

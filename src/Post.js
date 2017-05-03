@@ -8,6 +8,7 @@ import { EventCreationCalendar } from '../lib/Calendar';
 import Calendar from 'react-native-calendar';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
+import { uploadPhoto } from '../lib/PostHelper'
 
 
 export default class Post extends Component {
@@ -45,7 +46,11 @@ export default class Post extends Component {
     var that = this;
     console.log('Submitting post');
     var fbLoginToken = logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER];
-    getPageID(fbLoginToken)
+    var link = null;
+    uploadPhoto(this.props.postImage).then(function(name){
+      link = name
+      return getPageID(fbLoginToken);
+    })
     .then(function(mPageid) {
       pageId = mPageid;
       console.log('2pageId' + pageId);
@@ -55,12 +60,12 @@ export default class Post extends Component {
       // var json = JSON.parse(response);
       pageAccessToken = mPageAccessToken;
       console.log('pageAccessToken:',pageAccessToken);
-      var postText = (that.props.post.caption!=null) ? that.props.post.caption : 'test_post';
+      var postText = that.state.text;
       console.log('POST TEXT:', postText);
       if (that.props.postTime == 'now') {
-        return pagePost(pageId, pageAccessToken, postText);
+        return pagePost(pageId, pageAccessToken, postText, link);
       } else {
-        return pagePost(pageId, pageAccessToken, postText, that.props.dateTime);
+        return pagePost(pageId, pageAccessToken, postText, link, that.props.dateTime);
       }
     })
     .then(function() {
@@ -73,7 +78,6 @@ export default class Post extends Component {
         message: 'Something bad happened ' + err
       });
     });
-    Actions.pop();
   }
 
   postNow() {
@@ -106,6 +110,13 @@ export default class Post extends Component {
     console.log('date' + date);
   }
 
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      text: newProps.data ? newProps.data.captionWithTags : ''
+    });
+    console.log('componentWillReceive')
+  };
+
   render() {
     var text = (() => {
       if (this.props.data != null) return (
@@ -117,6 +128,7 @@ export default class Post extends Component {
         <Image source={this.props.postImage} style={styles.postImage}/>
       )
     })();
+    console.log('text: ' + this.state.text);
 
     return (
       <View style={styles.container}>
