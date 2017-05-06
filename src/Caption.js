@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, Image, Clipboard } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
@@ -10,7 +10,7 @@ export default class Caption extends Component {
     super(props);
 
     this.onChangeText = this.onChangeText.bind(this);
-    this.goToPost = this.goToPost.bind(this);
+    this.copyAndNext = this.copyAndNext.bind(this);
     this.goToTagEditor = this.goToTagEditor.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.generateText = this.generateText.bind(this);
@@ -40,7 +40,9 @@ export default class Caption extends Component {
     return output;
   }
 
-  goToPost() {
+  copyAndNext() {
+    text = this.props.data != null ? this.props.data.captionWithTags : '';
+    Clipboard.setString(text);
     this.props.nextScreen();
   }
 
@@ -107,8 +109,8 @@ export default class Caption extends Component {
         </Text>
         {conditional}
         <Button
-          title="Next>"
-          onPress={this.goToPost}/>
+          title="Copy"
+          onPress={this.copyAndNext}/>
       </View>
     )
   }

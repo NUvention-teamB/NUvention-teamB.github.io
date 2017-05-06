@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image, ScrollView, Clipboard } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
@@ -33,6 +33,7 @@ export default class Post extends Component {
     this.smartPost = this.smartPost.bind(this);
     this.openCalendar = this.openCalendar.bind(this);
     this.updateSelectedDate = this.updateSelectedDate.bind(this);
+    this.paste = this.paste.bind(this);
   }
 
   goToNext() {
@@ -110,19 +111,16 @@ export default class Post extends Component {
     console.log('date' + date);
   }
 
-  componentWillReceiveProps(newProps) {
-    this.setState({
-      text: newProps.data ? newProps.data.captionWithTags : ''
-    });
-    console.log('componentWillReceive')
+  paste = async () => {
+    try {
+      var content = await Clipboard.getString();
+      this.setState({text: content});
+    } catch (e) {
+      this.setState({content:e.message});
+    }
   };
 
   render() {
-    var text = (() => {
-      if (this.props.data != null) return (
-        this.props.data.captionWithTags)
-    })();
-
     var postImage = (() => {
       if (this.props.postImage!=null) return (
         <Image source={this.props.postImage} style={styles.postImage}/>
@@ -135,7 +133,14 @@ export default class Post extends Component {
         <View style={styles.headerRow}>
           <Text style={styles.headerText}>Finalize your message</Text>
         </View>
-        <Hr lineColor={Colors.gray} />
+        <TouchableOpacity
+          style={styles.pasteTouch}
+          onPress={this.paste}>
+          <Text
+            style={styles.pasteText}>
+            Paste
+          </Text>
+        </TouchableOpacity>
         <View style={styles.scrollView}>
           <ScrollView>
             <TextInput
@@ -147,7 +152,6 @@ export default class Post extends Component {
                 });
               }}
               style={[styles.textInput, {height: Math.max(105, this.state.height)}]}
-              defaultValue={text}
               value={this.state.text}
             />
             {postImage}
@@ -243,6 +247,17 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     color: Colors.darkGreen,
+  },
+  pasteTouch: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.gray,
+  },
+  pasteText: {
+    fontSize: 15,
+    marginTop: 5,
+    marginBottom: 5,
   },
   scrollView: {
     flex: 1,
