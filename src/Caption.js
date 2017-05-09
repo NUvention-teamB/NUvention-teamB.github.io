@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    color: Colors.darkGreen,
+    color: Colors.blue,
   },
   postInput: {
     marginTop: 10,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   listElement: {
-    backgroundColor: Colors.lightGreen,
+    backgroundColor: Colors.lightBlue,
     margin: 10,
     borderRadius: 10,
   },

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image, ScrollView, Clipboard } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image, ScrollView, Clipboard, DatePickerIOS } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
@@ -24,16 +24,16 @@ export default class Post extends Component {
       instagramToggle: true,
       twitterToggle: false,
       postTime: 'now',
-      green: '#97e1d0',
-      black: '#000000',
-      selectedDate: 'Today',
+      active: Colors.blue,
+      dormant: '#000000',
       height: 0,
+      date: new Date(),
     }
     this.postNow = this.postNow.bind(this);
     this.smartPost = this.smartPost.bind(this);
     this.openCalendar = this.openCalendar.bind(this);
-    this.updateSelectedDate = this.updateSelectedDate.bind(this);
     this.paste = this.paste.bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
   }
 
   goToNext() {
@@ -92,7 +92,7 @@ export default class Post extends Component {
     this.setState({
       postTime: 'smart', 
       showCalendar: false, 
-      selectedDate: 'Today'
+      date: new Date()
     });
   }
 
@@ -103,12 +103,10 @@ export default class Post extends Component {
     })
   }
 
-  updateSelectedDate(date) {
-    this.setState({
-      selectedDate: date,
-      showCalendar: false,
-    });
-    console.log('date' + date);
+  onDateChange(date){
+    this.setState({date: date});
+    console.log(date);
+    console.log(date.toISOString().slice(0,10).replace(/-/g,"/"));
   }
 
   paste = async () => {
@@ -126,7 +124,19 @@ export default class Post extends Component {
         <Image source={this.props.postImage} style={styles.postImage}/>
       )
     })();
-    console.log('text: ' + this.state.text);
+
+    var datePicker = (() => {
+      if (this.state.showCalendar) {
+        return(
+          <DatePickerIOS
+            date={this.state.date}
+            mode="datetime"
+            timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
+            onDateChange={this.onDateChange}
+          />
+        )
+      }
+    })();
 
     return (
       <View style={styles.container}>
@@ -155,16 +165,15 @@ export default class Post extends Component {
               value={this.state.text}
             />
             {postImage}
-            <EventCreationCalendar 
-              showCalendar={this.state.showCalendar}
-              updatedSelectedDate={(date) => {this.updateSelectedDate(date)}} />
+            {datePicker}
+            
           </ScrollView>
         </View>
         <View
             style={styles.captionSection}>
           <Text
               style={(this.state.postTime == 'smart' || this.state.postTime == 'later') ? styles.captionTextActive : styles.captionText}>
-            The best time to post is {this.state.selectedDate} at 6:13pm.
+            The best time to post is {this.state.date.getMonth()}/{this.state.date.getDate()} at {this.state.date.getHours()}:{this.state.date.getMinutes()}.
           </Text>
         </View>
         <View style={styles.timeViewSection}>
@@ -196,9 +205,9 @@ export default class Post extends Component {
               onPress={()=>{this.setState({facebookToggle: !this.state.facebookToggle});}}>
             <View
                 style={styles.socialMediaToggles}
-                borderColor={this.state.facebookToggle ? this.state.green : this.state.black}>
+                borderColor={this.state.facebookToggle ? this.state.active : this.state.dormant}>
               <Icon
-                  color={this.state.facebookToggle ? this.state.green : this.state.black}
+                  color={this.state.facebookToggle ? this.state.active : this.state.dormant}
                   size={ 30 }
                   name="facebook"/>
             </View>
@@ -207,9 +216,9 @@ export default class Post extends Component {
               onPress={()=>{this.setState({instagramToggle: !this.state.instagramToggle});}}>
             <View
                 style={styles.socialMediaToggles}
-                borderColor={this.state.instagramToggle ? this.state.green : this.state.black}>
+                borderColor={this.state.instagramToggle ? this.state.active : this.state.dormant}>
               <Icon
-                  color={this.state.instagramToggle ? this.state.green : this.state.black}
+                  color={this.state.instagramToggle ? this.state.active : this.state.dormant}
                   size={ 30 }
                   name="instagram"/>
             </View>
@@ -218,9 +227,9 @@ export default class Post extends Component {
               onPress={()=>{this.setState({twitterToggle: !this.state.twitterToggle});}}>
             <View
                 style={styles.socialMediaToggles}
-                borderColor={this.state.twitterToggle ? this.state.green : this.state.black}>
+                borderColor={this.state.twitterToggle ? this.state.active : this.state.dormant}>
               <Icon
-                  color={this.state.twitterToggle ? this.state.green : this.state.black}
+                  color={this.state.twitterToggle ? this.state.active : this.state.dormant}
                   size={ 30 }
                   name="twitter"/>
             </View>
@@ -246,7 +255,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    color: Colors.darkGreen,
+    color: Colors.blue,
   },
   pasteTouch: {
     flexDirection: 'row',
@@ -291,10 +300,10 @@ const styles = StyleSheet.create({
   },
   timeViewActive: {
     padding: 10,
-    backgroundColor: '#97e1d0'
+    backgroundColor: Colors.lightBlue
   },
   timeTextActive: {
-    color: '#FFFFFF',
+    color: 'white',
   },
   socialView: {
     height: 60,
