@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image, ScrollView, Clipboard, DatePickerIOS } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ScrollView, Clipboard, DatePickerIOS, ActivityIndicator, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
@@ -28,6 +28,7 @@ export default class Post extends Component {
       dormant: '#000000',
       height: 0,
       date: new Date(),
+      success: false,
     }
     this.postNow = this.postNow.bind(this);
     this.smartPost = this.smartPost.bind(this);
@@ -41,40 +42,64 @@ export default class Post extends Component {
   }
 
   async submitPost() {
+    //
+    // var pageId, pageAccessToken;
+    //
+    // var that = this;
+    // console.log('Submitting post');
+    // var fbLoginToken = logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER];
+    // var link = null;
+    // uploadPhoto(this.props.postImage).then(function(name){
+    //   link = name
+    //   return getPageID(fbLoginToken);
+    // })
+    // .then(function(mPageid) {
+    //   pageId = mPageid;
+    //   console.log('2pageId' + pageId);
+    //   return getPageAccessToken(pageId, fbLoginToken);
+    // })
+    // .then(function(mPageAccessToken) {
+    //   // var json = JSON.parse(response);
+    //   pageAccessToken = mPageAccessToken;
+    //   console.log('pageAccessToken:',pageAccessToken);
+    //   var postText = that.state.text;
+    //   console.log('POST TEXT:', postText);
+    //   if (that.props.postTime == 'now') {
+    //     return pagePost(pageId, pageAccessToken, postText, link);
+    //   } else {
+    //     return pagePost(pageId, pageAccessToken, postText, link, that.props.dateTime);
+    //   }
+    // })
 
-    var pageId, pageAccessToken;
+    var postText = this.state.text;
+    var postImage = this.props.postImage;
 
-    var that = this;
-    console.log('Submitting post');
-    var fbLoginToken = logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER];
-    var link = null;
-    uploadPhoto(this.props.postImage).then(function(name){
-      link = name
-      return getPageID(fbLoginToken);
-    })
-    .then(function(mPageid) {
-      pageId = mPageid;
-      console.log('2pageId' + pageId);
-      return getPageAccessToken(pageId, fbLoginToken);
-    })
-    .then(function(mPageAccessToken) {
-      // var json = JSON.parse(response);
-      pageAccessToken = mPageAccessToken;
-      console.log('pageAccessToken:',pageAccessToken);
-      var postText = that.state.text;
-      console.log('POST TEXT:', postText);
-      if (that.props.postTime == 'now') {
-        return pagePost(pageId, pageAccessToken, postText, link);
-      } else {
-        return pagePost(pageId, pageAccessToken, postText, link, that.props.dateTime);
-      }
+
+    var _this = this;
+    this.setState({
+      isLoading: true,
+    });
+
+    uploadPhoto(postImage)
+    .then(function(link){
+      return pagePost(globalPageId, globalPageAccessToken, postText, link)
     })
     .then(function() {
-      Actions.home({type:'reset'});
+      _this.setState({
+        isLoading: false,
+        success: true
+      });
+      setTimeout(function() {
+        _this.setState({
+          success: false
+        });
+        Actions.home({type:'reset'});
+      }, 2000)
+
     })
     .catch(function(err) {
       console.log(err);
-      that.setState({
+      _this.setState({
         isLoading: false,
         message: 'Something bad happened ' + err
       });
@@ -83,15 +108,15 @@ export default class Post extends Component {
 
   postNow() {
     this.setState({
-      postTime: 'now', 
+      postTime: 'now',
       showCalendar: false,
     });
   }
 
   smartPost() {
     this.setState({
-      postTime: 'smart', 
-      showCalendar: false, 
+      postTime: 'smart',
+      showCalendar: false,
       date: new Date()
     });
   }
@@ -117,6 +142,33 @@ export default class Post extends Component {
   };
 
   render() {
+    if (this.state.isLoading) return (
+      <View>
+        <ActivityIndicator
+          animating={this.state.isLoading}
+          style={[styles.centering, {height: 100}]}
+          size="large"
+          color="darkblue"
+        />
+      </View>
+    )
+
+    if (this.state.success) return (
+      <View style={styles.container}>
+        <Text style={styles.successText}>
+          Successfully posted!
+        </Text>
+        <Image
+          source={require('../img/checkmark.png')}
+          style={styles.checkmark}>
+        </Image>
+        <Text style={styles.thankYouNote}>
+          Thank you for using Breezy!
+        </Text>
+      </View>
+    )
+
+
     var postImage = (() => {
       if (this.props.postImage!=null) return (
         <Image source={this.props.postImage} style={styles.postImage}/>
@@ -164,7 +216,7 @@ export default class Post extends Component {
             />
             {postImage}
             {datePicker}
-            
+
           </ScrollView>
         </View>
         <View
@@ -247,6 +299,12 @@ const styles = StyleSheet.create({
     marginTop: 60,
     flex: 1,
   },
+  centering: {
+    marginTop: '40%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+  },
   headerRow: {
     flexDirection: 'row',
     margin: 10,
@@ -316,5 +374,25 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 1,
     alignItems: 'center',
+  },
+  checkmark: {
+    width: 100,
+    height: 100,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    // marginTop: 50,
+  },
+  successText: {
+    color: 'green',
+    textAlign: 'center',
+    marginTop: '30%',
+    marginBottom: '20%',
+    fontSize: 20
+  },
+  thankYouNote: {
+    textAlign: 'center',
+    marginTop: '35%',
+    marginBottom: 20,
+    fontSize: 20
   },
 });
