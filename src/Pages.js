@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Button, Image, TouchableHighlight, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Button, Image, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native'
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { Actions } from 'react-native-router-flux';
@@ -40,21 +40,21 @@ export default class Pages extends Component {
     globalPageId = page.id;
     globalPageAccessToken = page.access_token;
     globalPage = page;
-    Actions.home({type:'reset'});
+    Actions.home();
   }
 
   render() {
     if (this.state.pages==null) return (
       <View style={styles.container}>
         <Image
-          source={require('../img/logo.png')}
+          source={require('../img/logo_blue.png')}
           style={styles.logo}>
         </Image>
         <ActivityIndicator
           animating={this.state.pages==null}
           style={[styles.centering, {height: 80}]}
           size="large"
-          color="green"
+          color="darkblue"
         />
       </View>
     )
@@ -67,7 +67,7 @@ export default class Pages extends Component {
       return this.state.pages.map((page) => {
         // console.log(page);
         return (
-          <TouchableHighlight key={page.id} onPress={()=>this.selectPage(page)} underlayColor="lightgreen">
+          <TouchableHighlight key={page.id} onPress={()=>this.selectPage(page)} underlayColor="#00b0ff">
             <View style={styles.page}>
               <Text style={styles.pageName}>{page.name}</Text>
               <Text style={styles.pageCategory}>{page.category}</Text>
@@ -80,9 +80,9 @@ export default class Pages extends Component {
     // console.log(pages);
 
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Image
-          source={require('../img/logo.png')}
+          source={require('../img/logo_blue.png')}
           style={styles.logo}>
         </Image>
         <Text style={styles.instructions}>Select your page...</Text>
@@ -107,7 +107,7 @@ export default class Pages extends Component {
           }
           onLogoutFinished={() => this.onLogout()}
         />
-      </View>
+      </ScrollView>
     )
   }
 }
@@ -117,11 +117,11 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   logo: {
-    width: 335,
-    height: 120,
+    width: 320,
+    height: 100,
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: '3%',
+    marginTop: 50,
   },
   centering: {
     marginTop: '30%',
@@ -140,8 +140,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: 'green',
-    // borderColor: '#81d186',
+    borderColor: 'darkblue',
   },
   pageName: {
     fontSize: 18,

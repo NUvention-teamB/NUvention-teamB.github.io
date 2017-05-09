@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ScrollView, Clipboard, DatePickerIOS, ActivityIndicator, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
@@ -8,6 +8,7 @@ import { EventCreationCalendar } from '../lib/Calendar';
 import Calendar from 'react-native-calendar';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
+import { uploadPhoto } from '../lib/PostHelper'
 
 
 export default class Post extends Component {
@@ -22,16 +23,18 @@ export default class Post extends Component {
       facebookToggle: true,
       instagramToggle: true,
       twitterToggle: false,
-      postTime: 'smart',
-      green: '#97e1d0',
-      black: '#000000',
-      selectedDate: 'Today',
+      postTime: 'now',
+      active: Colors.blue,
+      dormant: '#000000',
       height: 0,
+      date: new Date(),
+      success: false,
     }
     this.postNow = this.postNow.bind(this);
     this.smartPost = this.smartPost.bind(this);
     this.openCalendar = this.openCalendar.bind(this);
-    this.updateSelectedDate = this.updateSelectedDate.bind(this);
+    this.paste = this.paste.bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
   }
 
   goToNext() {
@@ -39,55 +42,82 @@ export default class Post extends Component {
   }
 
   async submitPost() {
+    //
+    // var pageId, pageAccessToken;
+    //
+    // var that = this;
+    // console.log('Submitting post');
+    // var fbLoginToken = logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER];
+    // var link = null;
+    // uploadPhoto(this.props.postImage).then(function(name){
+    //   link = name
+    //   return getPageID(fbLoginToken);
+    // })
+    // .then(function(mPageid) {
+    //   pageId = mPageid;
+    //   console.log('2pageId' + pageId);
+    //   return getPageAccessToken(pageId, fbLoginToken);
+    // })
+    // .then(function(mPageAccessToken) {
+    //   // var json = JSON.parse(response);
+    //   pageAccessToken = mPageAccessToken;
+    //   console.log('pageAccessToken:',pageAccessToken);
+    //   var postText = that.state.text;
+    //   console.log('POST TEXT:', postText);
+    //   if (that.props.postTime == 'now') {
+    //     return pagePost(pageId, pageAccessToken, postText, link);
+    //   } else {
+    //     return pagePost(pageId, pageAccessToken, postText, link, that.props.dateTime);
+    //   }
+    // })
 
-    var pageId, pageAccessToken;
+    var postText = this.state.text;
+    var postImage = this.props.postImage;
 
-    var that = this;
-    console.log('Submitting post');
-    var fbLoginToken = logins[AWSCognitoCredentials.RNC_FACEBOOK_PROVIDER];
-    getPageID(fbLoginToken)
-    .then(function(mPageid) {
-      pageId = mPageid;
-      console.log('2pageId' + pageId);
-      return getPageAccessToken(pageId, fbLoginToken);
-    })
-    .then(function(mPageAccessToken) {
-      // var json = JSON.parse(response);
-      pageAccessToken = mPageAccessToken;
-      console.log('pageAccessToken:',pageAccessToken);
-      var postText = (that.props.post.caption!=null) ? that.props.post.caption : 'test_post';
-      console.log('POST TEXT:', postText);
-      if (that.props.postTime == 'now') {
-        return pagePost(pageId, pageAccessToken, postText);
-      } else {
-        return pagePost(pageId, pageAccessToken, postText, that.props.dateTime);
-      }
+
+    var _this = this;
+    this.setState({
+      isLoading: true,
+    });
+
+    uploadPhoto(postImage)
+    .then(function(link){
+      return pagePost(globalPageId, globalPageAccessToken, postText, link)
     })
     .then(function() {
-      Actions.home({type:'reset'});
+      _this.setState({
+        isLoading: false,
+        success: true
+      });
+      setTimeout(function() {
+        _this.setState({
+          success: false
+        });
+        Actions.home({type:'reset'});
+      }, 2000)
+
     })
     .catch(function(err) {
       console.log(err);
-      that.setState({
+      _this.setState({
         isLoading: false,
         message: 'Something bad happened ' + err
       });
     });
-    Actions.pop();
   }
 
   postNow() {
     this.setState({
-      postTime: 'now', 
+      postTime: 'now',
       showCalendar: false,
     });
   }
 
   smartPost() {
     this.setState({
-      postTime: 'smart', 
-      showCalendar: false, 
-      selectedDate: 'Today'
+      postTime: 'smart',
+      showCalendar: false,
+      date: new Date()
     });
   }
 
@@ -98,19 +128,48 @@ export default class Post extends Component {
     })
   }
 
-  updateSelectedDate(date) {
-    this.setState({
-      selectedDate: date,
-      showCalendar: false,
-    });
-    console.log('date' + date);
+  onDateChange(date){
+    this.setState({date: date});
+    console.log(date);
+    console.log(date.toISOString().slice(0,10).replace(/-/g,"/"));
   }
 
+  paste = async () => {
+    try {
+      var content = await Clipboard.getString();
+      this.setState({text: content});
+    } catch (e) {
+      this.setState({content:e.message});
+    }
+  };
+
   render() {
-    var text = (() => {
-      if (this.props.data != null) return (
-        this.props.data.captionWithTags)
-    })();
+    if (this.state.isLoading) return (
+      <View>
+        <ActivityIndicator
+          animating={this.state.isLoading}
+          style={[styles.centering, {height: 100}]}
+          size="large"
+          color="darkblue"
+        />
+      </View>
+    )
+
+    if (this.state.success) return (
+      <View style={styles.container}>
+        <Text style={styles.successText}>
+          Successfully posted!
+        </Text>
+        <Image
+          source={require('../img/checkmark.png')}
+          style={styles.checkmark}>
+        </Image>
+        <Text style={styles.thankYouNote}>
+          Thank you for using Breezy!
+        </Text>
+      </View>
+    )
+
 
     var postImage = (() => {
       if (this.props.postImage!=null) return (
@@ -118,12 +177,32 @@ export default class Post extends Component {
       )
     })();
 
+    var datePicker = (() => {
+      if (this.state.showCalendar) {
+        return(
+          <DatePickerIOS
+            date={this.state.date}
+            mode="datetime"
+            timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
+            onDateChange={this.onDateChange}
+          />
+        )
+      }
+    })();
+
     return (
       <View style={styles.container}>
         <View style={styles.headerRow}>
           <Text style={styles.headerText}>Finalize your message</Text>
         </View>
-        <Hr lineColor={Colors.gray} />
+        <TouchableOpacity
+          style={styles.pasteTouch}
+          onPress={this.paste}>
+          <Text
+            style={styles.pasteText}>
+            Paste
+          </Text>
+        </TouchableOpacity>
         <View style={styles.scrollView}>
           <ScrollView>
             <TextInput
@@ -135,25 +214,24 @@ export default class Post extends Component {
                 });
               }}
               style={[styles.textInput, {height: Math.max(105, this.state.height)}]}
-              defaultValue={text}
               value={this.state.text}
             />
             {postImage}
-            <EventCreationCalendar 
-              showCalendar={this.state.showCalendar}
-              updatedSelectedDate={(date) => {this.updateSelectedDate(date)}} />
+            {datePicker}
+
           </ScrollView>
         </View>
         <View
             style={styles.captionSection}>
           <Text
               style={(this.state.postTime == 'smart' || this.state.postTime == 'later') ? styles.captionTextActive : styles.captionText}>
-            The best time to post is {this.state.selectedDate} at 6:13pm.
+            The best time to post is {this.state.date.getMonth()}/{this.state.date.getDate()} at {this.state.date.getHours()}:{this.state.date.getMinutes()}.
           </Text>
         </View>
         <View style={styles.timeViewSection}>
           <TouchableOpacity
-              onPress={this.postNow}>
+              onPress={this.postNow}
+              style={styles.postTimeTouch}>
             <View
                 style={(this.state.postTime == 'now') ? styles.timeViewActive : styles.timeView}>
               <Text
@@ -163,17 +241,8 @@ export default class Post extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={this.smartPost}>
-            <View
-                style={(this.state.postTime == 'smart') ? styles.timeViewActive : styles.timeView}>
-              <Text
-                  style={(this.state.postTime == 'smart') ? styles.timeTextActive : styles.timeText}>
-                Smart Post
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-              onPress={this.openCalendar}>
+              onPress={this.openCalendar}
+              style={styles.postTimeTouch}>
             <View
                 style={(this.state.postTime == 'later') ? styles.timeViewActive : styles.timeView}>
               <Text
@@ -188,9 +257,9 @@ export default class Post extends Component {
               onPress={()=>{this.setState({facebookToggle: !this.state.facebookToggle});}}>
             <View
                 style={styles.socialMediaToggles}
-                borderColor={this.state.facebookToggle ? this.state.green : this.state.black}>
+                borderColor={this.state.facebookToggle ? this.state.active : this.state.dormant}>
               <Icon
-                  color={this.state.facebookToggle ? this.state.green : this.state.black}
+                  color={this.state.facebookToggle ? this.state.active : this.state.dormant}
                   size={ 30 }
                   name="facebook"/>
             </View>
@@ -199,9 +268,9 @@ export default class Post extends Component {
               onPress={()=>{this.setState({instagramToggle: !this.state.instagramToggle});}}>
             <View
                 style={styles.socialMediaToggles}
-                borderColor={this.state.instagramToggle ? this.state.green : this.state.black}>
+                borderColor={this.state.instagramToggle ? this.state.active : this.state.dormant}>
               <Icon
-                  color={this.state.instagramToggle ? this.state.green : this.state.black}
+                  color={this.state.instagramToggle ? this.state.active : this.state.dormant}
                   size={ 30 }
                   name="instagram"/>
             </View>
@@ -210,9 +279,9 @@ export default class Post extends Component {
               onPress={()=>{this.setState({twitterToggle: !this.state.twitterToggle});}}>
             <View
                 style={styles.socialMediaToggles}
-                borderColor={this.state.twitterToggle ? this.state.green : this.state.black}>
+                borderColor={this.state.twitterToggle ? this.state.active : this.state.dormant}>
               <Icon
-                  color={this.state.twitterToggle ? this.state.green : this.state.black}
+                  color={this.state.twitterToggle ? this.state.active : this.state.dormant}
                   size={ 30 }
                   name="twitter"/>
             </View>
@@ -232,13 +301,30 @@ const styles = StyleSheet.create({
     marginTop: 60,
     flex: 1,
   },
+  centering: {
+    marginTop: '40%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+  },
   headerRow: {
     flexDirection: 'row',
     margin: 10,
   },
   headerText: {
     fontSize: 20,
-    color: Colors.darkGreen,
+    color: Colors.blue,
+  },
+  pasteTouch: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.gray,
+  },
+  pasteText: {
+    fontSize: 15,
+    marginTop: 5,
+    marginBottom: 5,
   },
   scrollView: {
     flex: 1,
@@ -258,26 +344,24 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   timeViewSection: {
-    height: 40,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    margin: 10,
+    borderWidth: 1,
+    borderColor: Colors.gray,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  postTimeTouch: {
+    width: '50%'
   },
   timeView: {
-    borderWidth: 1,
-    width: 100,
-    padding: 10,
-    borderRadius: 10,
+    padding: 10
   },
   timeViewActive: {
-    borderWidth: 1,
-    width: 100,
     padding: 10,
-    borderRadius: 10,
-    backgroundColor: '#97e1d0'
+    backgroundColor: Colors.lightBlue
   },
   timeTextActive: {
-    color: '#FFFFFF'
+    color: 'white',
   },
   socialView: {
     height: 60,
@@ -292,5 +376,25 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 1,
     alignItems: 'center',
+  },
+  checkmark: {
+    width: 100,
+    height: 100,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    // marginTop: 50,
+  },
+  successText: {
+    color: 'green',
+    textAlign: 'center',
+    marginTop: '30%',
+    marginBottom: '20%',
+    fontSize: 20
+  },
+  thankYouNote: {
+    textAlign: 'center',
+    marginTop: '35%',
+    marginBottom: 20,
+    fontSize: 20
   },
 });

@@ -38,7 +38,7 @@ export default class Caption extends Component {
         style={styles.listElement}>
         <Text
           style={styles.listText}>
-          {rowData.captionWithTags}
+          {rowData.fullCaption}
         </Text>
       </TouchableOpacity>    
     );
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    color: Colors.darkGreen,
+    color: Colors.blue,
   },
   subheaderTextContainer: {
     flexDirection: 'row',
@@ -113,25 +113,25 @@ const styles = StyleSheet.create({
   },
   subheaderText: {
     fontSize: 15,
-    color: Colors.darkerGreen,
+    color: Colors.blue,
     margin: 5,
     marginLeft: 0,
   },
   writeYourOwnTouch: {
-    backgroundColor: Colors.lightGreen,
+    backgroundColor: Colors.lightBlue,
     borderRadius: 10,
   },
   writeYourOwn: {
     fontSize: 15,
-    color: Colors.darkerGreen,
+    color: 'white',
     margin: 5
   },
   title: {
     margin: 10,
-    color: Colors.darkGreen,
+    color: Colors.blue,
   },
   listElement: {
-    backgroundColor: Colors.lightGreen,
+    backgroundColor: Colors.lightBlue,
     margin: 10,
     borderRadius: 10,
   },

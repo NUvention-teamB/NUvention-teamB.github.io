@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput, Animated, TouchableHighlight, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput, Animated, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native'
 import { PostImage } from '../lib/PostImage'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
@@ -89,7 +89,7 @@ class IndividualPostStatistics extends Component {
 
 
     return (
-      <View>
+      <View style={styles.individualPost}>
         <Text style={styles.postDate}>{date.toISOString().slice(0,10).replace(/-/g,"/")}</Text>
         <Text style={styles.postMessage}>{message}</Text>
         <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
@@ -143,7 +143,7 @@ class WeekStatistics extends Component {
     var pastWeekStyle = (this.state.week=='pastWeekSummary') ? styles.weekButtonActive : styles.weekButtonInactive;
 
     return (
-      <View>
+      <View style={styles.weekStatistics}>
         {/* <Text style={styles.weekLabel}>{weekLabel}</Text> */}
         <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
         <HorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
@@ -186,16 +186,16 @@ export default class Home extends Component {
       console.log(statistics);
       // NOTE: DATA FOR DEMO
 
-      statistics.thisWeekSummary = {
-        likes: 120,
-        reactions: 43,
-        comments: 38
-      }
-      statistics.pastWeekSummary = {
-        likes: 170,
-        reactions: 67,
-        comments: 30
-      }
+      // statistics.thisWeekSummary = {
+      //   likes: 120,
+      //   reactions: 43,
+      //   comments: 38
+      // }
+      // statistics.pastWeekSummary = {
+      //   likes: 170,
+      //   reactions: 67,
+      //   comments: 30
+      // }
 
       _this.setState({
         statistics: statistics,
@@ -231,12 +231,11 @@ export default class Home extends Component {
     var weekLabel = (this.state.week)
 
     return (
+      <ScrollView>
       <View style={styles.container}>
         <Text style={styles.pageName}>Your Stats For {globalPage.name}</Text>
         <WeekStatistics statistics={this.state.statistics} max={max} loaded={this.state.loaded} week="thisWeekSummary"/>
-        <TouchableHighlight
-
-          onPress={this.newPost}>
+        <TouchableHighlight onPress={this.newPost}>
           <View style={styles.newPost}>
             <Text style={styles.newPostText}>Create a new post</Text>
           </View>
@@ -245,13 +244,16 @@ export default class Home extends Component {
         <LastPostsStatistics statistics={this.state.statistics} loaded={this.state.loaded} />
 
       </View>
+      </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 70
+    paddingTop: 70,
+    flex: 1,
+    backgroundColor: '#f7f7f7',
   },
   centering: {
     // marginTop: '30%',
@@ -263,7 +265,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'darkgreen',
+    color: 'darkblue',
     marginBottom: 30,
     marginTop: 10
   },
@@ -321,13 +323,19 @@ const styles = StyleSheet.create({
     fontSize: 15
   },
   newPost: {
-    backgroundColor: '#3B5998',
+    backgroundColor: '#00b0ff',
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 20,
     width: '60%',
     padding: 15,
-    borderRadius: 20
+    borderRadius: 20,
+    shadowRadius: 2,
+    shadowOpacity: 0.5,
+    shadowColor: 'darkblue',
+    shadowOffset: {
+      top: 1
+    },
   },
   newPostText: {
     textAlign: 'center',
@@ -338,17 +346,35 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     marginTop: 20,
-    marginBottom: 10,
+    paddingTop: 30,
+    paddingBottom: 10,
     color: 'darkblue',
-    fontWeight: '700'
+    fontWeight: '700',
+    backgroundColor: 'white'
   },
   postDate: {
     fontSize: 15,
     fontWeight: 'bold',
     marginLeft: 10,
+    marginBottom: 5,
   },
   postMessage: {
     marginLeft: 20,
     fontSize: 11,
-  }
+  },
+  individualPost: {
+    backgroundColor: 'white',
+    padding: 10,
+    paddingTop: 20,
+    borderRadius: 5,
+    marginTop: 10,
+    shadowRadius: 5,
+    shadowOpacity: 0.1,
+    shadowOffset: {
+      top: 1
+    }
+  },
+  weekStatistics: {
+    backgroundColor: 'white',
+  },
 });
