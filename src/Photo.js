@@ -57,7 +57,8 @@ export default class Photo extends Component {
           imageData: imageData,
           postImage: source
         });
-        this.props.uploadPhoto(source);
+        // this.props.uploadPhoto(source);
+        this.props.updateImage(source);
         this.goToNext();
       }
     });
@@ -68,7 +69,8 @@ export default class Photo extends Component {
   }
 
   noPhoto() {
-    this.props.uploadPhoto(null);
+    // this.props.uploadPhoto(null);
+    // this.props.updateImage(null);
     this.goToNext();
   }
 

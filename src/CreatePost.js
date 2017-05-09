@@ -54,16 +54,20 @@ export default class CreatePost extends Component {
     this.setState({postImage: postImage});
   }
 
+  updateImage(postImage) {
+    this.setState({postImage: postImage});
+  }
+
   updateListData(data) {
     if (data == null) {
       this.setState({suggestionData: null});
       return;
     }
-    
+
     data.captionWithTags = generateSuggestionData(data);
-    
+
     temp = this.state.listData;
-    
+
     index = getIdIndex(this.state.listData, data.id);
     console.log(data.captionWithTags, index);
     if (index == null) {
@@ -95,24 +99,25 @@ export default class CreatePost extends Component {
   render() {
     return (
       <Swiper ref='swiper' loop={false} showPagination={false}>
-        <Photo 
-          nextScreen={()=>{this.nextScreen()}} 
-          postImage={this.state.postImage} 
-          uploadPhoto={(postImage)=>this.uploadPhoto(postImage)}>
+        <Photo
+          nextScreen={()=>{this.nextScreen()}}
+          postImage={this.state.postImage}
+          // uploadPhoto={(postImage)=>this.uploadPhoto(postImage)}>
+          updateImage={(postImage)=>this.updateImage(postImage)}>
         </Photo>
-        <Suggestions 
-          nextScreen={()=>{this.nextScreen()}} 
+        <Suggestions
+          nextScreen={()=>{this.nextScreen()}}
           skipTwo={()=>{this.skipTwo()}}
-          postImage={this.state.postImage} 
+          postImage={this.state.postImage}
           updateSuggestion={(data)=>this.updateSuggestion(data)}>
         </Suggestions>
-        <Caption 
-          nextScreen={()=>{this.nextScreen()}} 
-          postImage={this.state.postImage} 
+        <Caption
+          nextScreen={()=>{this.nextScreen()}}
+          postImage={this.state.postImage}
           data={this.state.suggestionData}
           updateText={(text)=>{this.updateText(text)}}>
         </Caption>
-        <Post 
+        <Post
           postImage={this.state.postImage}
           data={this.state.suggestionData}
           text={this.state.text}>
