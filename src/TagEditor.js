@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, DatePickerIOS } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
@@ -11,18 +11,28 @@ export default class Caption extends Component {
     this.onChangeText = this.onChangeText.bind(this);
     this.returnToCaption = this.returnToCaption.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
+    this.returnDate = this.returnDate.bind(this);
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
     this.state = {
       tag: this.props.data,
       ds: ds,
+      date: new Date(),
       data: {
         'location': {
           question: 'What location would you like?',
           options: [
             '555 Clark St',
             '555 Clark St. Evanston, IL'
+          ]
+        },
+        'product': {
+          question: 'What product would you like?',
+          options: [
+            'Frappe',
+            'Latte'
           ]
         }
       }
@@ -53,17 +63,55 @@ export default class Caption extends Component {
     );
   }
 
+  onDateChange(date){
+    this.setState({date: date});
+  }
+
+  returnDate() {
+    var temp;
+    if (this.state.date == null) {
+      temp = '[time]'
+    } else {
+      temp = this.state.date.getHours() + ':' + this.state.date.getMinutes();
+    }
+    this.returnToCaption(temp);
+  }
+
   render() {
+    var render = (() => {
+      if (this.props.tag == 'time') {
+        return (
+          <View style={styles.container}>
+            <DatePickerIOS
+              date={this.state.date}
+              mode="time"
+              timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
+              onDateChange={this.onDateChange}
+            />
+            <Button
+            title="Done"
+            onPress={this.returnDate} />
+          </View>
+        )
+      } else {
+        return (
+          <View style={styles.container}>
+            <View style={styles.headerRow}>
+              <Text style={styles.headerText}>{this.state.data[this.props.tag].question}</Text>
+            </View>
+            <Hr lineColor={Colors.gray} />
+            <ListView
+              dataSource={this.state.ds.cloneWithRows(this.state.data[this.props.tag].options)}
+              renderRow={this.renderRow}
+            />
+          </View>
+        )
+      }
+    })();
+
     return (
-      <View style={styles.container}>
-        <View style={styles.headerRow}>
-          <Text style={styles.headerText}>Choose a location</Text>
-        </View>
-        <Hr lineColor={Colors.gray} />
-        <ListView
-          dataSource={this.state.ds.cloneWithRows(this.state.data.location.options)}
-          renderRow={this.renderRow}
-        />
+      <View>
+        {render}
       </View>
     )
   }

@@ -105,8 +105,6 @@ export default class Post extends Component {
 
   onDateChange(date){
     this.setState({date: date});
-    console.log(date);
-    console.log(date.toISOString().slice(0,10).replace(/-/g,"/"));
   }
 
   paste = async () => {
