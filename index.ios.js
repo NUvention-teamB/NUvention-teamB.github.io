@@ -36,7 +36,7 @@ export default class teamB extends Component {
       return logins;
     };
 
-    AWSDynamoDB.initWithOptions({"region": region});
+    // AWSDynamoDB.initWithOptions({"region": region});
   }
 
   render() {
