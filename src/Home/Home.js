@@ -10,6 +10,7 @@ import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import HorizontalBar from './HorizontalBar'
 import LastPostsStatistics from './LastPostsStatistics'
 import WeekStatistics from './WeekStatistics'
+import HomeNavBar from './HomeNavBar'
 
 export default class Home extends Component {
   constructor(props) {
@@ -21,11 +22,8 @@ export default class Home extends Component {
       comments: 0
     }
     this.state = {
-      statistics: {
-        thisWeek: genericNumbers,
-        pastWeek: genericNumbers,
-      },
-      loaded: false
+      loaded: false,
+      screen: 'weekStatistics'
     }
   }
 
@@ -33,7 +31,7 @@ export default class Home extends Component {
     var _this = this;
     getListOfPosts(globalPageId, globalPageAccessToken)
     .then(function(statistics) {
-      console.log(statistics);
+      // console.log(statistics);
 
       _this.setState({
         statistics: statistics,
@@ -50,47 +48,32 @@ export default class Home extends Component {
     Actions.createPost({post: post});
   }
 
-  render() {
+  switchScreens(newScreen) {
+    this.setState({
+      screen: newScreen
+    });
+  }
 
+  render() {
     var statistics = this.state.statistics;
 
-    var max = (() => {
-      var maxValue = 0;
-      for (var type in statistics) {
-        for (var label in statistics[type]) {
-          if (statistics[type][label]>maxValue) maxValue = statistics[type][label];
-        }
-      }
-      return maxValue
+    var screen = (() => {
+      if (this.state.screen=='weekStatistics') return (<WeekStatistics statistics={this.state.statistics} loaded={this.state.loaded} week="thisWeekSummary"/>)
+      else return (<LastPostsStatistics statistics={this.state.statistics} loaded={this.state.loaded} />)
     })();
 
-    // console.log(max);
-
-    var weekLabel = (this.state.week)
-
     return (
-      <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.pageName}>Your Stats For {globalPage.name}</Text>
-        <WeekStatistics statistics={this.state.statistics} max={max} loaded={this.state.loaded} week="thisWeekSummary"/>
-        <TouchableHighlight onPress={this.newPost}>
-          <View style={styles.newPost}>
-            <Text style={styles.newPostText}>Create a new post</Text>
-          </View>
-        </TouchableHighlight>
-
-        <LastPostsStatistics statistics={this.state.statistics} loaded={this.state.loaded} />
-
+        <HomeNavBar switchScreens={this.switchScreens.bind(this)} screen={this.state.screen} />
+        {screen}
       </View>
-      </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 70,
-    flex: 1,
+    paddingTop: 64,
     backgroundColor: '#f7f7f7',
   },
   centering: {
@@ -98,33 +81,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 8,
-  },
-  pageName: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'darkblue',
-    marginBottom: 30,
-    marginTop: 10
-  },
-  newPost: {
-    backgroundColor: '#00b0ff',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 20,
-    width: '60%',
-    padding: 15,
-    borderRadius: 20,
-    shadowRadius: 2,
-    shadowOpacity: 0.5,
-    shadowColor: 'darkblue',
-    shadowOffset: {
-      top: 1
-    },
-  },
-  newPostText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 20,
   },
 });

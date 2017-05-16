@@ -8,7 +8,7 @@ export default class LastPostsStatistics extends Component {
   }
 
   render() {
-    if (this.props.statistics=null || this.props.statistics.posts==null || this.props.statistics.posts.length==0) return null;
+    if (this.props.statistics==null || this.props.statistics.posts==null || this.props.statistics.posts.length==0) return null;
     var statistics = this.props.statistics;
 
     var max = 0;
@@ -28,10 +28,9 @@ export default class LastPostsStatistics extends Component {
 
 
     return (
-      <View>
-        <Text style={styles.recentHistoryLabel}>Your Recent History</Text>
+      <ScrollView>
         {posts}
-      </View>
+      </ScrollView>
     )
   }
 }
@@ -78,12 +77,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   postMessage: {
-    marginLeft: 20,
+    paddingLeft: 20,
+    paddingRight: 10,
     fontSize: 11,
   },
   individualPost: {
     backgroundColor: 'white',
-    padding: 10,
     paddingTop: 20,
     borderRadius: 5,
     marginTop: 10,
@@ -92,15 +91,5 @@ const styles = StyleSheet.create({
     shadowOffset: {
       top: 1
     }
-  },
-  recentHistoryLabel: {
-    textAlign: 'center',
-    fontSize: 20,
-    marginTop: 20,
-    paddingTop: 30,
-    paddingBottom: 10,
-    color: 'darkblue',
-    fontWeight: '700',
-    backgroundColor: 'white'
   },
 });
