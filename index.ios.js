@@ -45,13 +45,13 @@ export default class teamB extends Component {
         <Scene key="root">
           <Scene key="login" component={Login} title="Login" initial={true} hideNavBar={true} />
           <Scene key="pages" component={Pages} title="Pages" hideNavBar={true} />
-          <Scene key="home" component={Home} title="Home" hideNavBar={false} />
+          <Scene key="home" component={Home} title="Home" hideNavBar={true} />
           <Scene key="caption" component={Caption} title="Caption" />
           <Scene key="photo" component={Photo} title="Photo" />
           <Scene key="post" component={Post} title="Post" />
           <Scene key="suggestions" component={Suggestions} title="Suggestions" />
           <Scene key="tagEditor" component={TagEditor} title="TagEditor" />
-          <Scene key="createPost" component={CreatePost} title="CreatePost" />
+          <Scene key="createPost" component={CreatePost} title="CreatePost" hideNavBar={false}/>
         </Scene>
       </Router>
     )

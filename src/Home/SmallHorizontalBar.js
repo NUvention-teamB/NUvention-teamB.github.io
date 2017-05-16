@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput, Animated, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native'
 import Colors from '../../data/Colors'
 
-export default class HorizontalBar extends Component {
+export default class SmallHorizontalBar extends Component {
   constructor(props) {
     super(props);
   }
@@ -10,7 +10,7 @@ export default class HorizontalBar extends Component {
   render() {
     if (this.props.max==0) return (<Text>No {this.props.label} found...</Text>);
 
-    var maxValue = 280;
+    var maxValue = 200;
     var offset = maxValue/(this.props.max*2);
     var count = this.props.count._value*offset;
 
@@ -25,20 +25,6 @@ export default class HorizontalBar extends Component {
       }
     })();
 
-    var bestCountDisplay = (()=> {
-      if (this.props.bestCount==null) return null;
-
-      var bestCount = this.props.bestCount._value*offset;
-
-      return (
-        <Text style={styles.barText}><Animated.View style={[styles.barAnimated, styles[this.props.label], {width: bestCount}]} />{' ' + this.props.bestCount._value+' '}<Text style={styles.labelStyle}>{this.props.label.toLowerCase()}</Text>
-          <Image
-            style={styles.crown}
-            source={require('../../Icons/crown.png')} />
-        </Text>
-      )
-    })();
-
     return (
       <View style={styles.bar}>
         {/* <Text style={styles.barLabel}>{this.props.label}</Text> */}
@@ -50,7 +36,6 @@ export default class HorizontalBar extends Component {
           </View>
           <View style={styles.rowStats}>
             <Text style={styles.barText}><Animated.View style={[styles.barAnimated, styles[this.props.label], {width: count}]} />{' ' + this.props.count._value+' '}<Text style={styles.labelStyle}>{this.props.label.toLowerCase()}</Text></Text>
-            {bestCountDisplay}
           </View>
         </View>
       </View>
@@ -62,22 +47,20 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    borderBottomWidth: 1,
-    borderColor: 'grey',
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 5,
+    paddingBottom: 5,
     paddingLeft: 30,
-    height: 100,
+    height: 30,
   },
   rowIcon: {
-    width: '20%',
+    width: '25%',
   },
   rowIconStyle: {
-    width: '80%',
-    height: '80%',
+    width: 25,
+    height: 20,
   },
   rowStats: {
-    width: '80%',
+    width: '75%',
   },
   bar: {
     marginTop: 5,
@@ -96,10 +79,6 @@ const styles = StyleSheet.create({
   },
   Comments: {
     backgroundColor: Colors.green,
-  },
-  crown: {
-    height: 14,
-    width: 30,
   },
   labelStyle: {
     color: Colors.middleGray

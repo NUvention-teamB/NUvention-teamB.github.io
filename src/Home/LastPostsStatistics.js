@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput, Animated, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native'
-import HorizontalBar from './HorizontalBar'
+import SmallHorizontalBar from './SmallHorizontalBar'
 
 export default class LastPostsStatistics extends Component {
   constructor(props) {
@@ -28,9 +28,12 @@ export default class LastPostsStatistics extends Component {
 
 
     return (
-      <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.textBar}>
+          <Text style={styles.textBarText}>Post History</Text>
+        </View>
         {posts}
-      </ScrollView>
+      </View>
     )
   }
 }
@@ -59,17 +62,20 @@ class IndividualPostStatistics extends Component {
 
     return (
       <View style={styles.individualPost}>
-        <Text style={styles.postDate}>{date.toISOString().slice(0,10).replace(/-/g,"/")}</Text>
+        <Text style={styles.postDate}>{date.toString().slice(0,10).replace(/-/g,"/")}</Text>
         <Text style={styles.postMessage}>{message}</Text>
-        <HorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
-        <HorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
-        <HorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
+        <SmallHorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
+        <SmallHorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
+        <SmallHorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 10
+  },
   postDate: {
     fontSize: 15,
     fontWeight: 'bold',
@@ -91,5 +97,15 @@ const styles = StyleSheet.create({
     shadowOffset: {
       top: 1
     }
+  },
+  textBar: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: Colors.lighterBlue
+  },
+  textBarText: {
+    textAlign: 'center',
+    fontSize: 15,
+    fontWeight: 'bold',
   },
 });

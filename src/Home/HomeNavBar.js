@@ -9,44 +9,44 @@ export default class HomeNavBar extends Component {
     super(props);
   }
 
-  newPost() {
-    var post = new PostClass();
-    Actions.createPost({post: post});
+  goToPages() {
+    Actions.pages({type:'reset'});
   }
+
+
 
   render() {
 
     var analyticsStyle = (this.props.screen=='weekStatistics') ? styles.navBarItemActive : styles.navBarItem;
     var postsStyle = (this.props.screen=='postStatistics') ? styles.navBarItemActive : styles.navBarItem;
-
-    var text = (() => {
-      if (this.props.screen=='weekStatistics') return ('Your Statistics for '+globalPage.name);
-      else return ('Post History');
-    })();
+    var userStyle = (this.props.screen=='userSettings') ? styles.navBarItemActive : styles.navBarItem;
 
     return (
       <View style={styles.container}>
+        <TouchableOpacity style={styles.navBarItem} onPress={()=>this.goToPages()}>
+          <Image
+            style={styles.navBarIconHome}
+            source={require('../../Icons/homeicon1.png')}
+          />
+        </TouchableOpacity>
         <TouchableOpacity style={analyticsStyle} onPress={()=>this.props.switchScreens('weekStatistics')}>
           <Image
             style={styles.navBarIconAnalytics}
-            source={require('../../Icons/analyticsicon2.png')}
+            source={require('../../Icons/analyticicon1.png')}
           />
         </TouchableOpacity>
         <TouchableOpacity style={postsStyle} onPress={()=>this.props.switchScreens('postStatistics')}>
           <Image
             style={styles.navBarIconPosts}
-            source={require('../../Icons/posticon2.png')}
+            source={require('../../Icons/posticon1.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navBarItem} onPress={this.newPost}>
+        <TouchableOpacity style={userStyle} onPress={()=>this.props.switchScreens('userSettings')}>
           <Image
-            style={styles.navBarIconNewPost}
-            source={require('../../Icons/newPostIcon.png')}
+            style={styles.navBarIconUser}
+            source={require('../../Icons/usericon1.png')}
           />
         </TouchableOpacity>
-        <View style={styles.textBar}>
-          <Text style={styles.textBarText}>{text}</Text>
-        </View>
 
       </View>
     )
@@ -60,17 +60,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    shadowOpacity: 0.3
   },
   navBarItem: {
-    width: '33%',
+    width: '25%',
   },
   navBarItemActive: {
-    width: '33%',
+    width: '25%',
     backgroundColor: Colors.lightBlue
   },
   navBarIconAnalytics: {
-    width: 38,
-    height: 30,
+    width: 40,
+    height: 35,
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 15,
@@ -78,28 +79,26 @@ const styles = StyleSheet.create({
   },
   navBarIconPosts: {
     width: 25,
-    height: 30,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 15,
-    marginBottom: 15,
-  },
-  navBarIconNewPost: {
-    width: 75,
     height: 35,
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 15,
     marginBottom: 15,
   },
-  textBar: {
-    width: '100%',
-    padding: 15,
-    backgroundColor: Colors.lighterBlue
+  navBarIconUser: {
+    width: 40,
+    height: 35,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 15,
+    marginBottom: 15,
   },
-  textBarText: {
-    textAlign: 'center',
-    fontSize: 15,
-    fontWeight: 'bold',
+  navBarIconHome: {
+    width: 28,
+    height: 35,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 15,
+    marginBottom: 15,
   }
 });
