@@ -62,7 +62,7 @@ export default class Pages extends Component {
           animating={this.state.pages==null}
           style={[styles.centering, {height: 80}]}
           size="large"
-          color="darkblue"
+          color={Colors.brightBlue}
         />
       </View>
     )

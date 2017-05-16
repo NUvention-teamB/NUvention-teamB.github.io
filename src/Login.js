@@ -4,6 +4,7 @@ import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { Actions } from 'react-native-router-flux';
 import { getPageID, getPageAccessToken } from '../lib/FacebookAPI'
+import Colors from '../data/Colors'
 
 export default class Login extends Component {
   constructor(props) {
@@ -91,8 +92,7 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     paddingTop: 100,
-    // backgroundColor: 'white',
-    backgroundColor: '#3B5998'
+    backgroundColor: Colors.brightBlue,
   },
   logo: {
     width: 310,
@@ -102,13 +102,13 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   fbButton: {
-    backgroundColor: 'blue',
     marginLeft: 'auto',
     marginRight: 'auto',
-    width: '60%',
+    width: '50%',
     marginTop: '30%',
+    paddingLeft: 10,
     height: 40,
-    borderRadius: 15
+    borderRadius: 30
   }
 });
 

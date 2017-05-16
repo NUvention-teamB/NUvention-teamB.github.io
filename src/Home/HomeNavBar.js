@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   navBarIconUser: {
-    width: 40,
+    width: 37,
     height: 35,
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   navBarIconHome: {
-    width: 28,
+    width: 27,
     height: 35,
     marginLeft: 'auto',
     marginRight: 'auto',
