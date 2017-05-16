@@ -8,7 +8,7 @@ import { RNS3 } from 'react-native-aws3';
 import { getPageID, getPageAccessToken, pagePost } from './lib/FacebookAPI'
 import { PostImage } from './lib/PostImage'
 import Login from './src/Login'
-import Home from './src/Home'
+import Home from './src/Home/Home'
 import Caption from './src/Caption'
 import Photo from './src/Photo'
 import Post from './src/Post'

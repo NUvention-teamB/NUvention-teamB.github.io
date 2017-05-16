@@ -20,9 +20,16 @@ export default class Pages extends Component {
     getPages(globalFbAccessToken)
     .then(function(pages) {
       // console.log(pages);
+      if (pages && pages.length==1) {
+        globalPageId = page.id;
+        globalPageAccessToken = page.access_token;
+        globalPage = page;
+        Actions.home();
+      }
+      
       _this.setState({
         pages: pages
-      })
+      });
     })
     .catch(function(err) {
       console.log(err);
