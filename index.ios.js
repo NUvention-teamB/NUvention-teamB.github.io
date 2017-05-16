@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { AppRegistry } from 'react-native';
 import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
-import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
+// import { AWSDynamoDB } from 'aws-sdk-react-native-dynamodb'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RNS3 } from 'react-native-aws3';
 import { getPageID, getPageAccessToken, pagePost } from './lib/FacebookAPI'
@@ -36,7 +36,7 @@ export default class teamB extends Component {
       return logins;
     };
 
-    AWSDynamoDB.initWithOptions({"region": region});
+    // AWSDynamoDB.initWithOptions({"region": region});
   }
 
   render() {
