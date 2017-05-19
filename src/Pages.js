@@ -22,6 +22,7 @@ export default class Pages extends Component {
     .then(function(pages) {
       // console.log(pages);
       if (pages && pages.length==1) {
+        var page = pages[0];
         globalPageId = page.id;
         globalPageAccessToken = page.access_token;
         globalPage = page;
@@ -171,6 +172,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 20,
+    marginBottom: 40,
     height: 30,
     borderRadius: 15
   }

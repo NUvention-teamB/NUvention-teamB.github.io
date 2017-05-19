@@ -25,13 +25,24 @@ export default class SmallHorizontalBar extends Component {
       }
     })();
 
+    var rowIconStyle = (() => {
+      switch (this.props.label) {
+        case 'Likes':
+          return styles.likesIconStyle;
+        case 'Reactions':
+          return styles.reactionsIconStyle;
+        case 'Comments':
+          return styles.commentsIconStyle;
+      }
+    })();
+
     return (
       <View style={styles.bar}>
         {/* <Text style={styles.barLabel}>{this.props.label}</Text> */}
         <View style={styles.rowContainer}>
           <View style={styles.rowIcon}>
             <Image
-              style={styles.rowIconStyle}
+              style={rowIconStyle}
               source={imageSource} />
           </View>
           <View style={styles.rowStats}>
@@ -53,11 +64,22 @@ const styles = StyleSheet.create({
     height: 30,
   },
   rowIcon: {
-    width: '25%',
+    width: '15%',
   },
-  rowIconStyle: {
-    width: 25,
+  likesIconStyle: {
+    width: 30,
     height: 20,
+    marginLeft: 5,
+  },
+  reactionsIconStyle: {
+    width: 25,
+    height: 22,
+    marginLeft: 7,
+  },
+  commentsIconStyle: {
+    width: 23,
+    height: 22,
+    marginLeft: 9,
   },
   rowStats: {
     width: '75%',

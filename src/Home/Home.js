@@ -12,6 +12,7 @@ import LastPostsStatistics from './LastPostsStatistics'
 import WeekStatistics from './WeekStatistics'
 import HomeNavBar from './HomeNavBar'
 import UserSettings from './UserSettings'
+import boostPost from '../../lib/BoostPost'
 
 export default class Home extends Component {
   constructor(props) {
@@ -33,6 +34,8 @@ export default class Home extends Component {
     getListOfPosts(globalPageId, globalPageAccessToken)
     .then(function(statistics) {
       // console.log(statistics);
+
+      // boostPost(globalFbAccessToken, statistics.posts[0].id);
 
       _this.setState({
         statistics: statistics,
