@@ -22,6 +22,7 @@ export default class Pages extends Component {
     .then(function(pages) {
       // console.log(pages);
       if (pages && pages.length==1) {
+        var page = pages[0];
         globalPageId = page.id;
         globalPageAccessToken = page.access_token;
         globalPage = page;
