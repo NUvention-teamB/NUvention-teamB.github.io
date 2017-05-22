@@ -39,13 +39,24 @@ export default class HorizontalBar extends Component {
       )
     })();
 
+    var rowIconStyle = (() => {
+      switch (this.props.label) {
+        case 'Likes':
+          return styles.likesIconStyle;
+        case 'Reactions':
+          return styles.reactionsIconStyle;
+        case 'Comments':
+          return styles.commentsIconStyle;
+      }
+    })();
+
     return (
       <View style={styles.bar}>
         {/* <Text style={styles.barLabel}>{this.props.label}</Text> */}
         <View style={styles.rowContainer}>
           <View style={styles.rowIcon}>
             <Image
-              style={styles.rowIconStyle}
+              style={rowIconStyle}
               source={imageSource} />
           </View>
           <View style={styles.rowStats}>
@@ -72,8 +83,16 @@ const styles = StyleSheet.create({
   rowIcon: {
     width: '20%',
   },
-  rowIconStyle: {
+  likesIconStyle: {
     width: '80%',
+    height: '64%',
+  },
+  reactionsIconStyle: {
+    width: '75%',
+    height: '80%',
+  },
+  commentsIconStyle: {
+    width: '70%',
     height: '80%',
   },
   rowStats: {
