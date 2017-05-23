@@ -223,7 +223,7 @@ export default class Post extends Component {
             style={styles.captionSection}>
           <Text
               style={(this.state.postTime == 'smart' || this.state.postTime == 'later') ? styles.captionTextActive : styles.captionText}>
-            The best time to post is {this.state.date.getMonth()}/{this.state.date.getDate()} at {this.state.date.getHours()}:{this.state.date.getMinutes()}.
+            Post time is {this.state.date.getMonth()}/{this.state.date.getDate()} at {this.state.date.getHours()}:{this.state.date.getMinutes()}.
           </Text>
         </View>
         <View style={styles.timeViewSection}>
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightBlue
   },
   timeTextActive: {
-    color: 'white',
+    color: 'black',
   },
   socialView: {
     height: 60,

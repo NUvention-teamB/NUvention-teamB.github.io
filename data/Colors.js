@@ -12,6 +12,7 @@ Colors = {
 	lighterBlue: '#BFE7FB',
 	red: '#FF5038',
 	green: '#3AA58B',
+	hyperlink: '#0000EE',
 };
 
 export default Colors;

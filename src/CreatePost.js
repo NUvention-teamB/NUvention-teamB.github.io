@@ -115,7 +115,8 @@ export default class CreatePost extends Component {
           nextScreen={()=>{this.nextScreen()}}
           postImage={this.state.postImage}
           data={this.state.suggestionData}
-          updateText={(text)=>{this.updateText(text)}}>
+          updateText={(text)=>{this.updateText(text)}}
+          updateTagSuggestion={this.updateTagSuggestion}>
         </Caption>
         <Post
           postImage={this.state.postImage}

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, DatePickerIOS } from 'react-native'
-import { Actions } from 'react-native-router-flux';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
 
@@ -8,8 +7,7 @@ export default class Caption extends Component {
   constructor(props) {
     super(props);
 
-    this.onChangeText = this.onChangeText.bind(this);
-    this.returnToCaption = this.returnToCaption.bind(this);
+    this.updateValue = this.updateValue.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.onDateChange = this.onDateChange.bind(this);
     this.returnDate = this.returnDate.bind(this);
@@ -40,19 +38,16 @@ export default class Caption extends Component {
 
   }
 
-  returnToCaption(option) {
-    Actions.pop({refresh: {option:option, tagIndex: this.props.tagIndex, id: this.props.id}})
-  }
-
-  onChangeText(text) {
-    this.setState({text})
+  updateValue(option) {
+    // Actions.pop({refresh: {option:option, tagIndex: this.props.tagIndex, id: this.props.id}})
+    this.props.updateValue(this.props.tagIndex, option);
   }
 
   renderRow(rowData) {
     return (
       <View marginBottom={20}>
         <TouchableOpacity
-          onPress={()=>{this.returnToCaption(rowData)}}
+          onPress={()=>{this.updateValue(rowData)}}
           style={styles.listElement}>
           <Text
             style={styles.listText}>
@@ -74,12 +69,16 @@ export default class Caption extends Component {
     } else {
       temp = this.state.date.getHours() + ':' + this.state.date.getMinutes();
     }
-    this.returnToCaption(temp);
+    this.updateValue(temp);
   }
 
   render() {
     var render = (() => {
-      if (this.props.tag == 'time') {
+      console.log(this.props.tag);
+      if (this.props.tag == null) {
+        return null;
+      }
+      else if (this.props.tag == 'time') {
         return (
           <View style={styles.container}>
             <DatePickerIOS
@@ -95,11 +94,7 @@ export default class Caption extends Component {
         )
       } else {
         return (
-          <View style={styles.container}>
-            <View style={styles.headerRow}>
-              <Text style={styles.headerText}>{this.state.data[this.props.tag].question}</Text>
-            </View>
-            <Hr lineColor={Colors.gray} />
+          <View>
             <ListView
               dataSource={this.state.ds.cloneWithRows(this.state.data[this.props.tag].options)}
               renderRow={this.renderRow}
