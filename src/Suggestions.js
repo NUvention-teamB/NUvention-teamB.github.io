@@ -4,6 +4,7 @@ import { Actions } from 'react-native-router-flux';
 import listData from '../data/SuggestionsText';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
+import CreatePostNavBar from './CreatePostNavBar';
 
 
 export default class Caption extends Component {
@@ -57,6 +58,7 @@ export default class Caption extends Component {
 
     return (
       <View style={styles.container}>
+        <CreatePostNavBar></CreatePostNavBar>
         <View style={styles.headerRow}>
           {image}
           <View style={styles.headerTextContainer}>
@@ -87,7 +89,6 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60,
   },
   headerRow: {
     height: 60,

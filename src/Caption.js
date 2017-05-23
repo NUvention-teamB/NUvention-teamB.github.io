@@ -3,8 +3,9 @@ import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, 
 import { Actions } from 'react-native-router-flux';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
-import { createLongData } from '../lib/SuggestionsHelper'
-import TagEditor from './TagEditor'
+import { createLongData } from '../lib/SuggestionsHelper';
+import TagEditor from './TagEditor';
+import CreatePostNavBar from './CreatePostNavBar';
 
 
 export default class Caption extends Component {
@@ -102,6 +103,7 @@ export default class Caption extends Component {
 
     return (
       <View style={styles.container}>
+        <CreatePostNavBar></CreatePostNavBar>
         <View style={styles.headerRow}>
           {image}
           <Text style={styles.headerText}>Edit the tags below.</Text>
@@ -111,10 +113,15 @@ export default class Caption extends Component {
           style={styles.postInput}>
           {text}
         </Text>
+        <Hr lineColor={Colors.gray} />
+        <View style={styles.buttonHolder}>
+          <TouchableOpacity onPress={this.copyAndNext}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Save template</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
         {tagEditor}
-        <Button
-          title="Copy"
-          onPress={this.copyAndNext}/>
       </View>
     )
   }
@@ -122,7 +129,6 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60,
   },
   headerRow: {
     flexDirection: 'row',
@@ -147,12 +153,18 @@ const styles = StyleSheet.create({
   clickable: {
     color: Colors.hyperlink,
   },
-  listElement: {
-    backgroundColor: Colors.lightBlue,
-    margin: 10,
-    borderRadius: 10,
+  buttonHolder: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '95%',
   },
-  listText: {
-    margin: 10
+  button: {
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: Colors.lightBlue,
+  },
+  buttonText: {
+    color: Colors.blue,
   },
 });

@@ -8,7 +8,8 @@ import { EventCreationCalendar } from '../lib/Calendar';
 import Calendar from 'react-native-calendar';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
-import { uploadPhoto } from '../lib/PostHelper'
+import { uploadPhoto } from '../lib/PostHelper';
+import CreatePostNavBar from './CreatePostNavBar';
 
 
 export default class Post extends Component {
@@ -190,6 +191,7 @@ export default class Post extends Component {
 
     return (
       <View style={styles.container}>
+        <CreatePostNavBar></CreatePostNavBar>
         <View style={styles.headerRow}>
           <Text style={styles.headerText}>Finalize your message</Text>
         </View>
@@ -296,7 +298,6 @@ export default class Post extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 60,
     flex: 1,
   },
   centering: {

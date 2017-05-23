@@ -1,9 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Image, CameraRoll, TouchableHighlight } from 'react-native'
 import { Actions } from 'react-native-router-flux';
-import ImagePicker from 'react-native-image-picker'
-import Suggestions from './Suggestions'
-import Swiper from 'react-native-swiper'
+import ImagePicker from 'react-native-image-picker';
+import CreatePostNavBar from './CreatePostNavBar';
+import Suggestions from './Suggestions';
+import Swiper from 'react-native-swiper';
+import Colors from '../data/Colors';
 
 export default class Photo extends Component {
   constructor(props) {
@@ -102,6 +104,7 @@ export default class Photo extends Component {
 
     return (
       <View style={styles.container}>
+        <CreatePostNavBar></CreatePostNavBar>
         {postImage}
         <Button
           title="Or continue without a photo... >"
@@ -113,14 +116,13 @@ export default class Photo extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60
   },
   postImage: {
     height: 180,
     width: '100%',
   },
   addPhotoBtn: {
-    backgroundColor: '#00b0ff',
+    backgroundColor: Colors.blue,
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 30,
