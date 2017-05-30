@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, Image, Clipboard } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, Image, Clipboard, ScrollView } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
@@ -109,19 +109,21 @@ export default class Caption extends Component {
           <Text style={styles.headerText}>Edit the tags below.</Text>
         </View>
         <Hr lineColor={Colors.gray} />
-        <Text
-          style={styles.postInput}>
-          {text}
-        </Text>
-        <Hr lineColor={Colors.gray} />
-        <View style={styles.buttonHolder}>
-          <TouchableOpacity onPress={this.copyAndNext}>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>Save template</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        {tagEditor}
+        <ScrollView>
+          <Text
+            style={styles.postInput}>
+            {text}
+          </Text>
+          <Hr lineColor={Colors.gray} />
+          <View style={styles.buttonHolder}>
+            <TouchableOpacity onPress={this.copyAndNext}>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>Save template</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          {tagEditor}
+        </ScrollView>
         <View style={styles.progressBar}>
           <View style={styles.progress}></View>
         </View>
