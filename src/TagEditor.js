@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, DatePickerIOS } from 'react-native'
+import React, { Component } from 'react';
+import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, DatePickerIOS } from 'react-native';
+import { getFullDate } from '../lib/TimeHelper';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
 
@@ -67,7 +68,7 @@ export default class Caption extends Component {
     if (this.state.date == null) {
       temp = '[time]'
     } else {
-      temp = this.state.date.getHours() + ':' + this.state.date.getMinutes();
+      temp = getFullDate(this.state.date);
     }
     this.updateValue(temp);
   }
@@ -83,7 +84,7 @@ export default class Caption extends Component {
           <View style={styles.container}>
             <DatePickerIOS
               date={this.state.date}
-              mode="time"
+              mode="datetime"
               timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
               onDateChange={this.onDateChange}
             />

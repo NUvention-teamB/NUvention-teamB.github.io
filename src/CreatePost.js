@@ -98,8 +98,8 @@ export default class CreatePost extends Component {
 
   render() {
     return (
-      <View>
-        <Swiper ref='swiper' loop={false} showPagination={false}>
+      <View style={styles.container}>
+        <Swiper ref='swiper' loop={false} showsPagination={false}>
           <Photo
             nextScreen={()=>{this.nextScreen()}}
             postImage={this.state.postImage}
@@ -129,3 +129,12 @@ export default class CreatePost extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex:1,
+  },
+  swiper: {
+    flex:1,
+  },
+});

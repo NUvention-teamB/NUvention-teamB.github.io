@@ -82,6 +82,9 @@ export default class Caption extends Component {
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
         />
+        <View style={styles.progressBar}>
+          <View style={styles.progress}></View>
+        </View>
       </View>
     )
   }
@@ -89,6 +92,7 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex:1,
   },
   headerRow: {
     height: 60,
@@ -138,5 +142,14 @@ const styles = StyleSheet.create({
   },
   listText: {
     margin: 10
+  },
+  progressBar: {
+    marginTop: 'auto',
+    height: 5,
+    flexDirection: 'row',
+  },
+  progress: {
+    width: '50%',
+    backgroundColor: Colors.blue,
   },
 });

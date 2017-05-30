@@ -122,6 +122,9 @@ export default class Caption extends Component {
           </TouchableOpacity>
         </View>
         {tagEditor}
+        <View style={styles.progressBar}>
+          <View style={styles.progress}></View>
+        </View>
       </View>
     )
   }
@@ -129,6 +132,7 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex:1,
   },
   headerRow: {
     flexDirection: 'row',
@@ -166,5 +170,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: Colors.blue,
+  },
+  progressBar: {
+    marginTop: 'auto',
+    height: 5,
+    flexDirection: 'row',
+  },
+  progress: {
+    width: '75%',
+    backgroundColor: Colors.blue,
   },
 });

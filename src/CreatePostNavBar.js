@@ -15,12 +15,22 @@ export default class Home extends Component {
   }
 
   render() {
+    var additional = (() => {
+      if (this.props.onPress != null && this.props.text != null) {
+        return (
+          <TouchableOpacity style={styles.button} onPress={this.props.onPress.bind(this)}>
+            <Text style={styles.text}>{this.props.text}</Text>
+          </TouchableOpacity>
+        )
+      }
+    })();
 
     return (
       <View style={styles.container}>
         <TouchableOpacity style={styles.button} onPress={() => {Actions.pop()}}>
-          <Icon name="times" size={20} color={Colors.gray}></Icon>
+          <Text style={styles.text}>Cancel</Text>
         </TouchableOpacity>
+        {additional}
       </View>
     )
   }
@@ -28,13 +38,20 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    height:50,
+    height:60,
     backgroundColor: Colors.blue,
+    borderBottomWidth: 1,
+    borderColor: Colors.darkGray,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  text: {
+    color: 'white',
   },
   button: {
-    paddingTop: 20,
-    marginLeft: 10,
-    marginRight: 10,
+    paddingTop: 30,
+    marginLeft: 20,
+    marginRight: 20,
   },
 
 });

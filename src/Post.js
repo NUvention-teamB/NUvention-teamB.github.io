@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ScrollView, Clipboard, DatePickerIOS, ActivityIndicator, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ScrollView, Clipboard, DatePickerIOS, ActivityIndicator, Image, TouchableHighlight } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
-import { getPageID, getPageAccessToken, pagePost } from '../lib/FacebookAPI';
+import { getPageID, getPageAccessToken, pagePost, scheduledPagePost } from '../lib/FacebookAPI';
 import { EventCreationCalendar } from '../lib/Calendar';
+import { getFullDate } from '../lib/TimeHelper';
 import Calendar from 'react-native-calendar';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
@@ -36,6 +37,7 @@ export default class Post extends Component {
     this.openCalendar = this.openCalendar.bind(this);
     this.paste = this.paste.bind(this);
     this.onDateChange = this.onDateChange.bind(this);
+    this.submitPost = this.submitPost.bind(this);
   }
 
   goToNext() {
@@ -74,7 +76,8 @@ export default class Post extends Component {
 
     var postText = this.state.text;
     var postImage = this.props.postImage;
-
+    var postTime = this.state.postTime;
+    var date = this.state.date;
 
     var _this = this;
     this.setState({
@@ -83,7 +86,10 @@ export default class Post extends Component {
 
     uploadPhoto(postImage)
     .then(function(link){
-      return pagePost(globalPageId, globalPageAccessToken, postText, link)
+      if (postTime != 'now') {
+        return scheduledPagePost(globalPageId, globalPageAccessToken, postText, link, date);
+      }
+      return pagePost(globalPageId, globalPageAccessToken, postText, link);
     })
     .then(function() {
       _this.setState({
@@ -215,7 +221,8 @@ export default class Post extends Component {
               }}
               style={[styles.textInput, {height: Math.max(105, this.state.height)}]}
               value={this.state.text}
-            />
+              placeholder='Input text here'
+            /> 
             {postImage}
             {datePicker}
 
@@ -225,7 +232,7 @@ export default class Post extends Component {
             style={styles.captionSection}>
           <Text
               style={(this.state.postTime == 'smart' || this.state.postTime == 'later') ? styles.captionTextActive : styles.captionText}>
-            Post time is {this.state.date.getMonth()}/{this.state.date.getDate()} at {this.state.date.getHours()}:{this.state.date.getMinutes()}.
+            Post time is {getFullDate(this.state.date)}.
           </Text>
         </View>
         <View style={styles.timeViewSection}>
@@ -287,10 +294,14 @@ export default class Post extends Component {
             </View>
           </TouchableOpacity>
         </View>
-
-        <Button
-          title="Queue  "
-          onPress={this.submitPost.bind(this)}/>
+        <TouchableHighlight onPress={this.submitPost} underlayColor={Colors.blue}>
+          <View style={styles.queueButton}>
+            <Text style={styles.queueButtonText}>Queue</Text>
+          </View>
+        </TouchableHighlight>
+        <View style={styles.progressBar}>
+          <View style={styles.progress}></View>
+        </View>
       </View>
     )
   }
@@ -330,11 +341,17 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 15,
-    backgroundColor: '#EEEEEE'
+    backgroundColor: '#EEEEEE',
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   postImage: {
     height: 180,
     width: '100%',
+  },
+  captionSection: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   captionTextActive: {
     color: '#ADADAD',
@@ -353,11 +370,15 @@ const styles = StyleSheet.create({
     width: '50%'
   },
   timeView: {
-    padding: 10
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   timeViewActive: {
     padding: 10,
-    backgroundColor: Colors.lightBlue
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: Colors.lightBlue,
   },
   timeTextActive: {
     color: 'black',
@@ -366,7 +387,7 @@ const styles = StyleSheet.create({
     height: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
   socialMediaToggles: {
     padding: 10,
@@ -381,7 +402,6 @@ const styles = StyleSheet.create({
     height: 100,
     marginLeft: 'auto',
     marginRight: 'auto',
-    // marginTop: 50,
   },
   successText: {
     color: 'green',
@@ -395,5 +415,35 @@ const styles = StyleSheet.create({
     marginTop: '35%',
     marginBottom: 20,
     fontSize: 20
+  },
+  queueButton: {
+    backgroundColor: Colors.blue,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 10,
+    marginBottom: 20,
+    width: 100,
+    padding: 15,
+    borderRadius: 20,
+    shadowRadius: 2,
+    shadowOpacity: 0.5,
+    shadowColor: 'darkblue',
+    shadowOffset: {
+      top: 1
+    },
+  },
+  queueButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 18,
+  },
+  progressBar: {
+    marginTop: 'auto',
+    height: 5,
+    flexDirection: 'row',
+  },
+  progress: {
+    width: '100%',
+    backgroundColor: Colors.blue,
   },
 });

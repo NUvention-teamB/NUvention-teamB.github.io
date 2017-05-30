@@ -4,6 +4,7 @@ Colors = {
 	darkGreen: '#3FBF9B', // text, progress bar
 	darkerGreen: '#35a183',
 	gray: '#9CBBB4', // back button
+	darkGray: '#5d706c', 
 	blue: '#00b0ff',
 	lightBlue: '#D6F1FD',
 	brightBlue: '#47BDF3',
