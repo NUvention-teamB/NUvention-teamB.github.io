@@ -26,9 +26,7 @@ export default class Photo extends Component {
   componentWillMount() {
     var that = this;
     const fetchParams: Object = {
-      first: 16,
-      groupTypes: 'All',
-
+      first: 20,
     };
     CameraRoll.getPhotos(fetchParams)
       .then(that.storeImages)
@@ -223,16 +221,18 @@ export default class Photo extends Component {
             }
           </View>
         </ScrollView>
-        <TouchableOpacity onPress={() => {this.updateImage(null)}}>
-          <View style={styles.buttonView}>
-            <Text style={styles.buttonText}>No Photo</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.addImage.bind(this)}>
-          <View style={styles.buttonView}>
-            <Text style={styles.buttonText}>Other Photos</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.buttonHolder}>
+          <TouchableOpacity onPress={() => {this.updateImage(null)}}>
+            <View style={styles.buttonView}>
+              <Text style={styles.buttonText}>No Photo</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.addImage.bind(this)}>
+            <View style={styles.buttonView}>
+              <Text style={styles.buttonText}>Other Photos</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
         <View style={styles.progressBar}>
           <View style={styles.progress}></View>
         </View>
@@ -268,13 +268,17 @@ const styles = StyleSheet.create({
   buttonHolder: {
     flexDirection: 'row',
   },
+  buttonHolder: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
   buttonView: {
     backgroundColor: Colors.blue,
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '60%',
     padding: 15,
-    marginBottom: 20,
+    marginBottom: 10,
     borderRadius: 20,
     shadowRadius: 2,
     shadowOpacity: 0.5,

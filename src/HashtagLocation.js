@@ -22,7 +22,8 @@ export default class HashtagLocation extends Component {
         'Breezy',
         'FarleyCenterNU',
         'SocialMarketing',
-        'Entrepreneurship'
+        'Entrepreneurship',
+        'Chicago',
       ],
       hashtagText: '',
       recentLocations: [
@@ -66,16 +67,16 @@ export default class HashtagLocation extends Component {
       output = []
       for(i = 0 ; i < this.state.hashtags.length ; i++) {
         output.push(
-          <View style={styles.ElementView} key={'view'+i}>
-            <Text 
-              style={styles.elementText} 
-              key={'text'+i}
-              onPress={this.addHashtagFunction(this.state.hashtags[i])}>
-              #{this.state.hashtags[i]}
-            </Text>
-          </View>
+          <Text 
+            style={styles.elementText} 
+            key={'text'+i}
+            onPress={this.addHashtagFunction(this.state.hashtags[i])}>
+            #{this.state.hashtags[i]}
+          </Text>
         )
-      }
+        output.push(<Text>{'    '}</Text>);
+      } 
+      output.pop();
       return output;
     })();
 
@@ -83,16 +84,17 @@ export default class HashtagLocation extends Component {
       output = [];
       for(i = 0 ; i < this.state.recentLocations.length ; i++) {
         output.push(
-          <View style={styles.ElementView} key={'view'+i}>
+          <View style={styles.elementView}>
             <Text 
-              style={styles.elementText} 
               key={'text'+i}
               onPress={() => {console.log('currently does nothing')}}>
               {this.state.recentLocations[i]}
             </Text>
           </View>
         )
+        output.push(<Text>{'    '}</Text>);
       } 
+      output.pop();
       return output;
     })();
 
@@ -116,13 +118,19 @@ export default class HashtagLocation extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <View>{hashtags}</View>
+        <View style={styles.elementTextView}>
+          <Text>
+            {hashtags}
+          </Text>
+        </View>
         <View style={styles.sectionHeaderView}>
           <Text style={styles.sectionHeaderText}>
             Recent Locations
           </Text>
         </View>
-        <View>{recentLocations}</View>
+        <View>
+          {recentLocations}
+        </View>
         <View style={styles.progressBar}>
           <View style={styles.progress}></View>
         </View>
@@ -175,15 +183,20 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Colors.blue,
   },
-  ElementView: {
+  elementTextView: {
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  elementView: {
     backgroundColor: Colors.lightBlue,
-    margin: 2,
+    padding: 5,
     marginLeft: 10,
     marginRight: 10,
     borderRadius: 10,
   },
   elementText: {
-    margin: 5,
+    color: Colors.blue,
+    lineHeight: 25,
   },
   progressBar: {
     marginTop: 'auto',

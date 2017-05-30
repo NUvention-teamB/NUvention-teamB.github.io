@@ -43,7 +43,11 @@ export default class Caption extends Component {
 
   updateValue(option) {
     // Actions.pop({refresh: {option:option, tagIndex: this.props.tagIndex, id: this.props.id}})
-    this.props.updateValue(this.props.tagIndex, option);
+    if (option == '') {
+      this.props.updateValue(this.props.tagIndex, '[' + this.props.tag + ']');
+    } else{
+      this.props.updateValue(this.props.tagIndex, option);
+    }
   }
 
   renderRow(rowData) {
