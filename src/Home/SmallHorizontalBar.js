@@ -38,7 +38,6 @@ export default class SmallHorizontalBar extends Component {
 
     return (
       <View style={styles.bar}>
-        {/* <Text style={styles.barLabel}>{this.props.label}</Text> */}
         <View style={styles.rowContainer}>
           <View style={styles.rowIcon}>
             <Image
