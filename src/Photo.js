@@ -192,8 +192,8 @@ export default class Photo extends Component {
       <View style={styles.container}>
         <CreatePostNavBar onPress={this.goToNext} text='Continue'></CreatePostNavBar>
         {image}
-        <View style={styles.headerView}>
-          <Text style={styles.headerText}>
+        <View style={styles.sectionHeaderView}>
+          <Text style={styles.sectionHeaderText}>
             Your Photos
           </Text>
         </View>
@@ -256,13 +256,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: Colors.gray,
   },
-  headerView: {
+  sectionHeaderView: {
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 5,
     marginTop: 10,
   },
-  headerText: {
+  sectionHeaderText: {
     color: Colors.gray,
   },
   buttonHolder: {
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   progress: {
-    width: '25%',
+    width: '20%',
     backgroundColor: Colors.blue,
   },
 });

@@ -165,7 +165,10 @@ export default class Post extends Component {
 
     var postImage = (() => {
       if (this.props.postImage!=null) return (
-        <Image source={this.props.postImage} style={styles.postImage}/>
+        <View
+          style={styles.postImageView}>
+          <Image source={this.props.postImage} style={styles.postImage}/>
+        </View>
       )
     })();
 
@@ -250,10 +253,9 @@ export default class Post extends Component {
           <TouchableOpacity
               onPress={()=>{this.setState({facebookToggle: !this.state.facebookToggle});}}>
             <View
-                style={styles.socialMediaToggles}
-                borderColor={this.state.facebookToggle ? this.state.active : this.state.dormant}>
+                style={this.state.facebookToggle ? styles.socialMediaActive : styles.socialMediaDormant}>
               <Icon
-                  color={this.state.facebookToggle ? this.state.active : this.state.dormant}
+                  color={this.state.facebookToggle ? 'black' : Colors.gray}
                   size={ 30 }
                   name="facebook"/>
             </View>
@@ -261,10 +263,9 @@ export default class Post extends Component {
           <TouchableOpacity
               onPress={()=>{this.setState({instagramToggle: !this.state.instagramToggle});}}>
             <View
-                style={styles.socialMediaToggles}
-                borderColor={this.state.instagramToggle ? this.state.active : this.state.dormant}>
+                style={this.state.instagramToggle ? styles.socialMediaActive : styles.socialMediaDormant}>
               <Icon
-                  color={this.state.instagramToggle ? this.state.active : this.state.dormant}
+                  color={this.state.instagramToggle ? 'black' : Colors.gray}
                   size={ 30 }
                   name="instagram"/>
             </View>
@@ -272,10 +273,9 @@ export default class Post extends Component {
           <TouchableOpacity
               onPress={()=>{this.setState({twitterToggle: !this.state.twitterToggle});}}>
             <View
-                style={styles.socialMediaToggles}
-                borderColor={this.state.twitterToggle ? this.state.active : this.state.dormant}>
+                style={this.state.twitterToggle ? styles.socialMediaActive : styles.socialMediaDormant}>
               <Icon
-                  color={this.state.twitterToggle ? this.state.active : this.state.dormant}
+                  color={this.state.twitterToggle ? 'black' : Colors.gray}
                   size={ 30 }
                   name="twitter"/>
             </View>
@@ -332,9 +332,15 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
+  postImageView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
   postImage: {
-    height: 180,
-    width: '100%',
+    height: 150,
+    flex: 1,
+    margin: 5,
+    borderRadius: 10,
   },
   captionSection: {
     flexDirection: 'row',
@@ -371,18 +377,28 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   socialView: {
-    height: 60,
+    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  socialMediaToggles: {
+  socialMediaActive: {
+    padding: 10,
+    backgroundColor: Colors.lightBlue,
+    width: 50,
+    margin: 10,
+    borderRadius: 30,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  socialMediaDormant: {
     padding: 10,
     width: 50,
     margin: 10,
     borderRadius: 30,
     borderWidth: 1,
     alignItems: 'center',
+    borderColor: Colors.gray
   },
   queueButton: {
     backgroundColor: Colors.blue,

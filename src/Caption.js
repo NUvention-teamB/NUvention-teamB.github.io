@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   progress: {
-    width: '75%',
+    width: '60%',
     backgroundColor: Colors.blue,
   },
 });

@@ -6,6 +6,7 @@ import Photo from './Photo'
 import Suggestions from './Suggestions'
 import Caption from './Caption'
 import Post from './Post'
+import HashtagLocation from './HashtagLocation'
 import Swiper from 'react-native-swiper'
 import listData from '../data/SuggestionsText';
 import { getIdIndex, generateSuggestionData } from '../lib/SuggestionsHelper'
@@ -92,8 +93,6 @@ export default class CreatePost extends Component {
     index = getIdIndex(this.state.listData, id);
     this.state.listData[index].tags[tagIndex].suggestion = suggestion;
     this.updateListData(this.state.listData[index]);
-    console.log(this.state.listData[index]);
-    console.log(this.state.suggestionData);
   }
 
   render() {
@@ -119,10 +118,13 @@ export default class CreatePost extends Component {
             updateText={(text)=>{this.updateText(text)}}
             updateTagSuggestion={this.updateTagSuggestion}>
           </Caption>
-          <Post
+          <HashtagLocation
+            nextScreen={()=>{this.nextScreen()}}
             postImage={this.state.postImage}
-            data={this.state.suggestionData}
-            text={this.state.text}>
+            data={this.state.suggestionData}>
+          </HashtagLocation>
+          <Post
+            postImage={this.state.postImage}>
           </Post>
         </Swiper>
       </View>

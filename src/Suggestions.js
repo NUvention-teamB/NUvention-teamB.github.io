@@ -74,10 +74,11 @@ export default class Caption extends Component {
           </View>
         </View>
         <Hr lineColor={Colors.gray} />
-        <Text
-          style={styles.title}>
-          Suggestions:
-        </Text>
+        <View style={styles.sectionHeaderView}>
+          <Text style={styles.sectionHeaderText}>
+            Suggestions
+          </Text>
+        </View>
         <ListView
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
@@ -131,9 +132,14 @@ const styles = StyleSheet.create({
     color: 'white',
     margin: 5
   },
-  title: {
-    margin: 10,
-    color: Colors.blue,
+  sectionHeaderView: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 5,
+    marginTop: 10,
+  },
+  sectionHeaderText: {
+    color: Colors.gray,
   },
   listElement: {
     backgroundColor: Colors.lightBlue,
@@ -149,7 +155,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   progress: {
-    width: '50%',
+    width: '40%',
     backgroundColor: Colors.blue,
   },
 });
