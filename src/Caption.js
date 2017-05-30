@@ -151,9 +151,9 @@ const styles = StyleSheet.create({
   },
   postInput: {
     marginTop: 10,
-    height: 100,
     marginLeft: 20,
     marginRight: 20,
+    marginBottom: 10,
     fontSize: 20,
   },
   clickable: {
