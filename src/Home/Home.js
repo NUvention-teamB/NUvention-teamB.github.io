@@ -11,8 +11,7 @@ import HorizontalBar from './HorizontalBar'
 import LastPostsStatistics from './LastPostsStatistics'
 import WeekStatistics from './WeekStatistics'
 import HomeNavBar from './HomeNavBar'
-import UserSettings from './UserSettings'
-import boostPost from '../../lib/BoostPost'
+import AccountSettings from './AccountSettings'
 
 export default class Home extends Component {
   constructor(props) {
@@ -64,7 +63,7 @@ export default class Home extends Component {
     var screen = (() => {
       if (this.state.screen=='weekStatistics') return (<WeekStatistics statistics={this.state.statistics} loaded={this.state.loaded} />)
       else if (this.state.screen=='postStatistics') return (<LastPostsStatistics statistics={this.state.statistics} loaded={this.state.loaded} />)
-      else if (this.state.screen=='userSettings') return (<UserSettings />);
+      else if (this.state.screen=='userSettings') return (<AccountSettings />);
       else return null;
     })();
 
