@@ -4,6 +4,7 @@ import { LoginButton, AccessToken } from 'react-native-fbsdk'
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core'
 import { Actions } from 'react-native-router-flux';
 import { getPageID, getPageAccessToken, getPages } from '../lib/FacebookAPI'
+import Colors from '../data/Colors'
 
 export default class Pages extends Component {
   constructor(props) {
@@ -21,12 +22,13 @@ export default class Pages extends Component {
     .then(function(pages) {
       // console.log(pages);
       if (pages && pages.length==1) {
+        var page = pages[0];
         globalPageId = page.id;
         globalPageAccessToken = page.access_token;
         globalPage = page;
         Actions.home();
       }
-      
+
       _this.setState({
         pages: pages
       });
@@ -61,7 +63,7 @@ export default class Pages extends Component {
           animating={this.state.pages==null}
           style={[styles.centering, {height: 80}]}
           size="large"
-          color="darkblue"
+          color={Colors.brightBlue}
         />
       </View>
     )
@@ -74,7 +76,7 @@ export default class Pages extends Component {
       return this.state.pages.map((page) => {
         // console.log(page);
         return (
-          <TouchableHighlight key={page.id} onPress={()=>this.selectPage(page)} underlayColor="#00b0ff">
+          <TouchableHighlight key={page.id} onPress={()=>this.selectPage(page)} underlayColor={Colors.brightBlue}>
             <View style={styles.page}>
               <Text style={styles.pageName}>{page.name}</Text>
               <Text style={styles.pageCategory}>{page.category}</Text>
@@ -92,7 +94,7 @@ export default class Pages extends Component {
           source={require('../img/logo_blue.png')}
           style={styles.logo}>
         </Image>
-        <Text style={styles.instructions}>Select your page...</Text>
+        <Text style={styles.instructions}>Select Your Page</Text>
         {pages}
         <LoginButton
           style={styles.fbButton}
@@ -124,8 +126,8 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   logo: {
-    width: 320,
-    height: 100,
+    width: 300,
+    height: 94,
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 50,
@@ -138,16 +140,21 @@ const styles = StyleSheet.create({
   },
   instructions: {
     fontSize: 20,
-    fontWeight: 'normal',
+    fontWeight: '500',
     textAlign: 'center',
-    marginTop: 40,
-    marginBottom: 30
+    marginTop: 20,
+    marginBottom: 20,
+    backgroundColor: Colors.brightBlue,
+    color: 'white',
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   page: {
     padding: 15,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: 'darkblue',
+    marginLeft: 30,
+    marginRight: 30,
+    borderBottomWidth: 2,
+    borderColor: Colors.middleGray,
   },
   pageName: {
     fontSize: 18,
@@ -165,6 +172,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 20,
+    marginBottom: 40,
     height: 30,
     borderRadius: 15
   }

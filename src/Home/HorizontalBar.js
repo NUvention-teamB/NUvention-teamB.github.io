@@ -21,7 +21,7 @@ export default class HorizontalBar extends Component {
         case 'Reactions':
           return require('../../Icons/heart.png');
         case 'Comments':
-          return require('../../Icons/comment.png');
+          return require('../../Icons/chat.png');
       }
     })();
 
@@ -39,17 +39,28 @@ export default class HorizontalBar extends Component {
       )
     })();
 
+    var rowIconStyle = (() => {
+      switch (this.props.label) {
+        case 'Likes':
+          return styles.likesIconStyle;
+        case 'Reactions':
+          return styles.reactionsIconStyle;
+        case 'Comments':
+          return styles.commentsIconStyle;
+      }
+    })();
+
     return (
       <View style={styles.bar}>
         {/* <Text style={styles.barLabel}>{this.props.label}</Text> */}
         <View style={styles.rowContainer}>
           <View style={styles.rowIcon}>
             <Image
-              style={styles.rowIconStyle}
+              style={rowIconStyle}
               source={imageSource} />
           </View>
           <View style={styles.rowStats}>
-            <Text style={styles.barText}><Animated.View style={[styles.barAnimated, styles[this.props.label], {width: count}]} />{' ' + this.props.count._value}</Text>
+            <Text style={styles.barText}><Animated.View style={[styles.barAnimated, styles[this.props.label], {width: count}]} />{' ' + this.props.count._value+' '}<Text style={styles.labelStyle}>{this.props.label.toLowerCase()}</Text></Text>
             {bestCountDisplay}
           </View>
         </View>
@@ -66,13 +77,23 @@ const styles = StyleSheet.create({
     borderColor: 'grey',
     paddingTop: 20,
     paddingBottom: 20,
-    paddingLeft: 30
+    paddingLeft: 30,
+    height: 100,
   },
   rowIcon: {
     width: '20%',
   },
-  rowIconStyle: {
+  likesIconStyle: {
+    width: '80%',
+    height: '64%',
+  },
+  reactionsIconStyle: {
+    width: '75%',
+    height: '80%',
+  },
+  commentsIconStyle: {
     width: '70%',
+    height: '80%',
   },
   rowStats: {
     width: '80%',
@@ -96,7 +117,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.green,
   },
   crown: {
-    height: 15,
+    height: 14,
+    width: 30,
   },
   labelStyle: {
     color: Colors.middleGray

@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput, Animated, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native'
 import HorizontalBar from './HorizontalBar'
 import Colors from '../../data/Colors'
+import { Actions } from 'react-native-router-flux';
+import PostClass from '../../lib/PostClass';
 
 export default class WeekStatistics extends Component {
   constructor(props) {
@@ -30,12 +32,16 @@ export default class WeekStatistics extends Component {
     })
   }
 
+  newPost() {
+    var post = new PostClass();
+    Actions.createPost({post: post});
+  }
 
   render () {
     if (!this.props.loaded) return (
       <ActivityIndicator
         animating={this.state.pages==null}
-        style={[styles.centering, {height: 80}]}
+        style={[styles.centering, {height: 100}]}
         size="large"
         color={Colors.blue}
       />
@@ -98,6 +104,9 @@ export default class WeekStatistics extends Component {
 
     return (
       <View style={styles.weekStatistics}>
+        <View style={styles.textBar}>
+          <Text style={styles.textBarText}>{'Statistics for '+globalPage.name}</Text>
+        </View>
         <View>
           <View style={styles.weekNavBar}>
             {leftSlide}
@@ -110,6 +119,12 @@ export default class WeekStatistics extends Component {
         <HorizontalBar max={max} label={'Reactions'} count={statistics.reactions} bestCount={bestStatistics.reactions} />
         <HorizontalBar max={max} label={'Comments'} count={statistics.comments} bestCount={bestStatistics.comments} />
 
+        <TouchableOpacity style={styles.newPostButton} onPress={()=>this.newPost()}>
+          <Image
+            style={styles.newPostImage}
+            source={require('../../Icons/newpost.png')}
+          />
+        </TouchableOpacity>
       </View>
     )
   }
@@ -118,6 +133,7 @@ export default class WeekStatistics extends Component {
 const styles = StyleSheet.create({
   centering: {
     backgroundColor: 'white',
+    marginTop: 150,
   },
   weekNavBar: {
     flexDirection: 'row',
@@ -136,9 +152,8 @@ const styles = StyleSheet.create({
   weekNavigator: {
     width: '8%',
     marginLeft: '2%',
-    // marginRight: '1%',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '900',
     color: Colors.brightBlue,
   },
   weekButtonActive: {
@@ -170,5 +185,25 @@ const styles = StyleSheet.create({
   },
   weekStatistics: {
     backgroundColor: 'white',
+  },
+  textBar: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: Colors.lighterBlue
+  },
+  textBarText: {
+    textAlign: 'center',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  newPostButton: {
+    marginTop: 50,
+  },
+  newPostImage: {
+    width: 220,
+    height: 55,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    borderRadius: 20,
   },
 });

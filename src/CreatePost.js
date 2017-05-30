@@ -98,31 +98,43 @@ export default class CreatePost extends Component {
 
   render() {
     return (
-      <Swiper ref='swiper' loop={false} showPagination={false}>
-        <Photo
-          nextScreen={()=>{this.nextScreen()}}
-          postImage={this.state.postImage}
-          // uploadPhoto={(postImage)=>this.uploadPhoto(postImage)}>
-          updateImage={(postImage)=>this.updateImage(postImage)}>
-        </Photo>
-        <Suggestions
-          nextScreen={()=>{this.nextScreen()}}
-          skipTwo={()=>{this.skipTwo()}}
-          postImage={this.state.postImage}
-          updateSuggestion={(data)=>this.updateSuggestion(data)}>
-        </Suggestions>
-        <Caption
-          nextScreen={()=>{this.nextScreen()}}
-          postImage={this.state.postImage}
-          data={this.state.suggestionData}
-          updateText={(text)=>{this.updateText(text)}}>
-        </Caption>
-        <Post
-          postImage={this.state.postImage}
-          data={this.state.suggestionData}
-          text={this.state.text}>
-        </Post>
-      </Swiper>
+      <View style={styles.container}>
+        <Swiper ref='swiper' loop={false} showsPagination={false}>
+          <Photo
+            nextScreen={()=>{this.nextScreen()}}
+            postImage={this.state.postImage}
+            // uploadPhoto={(postImage)=>this.uploadPhoto(postImage)}>
+            updateImage={(postImage)=>this.updateImage(postImage)}>
+          </Photo>
+          <Suggestions
+            nextScreen={()=>{this.nextScreen()}}
+            skipTwo={()=>{this.skipTwo()}}
+            postImage={this.state.postImage}
+            updateSuggestion={(data)=>this.updateSuggestion(data)}>
+          </Suggestions>
+          <Caption
+            nextScreen={()=>{this.nextScreen()}}
+            postImage={this.state.postImage}
+            data={this.state.suggestionData}
+            updateText={(text)=>{this.updateText(text)}}
+            updateTagSuggestion={this.updateTagSuggestion}>
+          </Caption>
+          <Post
+            postImage={this.state.postImage}
+            data={this.state.suggestionData}
+            text={this.state.text}>
+          </Post>
+        </Swiper>
+      </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex:1,
+  },
+  swiper: {
+    flex:1,
+  },
+});

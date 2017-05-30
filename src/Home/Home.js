@@ -11,6 +11,7 @@ import HorizontalBar from './HorizontalBar'
 import LastPostsStatistics from './LastPostsStatistics'
 import WeekStatistics from './WeekStatistics'
 import HomeNavBar from './HomeNavBar'
+import AccountSettings from './AccountSettings'
 
 export default class Home extends Component {
   constructor(props) {
@@ -32,6 +33,8 @@ export default class Home extends Component {
     getListOfPosts(globalPageId, globalPageAccessToken)
     .then(function(statistics) {
       // console.log(statistics);
+
+      // boostPost(globalFbAccessToken, statistics.posts[0].id);
 
       _this.setState({
         statistics: statistics,
@@ -58,14 +61,16 @@ export default class Home extends Component {
     var statistics = this.state.statistics;
 
     var screen = (() => {
-      if (this.state.screen=='weekStatistics') return (<WeekStatistics statistics={this.state.statistics} loaded={this.state.loaded} week="thisWeekSummary"/>)
-      else return (<LastPostsStatistics statistics={this.state.statistics} loaded={this.state.loaded} />)
+      if (this.state.screen=='weekStatistics') return (<WeekStatistics statistics={this.state.statistics} loaded={this.state.loaded} />)
+      else if (this.state.screen=='postStatistics') return (<LastPostsStatistics statistics={this.state.statistics} loaded={this.state.loaded} />)
+      else if (this.state.screen=='userSettings') return (<AccountSettings />);
+      else return null;
     })();
 
     return (
       <View style={styles.container}>
-        <HomeNavBar switchScreens={this.switchScreens.bind(this)} screen={this.state.screen} />
-        {screen}
+        <ScrollView style={styles.screen}>{screen}</ScrollView>
+        <HomeNavBar style={styles.homeNavBar} switchScreens={this.switchScreens.bind(this)} screen={this.state.screen} />
       </View>
     )
   }
@@ -73,13 +78,12 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 64,
-    backgroundColor: '#f7f7f7',
+    paddingTop: 30,
+    backgroundColor: 'white',
   },
-  centering: {
-    // marginTop: '30%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
+  screen: {
+    height: '90%',
+    marginBottom: 3,
   },
+
 });

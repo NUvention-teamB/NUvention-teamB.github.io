@@ -3,6 +3,9 @@ import { View, Text, TextInput, StyleSheet, Button, ListView, TouchableOpacity, 
 import { Actions } from 'react-native-router-flux';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
+import { createLongData } from '../lib/SuggestionsHelper';
+import TagEditor from './TagEditor';
+import CreatePostNavBar from './CreatePostNavBar';
 
 
 export default class Caption extends Component {
@@ -12,32 +15,17 @@ export default class Caption extends Component {
     this.onChangeText = this.onChangeText.bind(this);
     this.copyAndNext = this.copyAndNext.bind(this);
     this.goToTagEditor = this.goToTagEditor.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.generateText = this.generateText.bind(this);
-    this.getTags = this.getTags.bind(this);
+    this.goToTagEditorFunction = this.goToTagEditorFunction.bind(this);
+    this.updateActiveFunction = this.updateActiveFunction.bind(this);
+    this.updateValue = this.updateValue.bind(this);
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     
     this.state = {
       data: this.props.data ? this.props.data : {caption:'',captionWithTags:'',tags:[]},
       tags: tags = this.props.data != null ? ds.cloneWithRows(this.props.data.tags) : null,
+      active: null,
     };
-  }
-
-  generateText() {
-    data = this.props.data ? this.props.data : {id:null,caption:'',captionWithTags:'',tags:[]};
-    output = data.caption;
-
-    for (i = data.tags.length - 1 ; i >= 0 ; i--) {
-      position = data.tags[i].position;
-      console.log(i + data.tags[i].replacement);
-      if (data.tags[i].replacement != undefined) {
-        output = [output.slice(0, position), data.tags[i].replacement, output.slice(position)].join('');
-      } else {
-        output = [output.slice(0, position), '[' + data.tags[i].name + ']', output.slice(position)].join('');
-      }
-    }
-    return output;
   }
 
   copyAndNext() {
@@ -54,24 +42,21 @@ export default class Caption extends Component {
     this.setState({text})
   }
 
-  getTags(data) {
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    return ds.cloneWithRows(data.tags);
+  goToTagEditorFunction(tag, tagIndex) {
+    return () => {
+      this.goToTagEditor(tag,tagIndex);
+    }
   }
 
-  renderRow(rowData, sectionId, rowId) {
-    return (
-      <View marginBottom={20}>
-        <TouchableOpacity
-            onPress={() => {this.goToTagEditor(rowData.name, parseInt(rowId))}}
-            style={styles.listElement}>
-          <Text
-            style={styles.listText}>
-            {rowData.name}: {rowData.suggestion || 'None'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
+  updateActiveFunction(index) {
+    return () => {
+      this.setState({active:index})
+    }
+  }
+
+  updateValue(index, value) {
+    this.props.updateTagSuggestion(this.props.data.id, index, value);
+    this.setState({active:null});
   }
 
   render() {
@@ -81,23 +66,44 @@ export default class Caption extends Component {
       )
     })();
     var text = (() => {
+      longData = createLongData(this.props.data);
+
+      if (longData == null) return null;
+      output = [<Text key={0}>{longData[0]}</Text>];
+      
+      for(i = 1 ; i < longData.length ; i += 2) {
+        output.push(
+          <Text 
+            key={i}
+            style={styles.clickable}
+            onPress={this.updateActiveFunction(parseInt(i/2))}>
+            {longData[i]}
+          </Text>);
+        output.push(<Text key={i+1}>{longData[i + 1]}</Text>);
+      }
+
+      return <Text>{output}</Text>
       if (this.props.data != null) return (
         this.props.data.captionWithTags)
     })();
 
-    var conditional = (()=> {
-      if (this.props.data != null && this.props.data.tags != null) {
-        return (
-          <ListView
-            dataSource={this.getTags(this.props.data)}
-            renderRow={this.renderRow}
-          />
-        )
+    var tagEditor = (() => {
+      if (this.props.data == null || this.props.data.tags == null || this.state.active == null) {
+        return null
       }
+      console.log(this.props.data.tags[this.state.active]);
+      return (
+        <TagEditor 
+          tag={this.props.data.tags[this.state.active].name} 
+          tagIndex={this.state.active} 
+          updateValue={this.updateValue}>
+        </TagEditor>
+      )
     })();
-  
+
     return (
       <View style={styles.container}>
+        <CreatePostNavBar></CreatePostNavBar>
         <View style={styles.headerRow}>
           {image}
           <Text style={styles.headerText}>Edit the tags below.</Text>
@@ -107,10 +113,18 @@ export default class Caption extends Component {
           style={styles.postInput}>
           {text}
         </Text>
-        {conditional}
-        <Button
-          title="Copy"
-          onPress={this.copyAndNext}/>
+        <Hr lineColor={Colors.gray} />
+        <View style={styles.buttonHolder}>
+          <TouchableOpacity onPress={this.copyAndNext}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Save template</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {tagEditor}
+        <View style={styles.progressBar}>
+          <View style={styles.progress}></View>
+        </View>
       </View>
     )
   }
@@ -118,7 +132,7 @@ export default class Caption extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60,
+    flex:1,
   },
   headerRow: {
     flexDirection: 'row',
@@ -140,12 +154,30 @@ const styles = StyleSheet.create({
     marginRight: 20,
     fontSize: 20,
   },
-  listElement: {
-    backgroundColor: Colors.lightBlue,
-    margin: 10,
-    borderRadius: 10,
+  clickable: {
+    color: Colors.hyperlink,
   },
-  listText: {
-    margin: 10
+  buttonHolder: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '95%',
+  },
+  button: {
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: Colors.lightBlue,
+  },
+  buttonText: {
+    color: Colors.blue,
+  },
+  progressBar: {
+    marginTop: 'auto',
+    height: 5,
+    flexDirection: 'row',
+  },
+  progress: {
+    width: '75%',
+    backgroundColor: Colors.blue,
   },
 });
