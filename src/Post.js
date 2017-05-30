@@ -11,6 +11,7 @@ import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
 import { uploadPhoto } from '../lib/PostHelper';
 import CreatePostNavBar from './CreatePostNavBar';
+import PostClass from '../lib/PostClass';
 
 
 export default class Post extends Component {
@@ -96,12 +97,12 @@ export default class Post extends Component {
         isLoading: false,
         success: true
       });
-      setTimeout(function() {
-        _this.setState({
-          success: false
-        });
-        Actions.home({type:'reset'});
-      }, 2000)
+      // setTimeout(function() {
+      //   _this.setState({
+      //     success: false
+      //   });
+      //   Actions.home({type:'reset'});
+      // }, 2000)
 
     })
     .catch(function(err) {
@@ -160,18 +161,44 @@ export default class Post extends Component {
       </View>
     )
 
+    var text = null;
+    if (this.state.postTime == 'now') {
+      text = 'Your post is posting on Facebook now.';
+    } else {
+      text = 'Your post is schedule to post on Facebook at' + getFullDate(this.state.date);
+    } 
+
     if (this.state.success) return (
-      <View style={styles.container}>
+      <View style={styles.successContainer}>
+        <View style={styles.rocketRow}>
+          <Image
+            source={require('../Icons/rocket.png')}
+          />
+        </View>
         <Text style={styles.successText}>
-          Successfully posted!
+          {text}
         </Text>
-        <Image
-          source={require('../img/checkmark.png')}
-          style={styles.checkmark}>
-        </Image>
-        <Text style={styles.thankYouNote}>
-          Thank you for using Breezy!
-        </Text>
+        <TouchableOpacity
+          onPress={() => {Actions.pop()}}>
+            <Image
+            style={styles.boostPost}
+            source={require('../Icons/boostpost1.png')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {Actions.createPostReplace({post: new PostClass(), type: 'replace'});}}>
+            <Image
+            style={styles.newPost}
+            source={require('../Icons/newpost.png')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {Actions.pop()}}>
+            <Image
+            style={styles.viewPostHistory}
+            source={require('../Icons/viewposthistory.png')}
+          />
+        </TouchableOpacity>
       </View>
     )
 
@@ -397,24 +424,34 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
   },
-  checkmark: {
-    width: 100,
-    height: 100,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+  successContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  rocketRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 40,
   },
   successText: {
-    color: 'green',
     textAlign: 'center',
-    marginTop: '30%',
-    marginBottom: '20%',
-    fontSize: 20
+    fontSize: 20,
+    width: '70%',
   },
-  thankYouNote: {
-    textAlign: 'center',
-    marginTop: '35%',
-    marginBottom: 20,
-    fontSize: 20
+  boostPost: {
+    height: 61,
+    width: 291,
+    marginTop: 10,
+  },
+  newPost: {
+    height: 54,
+    width: 291,
+    marginTop: 10,
+  },
+  viewPostHistory: {
+    height: 54,
+    width: 291,
+    marginTop: 10,
   },
   queueButton: {
     backgroundColor: Colors.blue,

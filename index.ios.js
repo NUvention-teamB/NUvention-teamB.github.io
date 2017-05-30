@@ -52,6 +52,7 @@ export default class teamB extends Component {
           <Scene key="suggestions" component={Suggestions} title="Suggestions" />
           <Scene key="tagEditor" component={TagEditor} title="TagEditor" />
           <Scene key="createPost" component={CreatePost} title="CreatePost" hideNavBar={true}/>
+          <Scene key="createPostReplace" component={CreatePost} title="CreatePost" hideNavBar={true} type="replace"/>
         </Scene>
       </Router>
     )
