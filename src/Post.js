@@ -161,41 +161,7 @@ export default class Post extends Component {
       text = 'Your post is posting on Facebook now.';
     } else {
       text = 'Your post is schedule to post on Facebook at' + getFullDate(this.state.date);
-    } 
-
-    if (this.state.success) return (
-      <View style={styles.successContainer}>
-        <View style={styles.rocketRow}>
-          <Image
-            source={require('../Icons/rocket.png')}
-          />
-        </View>
-        <Text style={styles.successText}>
-          {text}
-        </Text>
-        <TouchableOpacity
-          onPress={() => {Actions.pop()}}>
-            <Image
-            style={styles.boostPost}
-            source={require('../Icons/boostpost1.png')}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {Actions.createPostReplace({post: new PostClass(), type: 'replace'});}}>
-            <Image
-            style={styles.newPost}
-            source={require('../Icons/newpost.png')}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {Actions.pop()}}>
-            <Image
-            style={styles.viewPostHistory}
-            source={require('../Icons/viewposthistory.png')}
-          />
-        </TouchableOpacity>
-      </View>
-    )
+    }
 
     var postImage = (() => {
       if (this.props.postImage!=null) return (
@@ -417,35 +383,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 1,
     alignItems: 'center',
-  },
-  successContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  rocketRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 40,
-  },
-  successText: {
-    textAlign: 'center',
-    fontSize: 20,
-    width: '70%',
-  },
-  boostPost: {
-    height: 61,
-    width: 291,
-    marginTop: 10,
-  },
-  newPost: {
-    height: 54,
-    width: 291,
-    marginTop: 10,
-  },
-  viewPostHistory: {
-    height: 54,
-    width: 291,
-    marginTop: 10,
   },
   queueButton: {
     backgroundColor: Colors.blue,
