@@ -1,6 +1,72 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, Button, Image, TouchableOpacity, TextInput, Animated, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native'
 import SmallHorizontalBar from './SmallHorizontalBar'
+import BoostPost from '../../lib/BoostPost'
+import Colors from '../../data/Colors'
+
+class IndividualPostStatistics extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      boosted: false,
+    }
+  }
+
+  boostPost() {
+    var postId = 'hmm';
+    BoostPost(globalPage, postId);
+    this.setState({
+      boosted: true,
+    })
+  }
+
+  render() {
+    if (this.props.post=null) return null;
+    var post = this.props.post;
+    // console.log(post);
+    var statistics = post.statistics;
+
+
+    var message = this.props.post.message || '';
+    var date = new Date(post.created_time*1000);
+
+    var statistics = {
+      likes: new Animated.Value(post.statistics.likes),
+      reactions: new Animated.Value(post.statistics.reactions),
+      comments: new Animated.Value(post.statistics.comments)
+    }
+
+    var boostPost = (()=> {
+      if (this.state.boosted) return (
+        <View style={styles.successBoostView}>
+          <Text style={styles.boostedText}>{'Successfuly boosted this post!    '}</Text>
+        </View>
+      )
+
+      return (
+        <TouchableOpacity style={styles.boostPostButton} onPress={()=>this.boostPost()}>
+          <Image
+            style={styles.boostPostImage}
+            source={require('../../Icons/boostpostbutton.png')}
+          />
+        </TouchableOpacity>
+      )
+    })()
+
+
+    return (
+      <View style={styles.individualPost}>
+        <Text style={styles.postDate}>{date.toString().slice(0,10).replace(/-/g,"/")}</Text>
+        <Text style={styles.postMessage}>{message}</Text>
+        <SmallHorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
+        <SmallHorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
+        <SmallHorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
+        {boostPost}
+      </View>
+    )
+  }
+}
 
 export default class LastPostsStatistics extends Component {
   constructor(props) {
@@ -38,43 +104,27 @@ export default class LastPostsStatistics extends Component {
   }
 }
 
-class IndividualPostStatistics extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    if (this.props.post=null) return null;
-    var post = this.props.post;
-    // console.log(post);
-    var statistics = post.statistics;
-
-
-    var message = this.props.post.message || '';
-    var date = new Date(post.created_time*1000);
-
-    var statistics = {
-      likes: new Animated.Value(post.statistics.likes),
-      reactions: new Animated.Value(post.statistics.reactions),
-      comments: new Animated.Value(post.statistics.comments)
-    }
-
-
-    return (
-      <View style={styles.individualPost}>
-        <Text style={styles.postDate}>{date.toString().slice(0,10).replace(/-/g,"/")}</Text>
-        <Text style={styles.postMessage}>{message}</Text>
-        <SmallHorizontalBar max={this.props.max} label={'Likes'} count={statistics.likes} />
-        <SmallHorizontalBar max={this.props.max} label={'Reactions'} count={statistics.reactions} />
-        <SmallHorizontalBar max={this.props.max} label={'Comments'} count={statistics.comments} />
-      </View>
-    )
-  }
-}
-
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 10
+  },
+  boostPostButton: {
+    marginTop: 0,
+  },
+  boostPostImage: {
+    width: 120,
+    height: 40,
+    marginLeft: '60%',
+    borderRadius: 10,
+  },
+  successBoostView: {
+    marginTop: 10,
+    paddingRight: 20,
+  },
+  boostedText: {
+    fontSize: 12,
+    textAlign: 'right',
+    color: Colors.green,
   },
   postDate: {
     fontSize: 15,
@@ -96,7 +146,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: {
       top: 1
-    }
+    },
+    paddingBottom: 20,
   },
   textBar: {
     width: '100%',

@@ -96,13 +96,7 @@ export default class Post extends Component {
         isLoading: false,
         success: true
       });
-      setTimeout(function() {
-        _this.setState({
-          success: false
-        });
-        Actions.home({type:'reset'});
-      }, 2000)
-
+      Actions.success({type:'reset'});
     })
     .catch(function(err) {
       console.log(err);
@@ -149,6 +143,7 @@ export default class Post extends Component {
   };
 
   render() {
+    console.log(this.state);
     if (this.state.isLoading) return (
       <View>
         <ActivityIndicator
@@ -157,21 +152,6 @@ export default class Post extends Component {
           size="large"
           color="darkblue"
         />
-      </View>
-    )
-
-    if (this.state.success) return (
-      <View style={styles.container}>
-        <Text style={styles.successText}>
-          Successfully posted!
-        </Text>
-        <Image
-          source={require('../img/checkmark.png')}
-          style={styles.checkmark}>
-        </Image>
-        <Text style={styles.thankYouNote}>
-          Thank you for using Breezy!
-        </Text>
       </View>
     )
 
@@ -222,7 +202,7 @@ export default class Post extends Component {
               style={[styles.textInput, {height: Math.max(105, this.state.height)}]}
               value={this.state.text}
               placeholder='Input text here'
-            /> 
+            />
             {postImage}
             {datePicker}
 

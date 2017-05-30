@@ -17,6 +17,7 @@ import TagEditor from './src/TagEditor'
 import CreatePost from './src/CreatePost'
 import { Scene, Router } from 'react-native-router-flux';
 import Pages from './src/Pages'
+import Success from './src/Success'
 
 region = "us-east-1";
 identity_pool_id = "us-east-1:073b8647-2b1d-444b-99d9-30a8696b2274";
@@ -52,6 +53,7 @@ export default class teamB extends Component {
           <Scene key="suggestions" component={Suggestions} title="Suggestions" />
           <Scene key="tagEditor" component={TagEditor} title="TagEditor" />
           <Scene key="createPost" component={CreatePost} title="CreatePost" hideNavBar={true}/>
+          <Scene key="success" component={Success} title="Success" hideNavBar={true} />
         </Scene>
       </Router>
     )
