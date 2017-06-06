@@ -5,7 +5,7 @@ import { Actions } from 'react-native-router-flux';
 import { AWSCognitoCredentials } from 'aws-sdk-react-native-core';
 import { getPageID, getPageAccessToken, pagePost, scheduledPagePost } from '../lib/FacebookAPI';
 import { EventCreationCalendar } from '../lib/Calendar';
-import { getFullDate } from '../lib/TimeHelper';
+import { getMorningSmart, getAfternoonSmart, getEveningSmart, getFullDate } from '../lib/TimeHelper';
 import Calendar from 'react-native-calendar';
 import Colors from '../data/Colors';
 import Hr from 'react-native-hr';
@@ -37,7 +37,7 @@ export default class Post extends Component {
     this.smartPost = this.smartPost.bind(this);
     this.openCalendar = this.openCalendar.bind(this);
     this.paste = this.paste.bind(this);
-    this.onDateChange = this.onDateChange.bind(this);
+    this.setDate = this.setDate.bind(this);
     this.submitPost = this.submitPost.bind(this);
   }
 
@@ -130,7 +130,7 @@ export default class Post extends Component {
     })
   }
 
-  onDateChange(date){
+  setDate(date){
     this.setState({date: date});
   }
 
@@ -179,8 +179,28 @@ export default class Post extends Component {
             date={this.state.date}
             mode="datetime"
             timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
-            onDateChange={this.onDateChange}
+            onDateChange={this.setDate}
           />
+        )
+      } else if( this.state.postTime == 'smart') {
+        return(
+          <View>
+            <TouchableOpacity style={styles.smartPostTouch} onPress={(() => {this.setDate(getMorningSmart())})}>
+              <Text>
+                Morning
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.smartPostTouch} onPress={(() => {this.setDate(getAfternoonSmart())})}>
+              <Text>
+                Afternoon
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.smartPostTouch} onPress={(() => {this.setDate(getEveningSmart())})}>
+              <Text>
+                Evening
+              </Text>
+            </TouchableOpacity>
+          </View>
         )
       }
     })();
@@ -215,7 +235,6 @@ export default class Post extends Component {
             />
             {postImage}
             {datePicker}
-
           </ScrollView>
         </View>
         <View
@@ -234,6 +253,17 @@ export default class Post extends Component {
               <Text
                   style={(this.state.postTime == 'now') ? styles.timeTextActive : styles.timeText}>
                 Post Now
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+              onPress={this.smartPost}
+              style={styles.postTimeTouch}>
+            <View
+                style={(this.state.postTime == 'smart') ? styles.timeViewActive : styles.timeView}>
+              <Text
+                  style={(this.state.postTime == 'smart') ? styles.timeTextActive : styles.timeText}>
+                Smart Post
               </Text>
             </View>
           </TouchableOpacity>
@@ -332,6 +362,14 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
+  smartPostTouch: {
+    backgroundColor: Colors.lightBlue,
+    padding: 5,
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 10,
+  },
   postImageView: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -360,7 +398,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   postTimeTouch: {
-    width: '50%'
+    width: '34%'
   },
   timeView: {
     padding: 10,
