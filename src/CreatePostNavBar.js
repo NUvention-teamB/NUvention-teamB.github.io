@@ -28,7 +28,7 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         <TouchableOpacity style={styles.button} onPress={() => {Actions.pop()}}>
-          <Text style={styles.text}>Cancel</Text>
+          <Text style={styles.text}>Back</Text>
         </TouchableOpacity>
         {additional}
       </View>
