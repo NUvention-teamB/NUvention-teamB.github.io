@@ -55,7 +55,7 @@ export default class IndividualPostStatistics extends Component {
           />
         </TouchableOpacity>
       )
-    })()
+    })();
 
 
     return (

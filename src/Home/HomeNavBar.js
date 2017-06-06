@@ -35,12 +35,12 @@ export default class HomeNavBar extends Component {
             source={require('../../Icons/analyticicon1.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={postsStyle} onPress={()=>this.props.switchScreens('postStatistics')}>
+        {/* <TouchableOpacity style={postsStyle} onPress={()=>this.props.switchScreens('postStatistics')}>
           <Image
             style={styles.navBarIconPosts}
             source={require('../../Icons/posticon1.png')}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={userStyle} onPress={()=>this.props.switchScreens('userSettings')}>
           <Image
             style={styles.navBarIconUser}
@@ -63,10 +63,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3
   },
   navBarItem: {
-    width: '25%',
+    width: '33%',
   },
   navBarItemActive: {
-    width: '25%',
+    width: '33%',
     backgroundColor: Colors.lightBlue
   },
   navBarIconAnalytics: {

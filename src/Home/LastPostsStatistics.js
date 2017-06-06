@@ -13,12 +13,7 @@ export default class LastPostsStatistics extends Component {
   render() {
     if (this.props.statistics==null || this.props.statistics.posts==null || this.props.statistics.posts.length==0) return (
       <View>
-        <ActivityIndicator
-          animating={true}
-          style={[styles.centering, {height: 80}]}
-          size="large"
-          color={Colors.brightBlue}
-        />
+      
       </View>
     );
     var statistics = this.props.statistics;
