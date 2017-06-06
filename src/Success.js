@@ -11,6 +11,7 @@ export default class Success extends Component {
 
     this.state = {
       boosted: false,
+      boosting: false,
     };
   }
 
@@ -20,11 +21,19 @@ export default class Success extends Component {
   }
 
   boostPost() {
-    var postId = 'hmm';
+    var postId = 'test';
     BoostPost(globalPage, postId);
     this.setState({
+      boosting: false,
       boosted: true,
-    })
+    });
+  }
+
+  handleBoostingPost() {
+    this.setState({
+      boosting: true,
+      boostedL: false,
+    });
   }
 
   goToPostHistory() {
@@ -40,8 +49,25 @@ export default class Success extends Component {
         </View>
       )
 
+      if (this.state.boosting) return (
+        <View style={styles.successBoostView}>
+          <Text style={styles.selectAmount}>Select the amount for boosting</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <TouchableOpacity style={styles.amountButton} onPress={()=>this.boostPost()}>
+              <Text style={styles.amountText}>$1</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.amountButton} onPress={()=>this.boostPost()}>
+              <Text style={styles.amountText}>$3</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.amountButton} onPress={()=>this.boostPost()}>
+              <Text style={styles.amountText}>$5</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )
+
       return (
-        <TouchableOpacity style={styles.boostPostButton} onPress={()=>this.boostPost()}>
+        <TouchableOpacity style={styles.boostPostButton} onPress={()=>this.handleBoostingPost()}>
           <Image
             style={styles.boostPostImage}
             source={require('../Icons/boostpostbutton.png')}
@@ -144,5 +170,24 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     borderRadius: 20,
   },
-
+  selectAmount: {
+    fontSize: 18,
+    textAlign: 'center',
+    color: Colors.middleGray,
+    fontSize: 22,
+    fontWeight: '500',
+  },
+  amountButton: {
+    backgroundColor: Colors.darkGreen,
+    width: 70,
+    padding: 10,
+    margin: 15,
+    borderRadius: 15,
+  },
+  amountText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: '600',
+    fontSize: 15,
+  },
 });

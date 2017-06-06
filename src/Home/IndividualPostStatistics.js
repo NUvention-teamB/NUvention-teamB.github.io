@@ -22,7 +22,11 @@ export default class IndividualPostStatistics extends Component {
   }
 
   render() {
-    if (this.props.post=null) return null;
+    if (this.props.post=null) return (
+      <View style={styles.individualPost}>
+
+      </View>
+    );
     var post = this.props.post;
     var statistics = post.statistics;
 

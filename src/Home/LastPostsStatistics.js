@@ -11,7 +11,16 @@ export default class LastPostsStatistics extends Component {
   }
 
   render() {
-    if (this.props.statistics==null || this.props.statistics.posts==null || this.props.statistics.posts.length==0) return null;
+    if (this.props.statistics==null || this.props.statistics.posts==null || this.props.statistics.posts.length==0) return (
+      <View>
+        <ActivityIndicator
+          animating={true}
+          style={[styles.centering, {height: 80}]}
+          size="large"
+          color={Colors.brightBlue}
+        />
+      </View>
+    );
     var statistics = this.props.statistics;
 
     var max = 0;
@@ -95,5 +104,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 15,
     fontWeight: 'bold',
+  },
+  centering: {
+    marginTop: '30%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
   },
 });

@@ -148,7 +148,7 @@ export default class Post extends Component {
     if (this.state.isLoading) return (
       <View>
         <ActivityIndicator
-          animating={this.state.isLoading}
+          animating={true}
           style={[styles.centering, {height: 100}]}
           size="large"
           color="darkblue"
