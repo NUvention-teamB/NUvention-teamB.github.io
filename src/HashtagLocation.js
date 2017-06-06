@@ -18,12 +18,12 @@ export default class HashtagLocation extends Component {
 
     this.state = {
       hashtags: [
-        'NUvention',
-        'Breezy',
-        'FarleyCenterNU',
-        'SocialMarketing',
-        'Entrepreneurship',
-        'Chicago',
+        'EvanstonCrepes',
+        'gottabhappy',
+        'GottabCrepes',
+        'Crepes',
+        'ChicagoCrepes',
+        'Evanston',
       ],
       hashtagText: '',
       recentLocations: [
@@ -74,7 +74,7 @@ export default class HashtagLocation extends Component {
             #{this.state.hashtags[i]}
           </Text>
         )
-        output.push(<Text>{'    '}</Text>);
+        output.push(<Text key={'textspace'+i}>{'    '}</Text>);
       } 
       output.pop();
       return output;
@@ -84,7 +84,7 @@ export default class HashtagLocation extends Component {
       output = [];
       for(i = 0 ; i < this.state.recentLocations.length ; i++) {
         output.push(
-          <View style={styles.elementView}>
+          <View style={styles.elementView} key={'view'+i}>
             <Text 
               key={'text'+i}
               onPress={() => {console.log('currently does nothing')}}>
@@ -92,7 +92,7 @@ export default class HashtagLocation extends Component {
             </Text>
           </View>
         )
-        output.push(<Text>{'    '}</Text>);
+        output.push(<Text key={'textspace'+i}>{'    '}</Text>);
       } 
       output.pop();
       return output;

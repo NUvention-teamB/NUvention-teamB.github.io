@@ -24,16 +24,32 @@ export default class Caption extends Component {
         'location': {
           question: 'What location would you like?',
           options: [
-            '555 Clark St',
-            '555 Clark St. Evanston, IL',
-            'Northwestern University'
+            'Evanston Farmer’s Market',
+            'Logan Square',
+            'Loyola L Stop',
+            'Park Ridge'
           ]
         },
         'product': {
           question: 'What product would you like?',
           options: [
-            'Frappe',
-            'Latte'
+            'Caramel Apple Crepe',
+            'Oreo Cookie Crumble Crepe',
+            'Chocolate Banana Crepe ',
+            'Chicken Gordon Bleu Crepe',
+            'Philly Cheese Steam Crepe',
+          ]
+        },
+        'day of the week': {
+          question: 'What day of the week would you like?',
+          options: [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'
           ]
         }
       }
@@ -71,6 +87,7 @@ export default class Caption extends Component {
 
   returnDate() {
     var temp;
+
     if (this.state.date == null) {
       temp = '[time]'
     } else {
@@ -80,6 +97,24 @@ export default class Caption extends Component {
   }
 
   render() {
+    var customInput = (() => {
+      if (this.props.tag != 'day of the week') {
+        return (
+          <View style={styles.textInputView}>
+            <TextInput 
+              onChange={(event) => this.setState({
+                text: event.nativeEvent.text,
+              })}
+              style={styles.textInput}
+              multiline={false}
+              placeholder='customInput'
+              placeholderTextColor={Colors.gray}
+              onSubmitEditing={() => {Keyboard.dismiss; this.updateValue(this.state.text)}}
+            />
+          </View>
+        )
+      }
+    })();
     var render = (() => {
       console.log(this.props.tag);
       if (this.props.tag == null) {
@@ -102,18 +137,7 @@ export default class Caption extends Component {
       } else {
         return (
           <View>
-            <View style={styles.textInputView}>
-              <TextInput 
-                onChange={(event) => this.setState({
-                  text: event.nativeEvent.text,
-                })}
-                style={styles.textInput}
-                multiline={false}
-                placeholder='customInput'
-                placeholderTextColor={Colors.gray}
-                onSubmitEditing={() => {Keyboard.dismiss; this.updateValue(this.state.text)}}
-              />
-            </View>
+            {customInput}
             <ListView
               dataSource={this.state.ds.cloneWithRows(this.state.data[this.props.tag].options)}
               renderRow={this.renderRow}

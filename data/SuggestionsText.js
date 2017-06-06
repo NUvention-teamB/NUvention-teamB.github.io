@@ -12,9 +12,9 @@ data =
     },
     {
       id: '4',
-      caption:'Check out  at !',
-      captionWithTags: 'Check out [product] at [location]!',
-      fullCaption: 'Check out [product] at [location]!',
+      caption:'Check out  at  on !',
+      captionWithTags: 'Check out [product] at [location] on [day of the week]!',
+      fullCaption: 'Check out [product] at [location] on [day of the week]!',
       tags:
         [{
           name: 'product',
@@ -23,6 +23,10 @@ data =
         {
           name: 'location',
           position: 14
+        },
+        {
+          name: 'day of the week',
+          position: 18
         }]
     },
     {
