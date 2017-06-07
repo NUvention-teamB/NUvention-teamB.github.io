@@ -1,5 +1,8 @@
 # NUvention-teamB.github.io
 
+# Download the App
+Go to https://itunes.apple.com/us/app/breezy-social/id1231324414 to find the app. Download on your apple device.
+
 # Set up
 
 ## React Native
